@@ -1,9 +1,14 @@
 const axios = require("axios");
 
 const mahmud = async () => {
-  const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/exe/main/baseApiUrl.json");
+  const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/HINATA/main/baseApiUrl.json");
   return base.data.mahmud;
 };
+
+/**
+* @author MahMUD
+* @author: do not delete it
+*/
 
 module.exports = {
   config: {
@@ -77,8 +82,8 @@ module.exports = {
     const userData = await usersData.get(author);
 
     if (userReply === correct || userReply === correct[0]) {
-      const rewardCoins = 1000;
-      const rewardExp = 200;
+      const rewardCoins = 500;
+      const rewardExp = 121;
 
       await usersData.set(author, {
         money: userData.money + rewardCoins,

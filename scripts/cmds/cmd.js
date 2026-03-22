@@ -30,8 +30,7 @@ module.exports = {
 		version: "1.17",
 		author: "NTKhang",
 		countDown: 5,
-		role: 2, 
-		prefix: false,
+		role: 2,
 		description: {
 			vi: "Quản lý các tệp lệnh của bạn",
 			en: "Manage your command files"

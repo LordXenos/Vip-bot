@@ -1,47 +1,57 @@
 const axios = require("axios");
 
+const API_BASE = "https://flux-api-ariyan.vercel.app";
+
 module.exports = {
   config: {
     name: "flux",
-    version: "1.0.0",
-    prefix: false,
-    author: "Rasin",
-    countDown: 5,
+    aliases: ["fx"],
+    version: "1.0",
+    author: "Ariyan",
     role: 0,
-    description: "Flux",
-    category: "image generation",
+    category: "image",
     guide: {
-      en: "   {pn}flux [prompt]"
-    },
+      en: "{pn} a cute anime cat"
+    }
   },
 
-  onStart: async function ({ event, args, message, api }) {
-    const rasinAPI = "https://rasin-apis.onrender.com/api/rasin/flux";
+  onStart: async function ({ message, args }) {
+    const prompt = args.join(" ").trim();
+    if (!prompt) {
+      return message.reply("Example: -flux a cute anime cat");
+    }
+
+    let waitMsg;
 
     try {
-      const prompt = args.join(" ");
-      if (!prompt) {
-        return message.reply("Please provide a prompt!");
+      waitMsg = await message.reply("Generating image... Please wait");
+
+      const res = await axios.get(
+        `${API_BASE}/generate?prompt=${encodeURIComponent(prompt)}`,
+        { timeout: 120000 }
+      );
+
+      if (!res.data?.status || !res.data?.image) {
+        throw new Error("Invalid API response");
       }
 
-      const startTime = Date.now();
-      const waitMessage = await message.reply("𝐆𝐞𝐧𝐞𝐫𝐚𝐭𝐢𝐧𝐠 𝐢𝐦𝐚𝐠𝐞...");
-      api.setMessageReaction("⌛", event.messageID, () => {}, true);
+      if (waitMsg?.messageID) {
+        await message.unsend(waitMsg.messageID);
+      }
 
-      const apiurl = `${rasinAPI}?prompt=${encodeURIComponent(prompt)}&apikey=rs_3gb6nkf4-hzxd-8phe-904z-i1`;
-      const response = await axios.get(apiurl, { responseType: "stream" });
-
-      const time = ((Date.now() - startTime) / 1000).toFixed(2);
-      api.setMessageReaction("✅", event.messageID, () => {}, true);
-      message.unsend(waitMessage.messageID);
-
-      message.reply({
-        body: `✅ 𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐠𝐞𝐧𝐞𝐫𝐚𝐭𝐞𝐝 𝐢𝐦𝐚𝐠𝐞`,
-        attachment: response.data,
+      return message.reply({
+        body: `Flux Image Generated\n\nPrompt: ${prompt}`,
+        attachment: await global.utils.getStreamFromURL(res.data.image)
       });
-    } catch (e) {
-      console.error(e);
-      message.reply(`Error: ${e.message || "Failed to generate image. Please try again later."}`);
+
+    } catch (err) {
+      if (waitMsg?.messageID) {
+        await message.unsend(waitMsg.messageID);
+      }
+
+      return message.reply(
+        "Image generation failed. Try again in a few seconds."
+      );
     }
   }
 };

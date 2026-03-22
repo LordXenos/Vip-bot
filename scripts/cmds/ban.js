@@ -4,7 +4,7 @@ const moment = require("moment-timezone");
 module.exports = {
 	config: {
 		name: "ban",
-		version: "1.5",
+		version: "1.4",
 		author: "NTKhang",
 		countDown: 5,
 		role: 1,
@@ -14,21 +14,21 @@ module.exports = {
 		},
 		category: "box chat",
 		guide: {
-			vi: "   {pn} [@tag|uid|link fb|tên|reply] [<lý do cấm>|để trống nếu không có lý do]: Cấm thành viên khỏi box chat"
+			vi: "   {pn} [@tag|uid|link fb|reply] [<lý do cấm>|để trống nếu không có lý do]: Cấm thành viên khỏi box chat"
 				+ "\n   {pn} check: Kiểm tra thành viên bị cấm và kick thành viên đó ra khỏi box chat"
-				+ "\n   {pn} unban [@tag|uid|link fb|tên|reply]: Bỏ cấm thành viên khỏi box chat"
+				+ "\n   {pn} unban [@tag|uid|link fb|reply]: Bỏ cấm thành viên khỏi box chat"
 				+ "\n   {pn} list: Xem danh sách thành viên bị cấm",
-			en: "   {pn} [@tag|uid|fb link|name|reply] [<reason>|leave blank if no reason]: Ban user from box chat"
+			en: "   {pn} [@tag|uid|fb link|reply] [<reason>|leave blank if no reason]: Ban user from box chat"
 				+ "\n   {pn} check: Check banned members and kick them out of the box chat"
-				+ "\n   {pn} unban [@tag|uid|fb link|name|reply]: Unban user from box chat"
+				+ "\n   {pn} unban [@tag|uid|fb link|reply]: Unban user from box chat"
 				+ "\n   {pn} list: View the list of banned members"
 		}
 	},
 
 	langs: {
 		vi: {
-			notFoundTarget: "⚠️ | Vui lòng tag người cần cấm hoặc nhập uid hoặc link fb hoặc tên hoặc phản hồi tin nhắn của người cần cấm",
-			notFoundTargetUnban: "⚠️ | Vui lòng tag người cần bỏ cấm hoặc nhập uid hoặc link fb hoặc tên hoặc phản hồi tin nhắn của người cần bỏ cấm",
+			notFoundTarget: "⚠️ | Vui lòng tag người cần cấm hoặc nhập uid hoặc link fb hoặc phản hồi tin nhắn của người cần cấm",
+			notFoundTargetUnban: "⚠️ | Vui lòng tag người cần bỏ cấm hoặc nhập uid hoặc link fb hoặc phản hồi tin nhắn của người cần bỏ cấm",
 			userNotBanned: "⚠️ | Người mang id %1 không bị cấm khỏi box chat này",
 			unbannedSuccess: "✅ | Đã bỏ cấm %1 khỏi box chat!",
 			cantSelfBan: "⚠️ | Bạn không thể tự cấm chính mình!",
@@ -42,13 +42,11 @@ module.exports = {
 			listBanned: "📑 | Danh sách thành viên bị cấm trong box chat này (trang %1/%2)",
 			content: "%1/ %2 (%3)\nLý do: %4\nThời gian cấm: %5\n\n",
 			needAdminToKick: "⚠️ | Thành viên %1 (%2) bị cấm khỏi box chat, nhưng bot không có quyền quản trị viên để kick thành viên này, vui lòng cấp quyền quản trị viên cho bot để kick thành viên này",
-			bannedKick: "⚠️ | %1 đã bị cấm khỏi box chat từ trước!\nUID: %2\nLý do: %3\nThời gian cấm: %4\n\nBot đã tự động kick thành viên này",
-			notFound: "Không tìm thấy người dùng '%1' trong cuộc trò chuyện này",
-			multiple: "Tìm thấy nhiều người dùng có tên '%1':\n%2\n\nVui lòng sử dụng UID hoặc cụ thể hơn."
+			bannedKick: "⚠️ | %1 đã bị cấm khỏi box chat từ trước!\nUID: %2\nLý do: %3\nThời gian cấm: %4\n\nBot đã tự động kick thành viên này"
 		},
 		en: {
-			notFoundTarget: "⚠️ | Please tag the person to ban or enter uid or fb link or name or reply to the message of the person to ban",
-			notFoundTargetUnban: "⚠️ | Please tag the person to unban or enter uid or fb link or name or reply to the message of the person to unban",
+			notFoundTarget: "⚠️ | Please tag the person to ban or enter uid or fb link or reply to the message of the person to ban",
+			notFoundTargetUnban: "⚠️ | Please tag the person to unban or enter uid or fb link or reply to the message of the person to unban",
 			userNotBanned: "⚠️ | The person with id %1 is not banned from this box chat",
 			unbannedSuccess: "✅ | Unbanned %1 from box chat!",
 			cantSelfBan: "⚠️ | You can't ban yourself!",
@@ -62,9 +60,7 @@ module.exports = {
 			listBanned: "📑 | List of banned members in this box chat (page %1/%2)",
 			content: "%1/ %2 (%3)\nReason: %4\nBan time: %5\n\n",
 			needAdminToKick: "⚠️ | Member %1 (%2) has been banned from box chat, but the bot does not have administrator permission to kick this member, please grant administrator permission to the bot to kick this member",
-			bannedKick: "⚠️ | %1 has been banned from box chat before!\nUID: %2\nReason: %3\nBan time: %4\n\nBot has automatically kicked this member",
-			notFound: "User '%1' not found in this conversation",
-			multiple: "Multiple users found with name '%1':\n%2\n\nPlease use their UID or be more specific."
+			bannedKick: "⚠️ | %1 has been banned from box chat before!\nUID: %2\nReason: %3\nBan time: %4\n\nBot has automatically kicked this member"
 		}
 	},
 
@@ -85,20 +81,6 @@ module.exports = {
 				target = Object.keys(event.mentions)[0];
 			else if (event.messageReply?.senderID)
 				target = event.messageReply.senderID;
-			else if (args[1]) {
-				const query = args.slice(1).join(" ");
-				const matches = await findUserByName(api, usersData, event.threadID, query);
-
-				if (matches.length === 0)
-					return api.sendMessage(getLang('notFound', query.replace(/@/g, "")), event.threadID, event.messageID);
-
-				if (matches.length > 1) {
-					const matchList = matches.map(m => `• ${m.name}: ${m.uid}`).join('\n');
-					return api.sendMessage(getLang('multiple', query.replace(/@/g, ""), matchList), event.threadID, event.messageID);
-				}
-
-				target = matches[0].uid;
-			}
 			else
 				return api.sendMessage(getLang('notFoundTargetUnban'), event.threadID, event.messageID);
 
@@ -154,21 +136,6 @@ module.exports = {
 				msg += getLang('content', start + count, name, user.id, user.reason, time);
 			}
 			return message.reply(getLang('listBanned', page, Math.ceil(dataBanned.length / limit)) + '\n\n' + msg);
-		}
-		else if (args[0]) {
-			const query = args.join(" ");
-			const matches = await findUserByName(api, usersData, event.threadID, query);
-
-			if (matches.length === 0)
-				return message.reply(getLang('notFound', query.replace(/@/g, "")));
-
-			if (matches.length > 1) {
-				const matchList = matches.map(m => `• ${m.name}: ${m.uid}`).join('\n');
-				return message.reply(getLang('multiple', query.replace(/@/g, ""), matchList));
-			}
-
-			target = matches[0].uid;
-			reason = '';
 		}
 
 		if (!target)
@@ -252,25 +219,3 @@ module.exports = {
 		}
 	}
 };
-
-async function findUserByName(api, usersData, threadID, query) {
-	try {
-		const cleanQuery = query.replace(/@/g, "").trim().toLowerCase();
-		const threadInfo = await api.getThreadInfo(threadID);
-		const ids = threadInfo.participantIDs || [];
-		const matches = [];
-
-		for (const uid of ids) {
-			try {
-				const name = (await usersData.getName(uid)).toLowerCase();
-				if (name.includes(cleanQuery)) {
-					matches.push({ uid, name: await usersData.getName(uid) });
-				}
-			} catch {}
-		}
-
-		return matches;
-	} catch {
-		return [];
-	}
-}
