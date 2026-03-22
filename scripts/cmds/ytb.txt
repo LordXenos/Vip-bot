@@ -1,0 +1,305 @@
+const axios = require("axios");
+const ytdl = require("@distube/ytdl-core");
+const fs = require("fs-extra");
+const { getStreamFromURL, formatNumber } = global.utils;
+
+const agent = ytdl.createAgent();
+
+module.exports = {
+	config: {
+		name: "ytb",
+		version: "2.2",
+		author: "NTKhang x Rasin",
+		countDown: 5,
+		role: 2,
+		description: {
+			en: "Download video, audio or view video information on YouTube"
+		},
+		category: "media",
+		guide: {
+			en: "   {pn} [video|-v] [<video name>|<video link>]: use to download video from youtube."
+				+ "\n   {pn} [audio|-a] [<video name>|<video link>]: use to download audio from youtube"
+				+ "\n   {pn} [info|-i] [<video name>|<video link>]: use to view video information from youtube"
+				+ "\n   Example:"
+				+ "\n    {pn} -v Fallen Kingdom"
+				+ "\n    {pn} -a Fallen Kingdom"
+				+ "\n    {pn} -i Fallen Kingdom"
+		}
+	},
+	langs: {
+		en: {
+			error: "❌ An error occurred: %1",
+			noResult: "⭕ No search results match the keyword %1",
+			choose: "%1Reply to the message with a number to choose or any content to cancel",
+			video: "video",
+			audio: "audio",
+			downloading: "⬇️ Downloading %1 \"%2\"",
+			noVideo: "⭕ Sorry, no video was found with a size less than 83MB",
+			noAudio: "⭕ Sorry, no audio was found with a size less than 26MB",
+			info: "💠 Title: %1\n🏪 Channel: %2\n👨‍👩‍👧‍👦 Subscriber: %3\n⏱ Video duration: %4\n👀 View count: %5\n👍 Like count: %6\n🆙 Upload date: %7\n🔠 ID: %8\n🔗 Link: %9"
+		}
+	},
+
+	onStart: async function ({ args, message, event, commandName, getLang }) {
+		let type;
+		switch (args[0]) {
+			case "-v":
+			case "video":
+				type = "video";
+				break;
+			case "-a":
+			case "-s":
+			case "audio":
+			case "sing":
+				type = "audio";
+				break;
+			case "-i":
+			case "info":
+				type = "info";
+				break;
+			default:
+				return message.SyntaxError();
+		}
+
+		const checkurl = /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))((\w|-){11})(?:\S+)?$/;
+		const urlYtb = checkurl.test(args[1]);
+
+		if (urlYtb) {
+			const infoVideo = await getVideoInfo(args[1]);
+			handle({ type, infoVideo, message, getLang });
+			return;
+		}
+
+		let keyWord = args.slice(1).join(" ");
+		keyWord = keyWord.includes("?feature=share") ? keyWord.replace("?feature=share", "") : keyWord;
+		const maxResults = 6;
+
+		let result;
+		try {
+			result = (await search(keyWord)).slice(0, maxResults);
+		}
+		catch (err) {
+			return message.reply(getLang("error", err.message));
+		}
+		if (result.length == 0)
+			return message.reply(getLang("noResult", keyWord));
+		let msg = "";
+		let i = 1;
+		const thumbnails = [];
+		const arrayID = [];
+
+		for (const info of result) {
+			thumbnails.push(getStreamFromURL(info.thumbnail));
+			msg += `${i++}. ${info.title}\nTime: ${info.time}\nChannel: ${info.channel.name}\n\n`;
+		}
+
+		message.reply({
+			body: getLang("choose", msg),
+			attachment: await Promise.all(thumbnails)
+		}, (err, info) => {
+			global.GoatBot.onReply.set(info.messageID, {
+				commandName,
+				messageID: info.messageID,
+				author: event.senderID,
+				arrayID,
+				result,
+				type
+			});
+		});
+	},
+
+	onReply: async ({ event, api, Reply, message, getLang }) => {
+		const { result, type } = Reply;
+		const choice = event.body;
+		if (!isNaN(choice) && choice <= 6) {
+			const infoChoice = result[choice - 1];
+			const idvideo = infoChoice.id;
+			const infoVideo = await getVideoInfo(idvideo);
+			api.unsendMessage(Reply.messageID);
+			await handle({ type, infoVideo, message, getLang });
+		}
+		else
+			api.unsendMessage(Reply.messageID);
+	}
+};
+
+async function handle({ type, infoVideo, message, getLang }) {
+	const { title, videoId } = infoVideo;
+
+	if (type == "video") {
+		const MAX_SIZE = 83 * 1024 * 1024;
+		const msgSend = message.reply(getLang("downloading", getLang("video"), title));
+		
+		try {
+			const info = await ytdl.getInfo(videoId, { agent });
+			
+			// Find suitable format
+			const format = info.formats
+				.filter(f => f.hasVideo && f.hasAudio && f.container === 'mp4')
+				.sort((a, b) => (a.contentLength || 0) - (b.contentLength || 0))
+				.find(f => (f.contentLength || 0) < MAX_SIZE);
+			
+			if (!format) {
+				return message.reply(getLang("noVideo"));
+			}
+
+			const savePath = __dirname + `/tmp/${videoId}_${Date.now()}.mp4`;
+			const writeStream = fs.createWriteStream(savePath);
+			
+			ytdl.downloadFromInfo(info, { format: format, agent })
+				.pipe(writeStream)
+				.on('finish', () => {
+					message.reply({
+						body: title,
+						attachment: fs.createReadStream(savePath)
+					}, async (err) => {
+						if (err) return message.reply(getLang("error", err.message));
+						fs.unlinkSync(savePath);
+						message.unsend((await msgSend).messageID);
+					});
+				})
+				.on('error', (err) => {
+					if (fs.existsSync(savePath)) fs.unlinkSync(savePath);
+					message.reply(getLang("error", err.message));
+				});
+		} catch (error) {
+			return message.reply(getLang("error", error.message));
+		}
+	}
+	else if (type == "audio") {
+		const MAX_SIZE = 27262976;
+		const msgSend = message.reply(getLang("downloading", getLang("audio"), title));
+		
+		try {
+			const info = await ytdl.getInfo(videoId, { agent });
+			
+			// Find suitable audio format
+			const format = info.formats
+				.filter(f => f.hasAudio && !f.hasVideo)
+				.sort((a, b) => (a.contentLength || 0) - (b.contentLength || 0))
+				.find(f => (f.contentLength || 0) < MAX_SIZE);
+			
+			if (!format) {
+				return message.reply(getLang("noAudio"));
+			}
+
+			const savePath = __dirname + `/tmp/${videoId}_${Date.now()}.mp3`;
+			const writeStream = fs.createWriteStream(savePath);
+			
+			ytdl.downloadFromInfo(info, { format: format, agent })
+				.pipe(writeStream)
+				.on('finish', () => {
+					message.reply({
+						body: title,
+						attachment: fs.createReadStream(savePath)
+					}, async (err) => {
+						if (err) return message.reply(getLang("error", err.message));
+						fs.unlinkSync(savePath);
+						message.unsend((await msgSend).messageID);
+					});
+				})
+				.on('error', (err) => {
+					if (fs.existsSync(savePath)) fs.unlinkSync(savePath);
+					message.reply(getLang("error", err.message));
+				});
+		} catch (error) {
+			return message.reply(getLang("error", error.message));
+		}
+	}
+	else if (type == "info") {
+		const { title, lengthSeconds, viewCount, videoId, uploadDate, likes, channel } = infoVideo;
+
+		const hours = Math.floor(lengthSeconds / 3600);
+		const minutes = Math.floor(lengthSeconds % 3600 / 60);
+		const seconds = Math.floor(lengthSeconds % 3600 % 60);
+		const time = `${hours ? hours + ":" : ""}${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+		let msg = getLang("info", title, channel.name, formatNumber(channel.subscriberCount || 0), time, formatNumber(viewCount), formatNumber(likes), uploadDate, videoId, `https://youtu.be/${videoId}`);
+
+		message.reply({
+			body: msg,
+			attachment: await Promise.all([
+				getStreamFromURL(infoVideo.thumbnails[infoVideo.thumbnails.length - 1].url),
+				getStreamFromURL(infoVideo.channel.thumbnails[infoVideo.channel.thumbnails.length - 1].url)
+			])
+		});
+	}
+}
+
+async function search(keyWord) {
+	try {
+		const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(keyWord)}`;
+		const res = await axios.get(url);
+		const getJson = JSON.parse(res.data.split("ytInitialData = ")[1].split(";</script>")[0]);
+		const videos = getJson.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents;
+		const results = [];
+		for (const video of videos)
+			if (video.videoRenderer?.lengthText?.simpleText)
+				results.push({
+					id: video.videoRenderer.videoId,
+					title: video.videoRenderer.title.runs[0].text,
+					thumbnail: video.videoRenderer.thumbnail.thumbnails.pop().url,
+					time: video.videoRenderer.lengthText.simpleText,
+					channel: {
+						id: video.videoRenderer.ownerText.runs[0].navigationEndpoint.browseEndpoint.browseId,
+						name: video.videoRenderer.ownerText.runs[0].text,
+						thumbnail: video.videoRenderer.channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails.pop().url.replace(/s[0-9]+\-c/g, '-c')
+					}
+				});
+		return results;
+	}
+	catch (e) {
+		const error = new Error("Cannot search video");
+		error.code = "SEARCH_VIDEO_ERROR";
+		throw error;
+	}
+}
+
+async function getVideoInfo(id) {
+	id = id.replace(/(>|<)/gi, '').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/|\/shorts\/)/);
+	id = id[2] !== undefined ? id[2].split(/[^0-9a-z_\-]/i)[0] : id[0];
+
+	const { data: html } = await axios.get(`https://youtu.be/${id}?hl=en`, {
+		headers: {
+			'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+		}
+	});
+	const json = JSON.parse(html.match(/var ytInitialPlayerResponse = (.*?});/)[1]);
+	const json2 = JSON.parse(html.match(/var ytInitialData = (.*?});/)[1]);
+	const { title, lengthSeconds, viewCount, videoId, thumbnail, author } = json.videoDetails;
+	const owner = json2.contents.twoColumnWatchNextResults.results.results.contents.find(x => x.videoSecondaryInfoRenderer).videoSecondaryInfoRenderer.owner;
+
+	const result = {
+		videoId,
+		title,
+		video_url: `https://youtu.be/${videoId}`,
+		lengthSeconds: lengthSeconds,
+		viewCount: viewCount,
+		uploadDate: json.microformat.playerMicroformatRenderer.uploadDate,
+		likes: json2.contents.twoColumnWatchNextResults.results.results.contents.find(x => x.videoPrimaryInfoRenderer).videoPrimaryInfoRenderer.videoActions.menuRenderer.topLevelButtons.find(x => x.segmentedLikeDislikeButtonViewModel).segmentedLikeDislikeButtonViewModel.likeButtonViewModel.likeButtonViewModel.toggleButtonViewModel.toggleButtonViewModel.defaultButtonViewModel.buttonViewModel.accessibilityText.replace(/\.|,/g, '').match(/\d+/)?.[0] || 0,
+		thumbnails: thumbnail.thumbnails,
+		author: author,
+		channel: {
+			id: owner.videoOwnerRenderer.navigationEndpoint.browseEndpoint.browseId,
+			username: owner.videoOwnerRenderer.navigationEndpoint.browseEndpoint.canonicalBaseUrl,
+			name: owner.videoOwnerRenderer.title.runs[0].text,
+			thumbnails: owner.videoOwnerRenderer.thumbnail.thumbnails,
+			subscriberCount: parseAbbreviatedNumber(owner.videoOwnerRenderer.subscriberCountText.simpleText)
+		}
+	};
+
+	return result;
+}
+
+function parseAbbreviatedNumber(string) {
+	const match = string
+		.replace(',', '.')
+		.replace(' ', '')
+		.match(/([\d,.]+)([MK]?)/);
+	if (match) {
+		let [, num, multi] = match;
+		num = parseFloat(num);
+		return Math.round(multi === 'M' ? num * 1000000 :
+			multi === 'K' ? num * 1000 : num);
+	}
+	return null;
+}

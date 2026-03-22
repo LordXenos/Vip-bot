@@ -1,0 +1,233 @@
+const { getStreamFromURL } = global.utils;
+
+module.exports = {
+	config: {
+		name: "resend",
+		version: "3.1",
+		author: "Rasin",
+		description: "View and resend unsent messages",
+		category: "utility",
+		guide: {
+			en: "This command automatically tracks and resends unsent messages"
+		}
+	},
+
+	langs: {
+		en: {
+			unsendDetected: "{userName} unsent a message 👀",
+			messageContent: "Message: {content}",
+			emptyMessage: "Message: [Empty]",
+			mediaUnsent: "Media unsent: {types}",
+			voiceUnsent: "🎤 Voice message unsent",
+			audioUnsent: "🎵 Audio message unsent",
+			cleanupInfo: "Cleaned up {count} old messages (older than 7 days)"
+		}
+	},
+
+	onStart: async function({ api, event, message, getLang }) {
+		return message.reply("Resend command is active");
+	},
+
+	onChat: async function({ api, event, threadsData, usersData, message, getLang }) {
+		try {
+			const { threadID, messageID, senderID, type, body, attachments } = event;
+
+			if (senderID === api.getCurrentUserID()) {
+				return;
+			}
+
+			const threadData = await threadsData.get(threadID);
+			
+		
+			if (!threadData.data) {
+				threadData.data = {};
+			}
+			if (!threadData.data.recentMessages) {
+				threadData.data.recentMessages = {};
+			}
+
+			
+			if (type === "message" || type === "message_reply") {
+				if (body || (attachments && attachments.length > 0)) {
+			
+					threadData.data.recentMessages[messageID] = {
+						body: body || null,
+						attachments: attachments ? attachments.map(att => ({
+							type: att.type || "unknown",
+							url: att.url || null,
+							
+							...(att.type === "audio" && {
+								duration: att.duration || null,
+								isVoiceMail: att.isVoiceMail || false
+							})
+						})) : [],
+						senderID: senderID,
+						timestamp: Date.now()
+					};
+
+				
+					const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+					let cleanedCount = 0;
+					
+					for (const msgID in threadData.data.recentMessages) {
+						if (threadData.data.recentMessages[msgID].timestamp < sevenDaysAgo) {
+							delete threadData.data.recentMessages[msgID];
+							cleanedCount++;
+						}
+					}
+
+			
+					await threadsData.set(threadID, threadData.data.recentMessages, "data.recentMessages");
+
+					
+					if (cleanedCount > 100) {
+						console.log(`[Resend] ${getLang("cleanupInfo").replace("{count}", cleanedCount)} in thread ${threadID}`);
+					}
+				}
+			}
+
+			
+			if (type === "message_unsend") {
+	
+				if (!threadData.data || !threadData.data.recentMessages) {
+					return;
+				}
+
+				const savedMsg = threadData.data.recentMessages[messageID];
+				
+				if (!savedMsg) {
+	
+					return;
+				}
+
+			
+				let senderName = "Unknown User";
+				try {
+					senderName = await usersData.getName(senderID);
+				} catch (err) {
+					try {
+						const senderInfo = await api.getUserInfo(senderID);
+						if (senderInfo && senderInfo[senderID] && senderInfo[senderID].name) {
+							senderName = senderInfo[senderID].name;
+						}
+					} catch (e) {
+						console.error("[Resend] Could not get sender name:", e.message);
+					}
+				}
+
+			
+				let reportMsg = getLang("unsendDetected").replace("{userName}", senderName) + "\n\n";
+
+				if (savedMsg.body && typeof savedMsg.body === "string") {
+					reportMsg += getLang("messageContent").replace("{content}", savedMsg.body) + "\n";
+				}
+
+				
+				if (savedMsg.attachments && Array.isArray(savedMsg.attachments) && savedMsg.attachments.length > 0) {
+				
+					const hasVoice = savedMsg.attachments.some(att => att && att.isVoiceMail === true);
+					const hasAudio = savedMsg.attachments.some(att => att && att.type === "audio");
+					
+					if (hasVoice) {
+						reportMsg += getLang("voiceUnsent") + "\n";
+					} else if (hasAudio) {
+						reportMsg += getLang("audioUnsent") + "\n";
+					}
+					
+					const mediaTypes = savedMsg.attachments
+						.map(a => {
+							if (!a) return null;
+							if (a.isVoiceMail) return "voice message 🎤";
+							if (a.type === "audio") return "audio 🎵";
+							if (a.type === "photo") return "photo 📷";
+							if (a.type === "video") return "video 🎥";
+							if (a.type === "animated_image") return "gif 🎞️";
+							if (a.type === "sticker") return "sticker 😊";
+							return a.type || "unknown";
+						})
+						.filter(Boolean)
+						.join(", ");
+					
+					if (mediaTypes) {
+						reportMsg += getLang("mediaUnsent").replace("{types}", mediaTypes);
+					}
+
+			
+					const files = [];
+					let failedCount = 0;
+					
+					for (const att of savedMsg.attachments) {
+				
+						if (!att || !att.url || typeof att.url !== "string") {
+							failedCount++;
+							continue;
+						}
+
+						try {
+							const file = await getStreamFromURL(att.url);
+							if (file) {
+								files.push(file);
+							} else {
+								failedCount++;
+							}
+						} catch (err) {
+							console.error(`[Resend] Failed to download ${att.type || "unknown"}:`, err.message);
+							failedCount++;
+						}
+					}
+
+				
+					try {
+						if (files.length > 0) {
+							if (failedCount > 0) {
+								reportMsg += `\n\n⚠️ ${failedCount} file(s) could not be retrieved (expired link).`;
+							}
+							await message.reply({
+								body: reportMsg,
+								attachment: files
+							});
+						} else {
+						
+							if (hasVoice || hasAudio) {
+								reportMsg += "\n\n⚠️ Audio/voice files expire quickly and could not be retrieved.";
+							} else {
+								reportMsg += "\n\n⚠️ Media files could not be retrieved (expired links).";
+							}
+							await message.reply(reportMsg);
+						}
+					} catch (sendErr) {
+						console.error("[Resend] Error sending message with attachments:", sendErr);
+					
+						try {
+							await message.reply(reportMsg.split("\n⚠️")[0]);
+						} catch (finalErr) {
+							console.error("[Resend] Failed to send any message:", finalErr);
+						}
+					}
+				} else {
+				
+					if (!savedMsg.body) {
+						reportMsg += getLang("emptyMessage");
+					}
+					
+					try {
+						await message.reply(reportMsg);
+					} catch (sendErr) {
+						console.error("[Resend] Error sending text message:", sendErr);
+					}
+				}
+
+				
+				try {
+					delete threadData.data.recentMessages[messageID];
+					await threadsData.set(threadID, threadData.data.recentMessages, "data.recentMessages");
+				} catch (deleteErr) {
+					console.error("[Resend] Error deleting message from storage:", deleteErr);
+				}
+			}
+
+		} catch (error) {
+			console.error("[Resend] Critical error in onChat:", error);
+		}
+	}
+};

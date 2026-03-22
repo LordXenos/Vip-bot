@@ -1,0 +1,3 @@
+mongodb+srv://bot:bot@bot.gdqpcyu.mongodb.net/?appName=bot [NEW]
+
+mongodb+srv://nusrat:mira@nusrat.ofzj92c.mongodb.net/?retryWrites=true&w=majority&appName=nusrat [old]

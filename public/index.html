@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoatBot Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0f1e 0%, #1a0a2e 50%, #0f0a1e 100%);
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Particles */
+        .particle {
+            position: fixed;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.8), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float-particle 20s infinite ease-in-out;
+        }
+
+        @keyframes float-particle {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            25% { transform: translate(100px, -100px) scale(1.2); opacity: 0.6; }
+            50% { transform: translate(-50px, -150px) scale(0.8); opacity: 0.4; }
+            75% { transform: translate(-120px, 80px) scale(1.1); opacity: 0.5; }
+        }
+
+        .glass-morphism {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));
+        }
+
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .stat-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .stat-card:hover::after {
+            opacity: 1;
+            animation: rotate-gradient 3s linear infinite;
+        }
+
+        @keyframes rotate-gradient {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: 0 25px 70px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Real-time Activity Monitor */
+        .activity-dot {
+            animation: pulse-activity 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-activity {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(1.3);
+                opacity: 0.7;
+            }
+        }
+
+        /* Chart Animation */
+        .chart-bar {
+            animation: grow-bar 1s ease-out forwards;
+            transform-origin: bottom;
+        }
+
+        @keyframes grow-bar {
+            from { transform: scaleY(0); }
+            to { transform: scaleY(1); }
+        }
+
+        /* Terminal-style Logs */
+        .terminal {
+            background: #0a0f1e;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            font-family: 'Courier New', monospace;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        .terminal::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .terminal::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .terminal::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.5);
+            border-radius: 4px;
+        }
+
+        .log-line {
+            animation: fade-in 0.3s ease-out;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Performance Graph */
+        .graph-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw-line 2s ease-out forwards;
+        }
+
+        @keyframes draw-line {
+            to { stroke-dashoffset: 0; }
+        }
+
+        /* Network Status Indicator */
+        .network-pulse {
+            animation: network-ping 1.5s ease-in-out infinite;
+        }
+
+        @keyframes network-ping {
+            0% { 
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+                transform: scale(1.1);
+            }
+            100% { 
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+                transform: scale(1);
+            }
+        }
+
+        /* Command History Carousel */
+        .command-scroll {
+            animation: scroll-commands 20s linear infinite;
+        }
+
+        @keyframes scroll-commands {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.5);
+        }
+
+        /* 3D Flip Effect for Stats */
+        .flip-card {
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+            position: absolute;
+            inset: 0;
+        }
+
+        /* Live Activity Feed */
+        .activity-item {
+            animation: slide-in 0.5s ease-out;
+        }
+
+        @keyframes slide-in {
+            from { 
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+    <!-- Animated Background Particles -->
+    <div id="particles"></div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        <!-- Header -->
+        <div class="glass-morphism rounded-3xl p-6 md:p-10 mb-8 gradient-border">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="icon-container p-4 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20">
+                        <svg class="w-12 h-12 md:w-16 md:h-16 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                            GoatBot Dashboard
+                        </h1>
+                        <p class="text-slate-400 text-sm md:text-lg flex items-center gap-2">
+                            <span class="w-2 h-2 bg-green-400 rounded-full network-pulse"></span>
+                            Advanced Bot Management & Real-time Monitor
+                        </p>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="/appstate" class="btn-primary text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 text-center flex items-center justify-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                        </svg>
+                        <span>Manage Appstate</span>
+                    </a>
+                    <button onclick="restartBot()" class="bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-red-500/50 flex items-center justify-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        <span>Restart Bot</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Stats with 3D Flip -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="flip-card stat-card glass-morphism rounded-2xl gradient-border h-64">
+                <div class="flip-card-inner h-full">
+                    <div class="flip-card-front p-6 h-full flex flex-col justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 bg-blue-500/20 rounded-xl">
+                                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                                </svg>
+                            </div>
+                            <span class="text-slate-300 font-medium">CPU Usage</span>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-white mb-4" id="cpu">0%</div>
+                            <div class="h-2 bg-slate-700/50 rounded-full overflow-hidden">
+                                <div id="cpu-bar" class="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                            <p class="text-slate-400 text-sm mt-3">Real-time monitoring</p>
+                        </div>
+                    </div>
+                    <div class="flip-card-back p-6 h-full flex flex-col justify-center items-center bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-2xl">
+                        <svg class="w-16 h-16 text-blue-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        <p class="text-slate-300 text-center">Processing power at your fingertips</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flip-card stat-card glass-morphism rounded-2xl gradient-border h-64">
+                <div class="flip-card-inner h-full">
+                    <div class="flip-card-front p-6 h-full flex flex-col justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 bg-green-500/20 rounded-xl">
+                                <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                </svg>
+                            </div>
+                            <span class="text-slate-300 font-medium">Memory</span>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-white mb-4" id="memory">0 MB</div>
+                            <div class="h-2 bg-slate-700/50 rounded-full overflow-hidden">
+                                <div id="memory-bar" class="h-full bg-gradient-to-r from-green-500 to-emerald-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                            <p class="text-slate-400 text-sm mt-3">Available resources</p>
+                        </div>
+                    </div>
+                    <div class="flip-card-back p-6 h-full flex flex-col justify-center items-center bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-2xl">
+                        <svg class="w-16 h-16 text-green-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                        <p class="text-slate-300 text-center">Optimized memory management</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card glass-morphism rounded-2xl p-6 gradient-border">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-3 bg-purple-500/20 rounded-xl">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <span class="text-slate-300 font-medium">Uptime</span>
+                </div>
+                <div class="text-4xl font-bold text-white mb-4" id="uptime">0h 0m</div>
+                <div class="flex items-center gap-2 mt-3">
+                    <div class="w-2 h-2 bg-green-400 rounded-full activity-dot"></div>
+                    <p class="text-slate-400 text-sm">System running</p>
+                </div>
+            </div>
+
+            <div class="stat-card glass-morphism rounded-2xl p-6 gradient-border">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-3 bg-green-500/20 rounded-xl">
+                        <svg class="w-6 h-6 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="8"/>
+                        </svg>
+                    </div>
+                    <span class="text-slate-300 font-medium">Status</span>
+                </div>
+                <div class="text-4xl font-bold text-green-400 mb-4">Online</div>
+                <div class="flex items-center gap-2 mt-3">
+                    <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <p class="text-slate-400 text-sm">All systems operational</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- New: Live Activity Feed & Terminal -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Live Activity Feed -->
+            <div class="glass-morphism rounded-2xl p-6 gradient-border">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-pink-500/20 rounded-xl">
+                        <svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-white">Live Activity</h2>
+                </div>
+                <div id="activity-feed" class="space-y-3 max-h-64 overflow-y-auto">
+                    <!-- Activities will be added here -->
+                </div>
+            </div>
+
+            <!-- Terminal Logs -->
+            <div class="glass-morphism rounded-2xl p-6 gradient-border">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-cyan-500/20 rounded-xl">
+                        <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-white">System Logs</h2>
+                </div>
+                <div id="terminal" class="terminal p-4 rounded-xl text-sm">
+                    <!-- Logs will be added here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Rest of the existing content -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- System Information -->
+            <div class="glass-morphism rounded-2xl p-8 gradient-border">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-blue-500/20 rounded-xl">
+                        <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">System Information</h2>
+                </div>
+                <div class="space-y-3">
+                    <div class="bg-gradient-to-r from-blue-500/10 to-transparent border-l-4 border-blue-500 p-4 rounded-xl transition-all duration-300 hover:translate-x-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 font-medium">Platform</span>
+                            <span id="platform" class="font-semibold text-white">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-green-500/10 to-transparent border-l-4 border-green-500 p-4 rounded-xl transition-all duration-300 hover:translate-x-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 font-medium">Node Version</span>
+                            <span id="nodeVersion" class="font-semibold text-white">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-purple-500/10 to-transparent border-l-4 border-purple-500 p-4 rounded-xl transition-all duration-300 hover:translate-x-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 font-medium">Total Memory</span>
+                            <span id="totalMemory" class="font-semibold text-white">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-pink-500/10 to-transparent border-l-4 border-pink-500 p-4 rounded-xl transition-all duration-300 hover:translate-x-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 font-medium">Architecture</span>
+                            <span id="arch" class="font-semibold text-white">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-cyan-500/10 to-transparent border-l-4 border-cyan-500 p-4 rounded-xl transition-all duration-300 hover:translate-x-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 font-medium">Free Memory</span>
+                            <span id="freeMem" class="font-semibold text-white">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-orange-500/10 to-transparent border-l-4 border-orange-500 p-4 rounded-xl transition-all duration-300 hover:translate-x-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 font-medium">CPU Cores</span>
+                            <span id="cpuCores" class="font-semibold text-white">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="glass-morphism rounded-2xl p-8 gradient-border">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-purple-500/20 rounded-xl">
+                        <svg class="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white">Quick Actions</h2>
+                </div>
+                <div class="space-y-4">
+                    <button onclick="window.location.href='/appstate'" class="w-full bg-slate-800/50 border border-slate-700/50 hover:border-blue-500/50 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 text-left flex items-center gap-4 group hover:translate-x-2">
+                        <div class="p-2 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition-colors">
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-semibold">Update Appstate</div>
+                            <div class="text-slate-400 text-sm">Manage bot credentials</div>
+                        </div>
+                    </button>
+                    <button onclick="refreshStats()" class="w-full bg-slate-800/50 border border-slate-700/50 hover:border-green-500/50 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 text-left flex items-center gap-4 group hover:translate-x-2">
+                        <div class="p-2 bg-green-500/20 rounded-lg group-hover:bg-green-500/30 transition-colors">
+                            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-semibold">Refresh Stats</div>
+                            <div class="text-slate-400 text-sm">Update system metrics</div>
+                        </div>
+                    </button>
+                    <button onclick="exportData()" class="w-full bg-slate-800/50 border border-slate-700/50 hover:border-purple-500/50 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 text-left flex items-center gap-4 group hover:translate-x-2">
+                        <div class="p-2 bg-purple-500/20 rounded-lg group-hover:bg-purple-500/30 transition-colors">
+                            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-semibold">Export Data</div>
+                            <div class="text-slate-400 text-sm">Download system report</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create animated particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 4 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Activity Feed
+        const activities = [
+            { type: 'success', icon: '✓', text: 'System health check passed', time: 'Just now' },
+            { type: 'info', icon: 'ℹ', text: 'Memory optimization completed', time: '2m ago' },
+            { type: 'warning', icon: '⚠', text: 'CPU usage spike detected', time: '5m ago' },
+            { type: 'success', icon: '✓', text: 'Database backup completed', time: '10m ago' }
+        ];
+
+        function updateActivityFeed() {
+            const feed = document.getElementById('activity-feed');
+            const colors = {
+                success: 'from-green-500/20 border-green-500',
+                info: 'from-blue-500/20 border-blue-500',
+                warning: 'from-yellow-500/20 border-yellow-500'
+            };
+            
+            feed.innerHTML = activities.map(activity => `
+                <div class="activity-item bg-gradient-to-r ${colors[activity.type]} to-transparent border-l-4 p-4 rounded-xl">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">${activity.icon}</span>
+                        <div class="flex-1">
+                            <p class="text-white font-medium">${activity.text}</p>
+                            <p class="text-slate-400 text-xs mt-1">${activity.time}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Terminal Logs
+        const logs = [
+            '[INFO] System initialized successfully',
+            '[SUCCESS] Connected to database',
+            '[INFO] Loading bot modules...',
+            '[SUCCESS] All modules loaded',
+            '[INFO] Monitoring system performance'
+        ];
+
+        function updateTerminal() {
+            const terminal = document.getElementById('terminal');
+            terminal.innerHTML = logs.map((log, i) => {
+                const color = log.includes('SUCCESS') ? 'text-green-400' : 
+                             log.includes('ERROR') ? 'text-red-400' : 
+                             log.includes('WARNING') ? 'text-yellow-400' : 'text-cyan-400';
+                return `<div class="log-line ${color} mb-2" style="animation-delay: ${i * 0.1}s">${log}</div>`;
+            }).join('');
+        }
+
+        async function restartBot() {
+            if (confirm('Are you sure you want to restart the bot?')) {
+                addLog('[WARNING] Bot restart initiated by user');
+                try {
+                    const response = await fetch('/api/restart', { method: 'POST' });
+                    const data = await response.json();
+                    alert(data.message || 'Bot is restarting...');
+                    addLog('[INFO] ' + (data.message || 'Bot is restarting...'));
+                } catch (error) {
+                    alert('Error restarting bot: ' + error.message);
+                    addLog('[ERROR] Restart failed: ' + error.message);
+                }
+            }
+        }
+
+        async function refreshStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+                
+                document.getElementById('cpu').textContent = data.cpu + '%';
+                document.getElementById('cpu-bar').style.width = data.cpu + '%';
+                
+                document.getElementById('memory').textContent = data.memoryUsed + ' MB';
+                document.getElementById('memory-bar').style.width = (data.memoryUsed / data.memoryTotal * 100) + '%';
+                
+                document.getElementById('uptime').textContent = data.uptime;
+                document.getElementById('platform').textContent = data.platform;
+                document.getElementById('nodeVersion').textContent = data.nodeVersion;
+                document.getElementById('totalMemory').textContent = data.memoryTotal + ' MB';
+                document.getElementById('arch').textContent = data.arch;
+                document.getElementById('freeMem').textContent = data.freeMem + ' MB';
+                document.getElementById('cpuCores').textContent = data.cpuCores;
+                
+                addLog('[SUCCESS] Stats refreshed successfully');
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+                addLog('[ERROR] Failed to refresh stats');
+            }
+        }
+
+        function addLog(message) {
+            logs.push(message);
+            if (logs.length > 10) logs.shift();
+            updateTerminal();
+        }
+
+        function exportData() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                cpu: document.getElementById('cpu').textContent,
+                memory: document.getElementById('memory').textContent,
+                uptime: document.getElementById('uptime').textContent,
+                platform: document.getElementById('platform').textContent,
+                nodeVersion: document.getElementById('nodeVersion').textContent
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `goatbot-report-${Date.now()}.json`;
+            a.click();
+            
+            addLog('[SUCCESS] System report exported');
+        }
+        
+        updateActivityFeed();
+        updateTerminal();
+        refreshStats();
+        setInterval(refreshStats, 5000);
+        
+        // Simulate new activities
+        setInterval(() => {
+            const newActivity = {
+                type: ['success', 'info', 'warning'][Math.floor(Math.random() * 3)],
+                icon: ['✓', 'ℹ', '⚠'][Math.floor(Math.random() * 3)],
+                text: ['Performance optimized', 'Cache cleared', 'Resource check completed'][Math.floor(Math.random() * 3)],
+                time: 'Just now'
+            };
+            activities.unshift(newActivity);
+            if (activities.length > 4) activities.pop();
+            updateActivityFeed();
+        }, 30000);
+    </script>
+</body>
+</html>

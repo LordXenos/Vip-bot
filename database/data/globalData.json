@@ -1,0 +1,18 @@
+[
+  {
+    "key": "setalias",
+    "data": [],
+    "createdAt": "2026-01-30T13:03:23Z",
+    "updatedAt": "2026-01-30T13:03:23Z"
+  },
+  {
+    "key": "analytics",
+    "data": {
+      "prefix": 1,
+      "like": 6,
+      "unsend": 1
+    },
+    "createdAt": "2026-01-30T13:05:01Z",
+    "updatedAt": "2026-01-30T13:21:08Z"
+  }
+]

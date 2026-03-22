@@ -1,0 +1,90 @@
+module.exports = {
+  config: {
+    name: "font",
+    aliases: ['botfont', 'stylish'],
+    version: "3.0",
+    author: "Kew nah",
+    countDown: 3,
+    role: 2,
+    description: "Toggle bot's stylish font",
+    category: "owner",
+    guide: {
+      en: "{pn} - Toggle font\n"
+         + "{pn} on - Enable stylish font\n"
+         + "{pn} off - Disable stylish font\n"
+         + "{pn} status - Check current status"
+    }
+  },
+
+  onStart: async function ({ args, message }) {
+    if (!global.botFontSystem) {
+      return message.reply(
+        "❌ Font system not initialized!\n\n" +
+        "Please make sure handlerEvents.js is updated with font system."
+      );
+    }
+
+    const option = args[0]?.toLowerCase();
+    const { toggle, getStatus } = global.botFontSystem;
+
+    if (!option) {
+      const newStatus = toggle();
+      return message.reply(
+        `🎨 Font System ${newStatus ? 'Enabled' : 'Disabled'}!\n\n` +
+        `Status: ${newStatus ? '✅ ON - Stylish font' : '❌ OFF - Normal font'}\n\n` +
+        `All bot messages will now be in ${newStatus ? 'stylish' : 'normal'} font.`
+      );
+    }
+
+    if (option === 'on' || option === 'enable') {
+      if (getStatus()) {
+        return message.reply("Font system is already enabled!");
+      }
+      toggle();
+      return message.reply(
+        "✅ Font System Enabled!\n\n" +
+        "All bot messages will now be in stylish font.\n" +
+        "Example: Hello → Hᴇʟʟᴏ"
+      );
+    }
+
+    else if (option === 'off' || option === 'disable') {
+      if (!getStatus()) {
+        return message.reply("ℹ️ Font system is already disabled!");
+      }
+      toggle();
+      return message.reply(
+        "✅ Font System Disabled!\n\n" +
+        "All bot messages will now be in normal font.\n" +
+        "Example: Hᴇʟʟᴏ → Hello"
+      );
+    }
+
+    else if (option === 'status' || option === 'check') {
+      const status = getStatus();
+      return message.reply(
+        `📊 Font System Status\n\n` +
+        `Current: ${status ? '✅ Enabled (Stylish)' : '❌ Disabled (Normal)'}\n\n` +
+        `${status ? 
+          'Bot messages are in stylish font.\nExample: Hello → Hᴇʟʟᴏ' : 
+          'Bot messages are in normal font.\nExample: Hᴇʟʟᴏ → Hello'
+        }\n\n` +
+        `Commands:\n` +
+        `• font on - Enable stylish\n` +
+        `• font off - Disable stylish\n` +
+        `• font - Toggle on/off`
+      );
+    }
+
+    else {
+      return message.reply(
+        "❌ Invalid option!\n\n" +
+        "Available commands:\n" +
+        "• font - Toggle on/off\n" +
+        "• font on - Enable stylish font\n" +
+        "• font off - Disable stylish font\n" +
+        "• font status - Check status"
+      );
+    }
+  }
+};

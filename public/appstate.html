@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appstate Management - GoatBot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e1b4b 100%);
+            background-attachment: fixed;
+        }
+
+        .glass-morphism {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid transparent;
+        }
+
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        textarea {
+            background: rgba(15, 23, 42, 0.5);
+            border: 2px solid rgba(148, 163, 184, 0.2);
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(15, 23, 42, 0.7);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
+        }
+
+        textarea::placeholder {
+            color: rgba(148, 163, 184, 0.4);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .success-message {
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes warningPulse {
+            0%, 100% { 
+                border-color: rgba(251, 191, 36, 0.5);
+                box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+            }
+            50% { 
+                border-color: rgba(251, 191, 36, 0.8);
+                box-shadow: 0 0 40px rgba(251, 191, 36, 0.4);
+            }
+        }
+
+        .warning-box {
+            animation: warningPulse 2s ease-in-out infinite;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(71, 85, 105, 0.5), rgba(51, 65, 85, 0.5));
+            border: 2px solid rgba(148, 163, 184, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, rgba(71, 85, 105, 0.7), rgba(51, 65, 85, 0.7));
+            border-color: rgba(148, 163, 184, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .tool-btn {
+            transition: all 0.3s ease;
+        }
+
+        .tool-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateX(8px);
+        }
+
+        .instruction-item {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .instruction-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #3b82f6, #8b5cf6);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .instruction-item:hover::before {
+            opacity: 1;
+        }
+
+        .instruction-item:hover {
+            background: rgba(59, 130, 246, 0.05);
+            transform: translateX(8px);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .icon-container {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <div class="glass-morphism rounded-3xl p-6 md:p-10 mb-8 gradient-border">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="icon-container p-4 rounded-2xl float-animation">
+                        <svg class="w-12 h-12 md:w-16 md:h-16 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+                            Appstate Management
+                        </h1>
+                        <p class="text-slate-400 text-sm md:text-lg">Update your Facebook account session</p>
+                    </div>
+                </div>
+                <a href="/" class="bg-slate-800/50 hover:bg-slate-700/50 border-2 border-slate-700/50 hover:border-slate-600/50 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 text-center flex items-center justify-center gap-3 group">
+                    <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span>Back to Dashboard</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Success/Error Message -->
+        <div id="message" class="hidden mb-8"></div>
+
+        <!-- Appstate Form -->
+        <div class="glass-morphism rounded-3xl p-6 md:p-10 mb-8 gradient-border">
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-3 bg-blue-500/20 rounded-xl">
+                        <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white">Submit Appstate</h2>
+                </div>
+                <p class="text-slate-400 mb-6 text-base md:text-lg">Paste your Facebook appstate JSON below. This will update your bot's session credentials securely.</p>
+                
+                <div class="warning-box bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border-2 border-yellow-500/50 rounded-2xl p-6 mb-6">
+                    <div class="flex items-start gap-4">
+                        <div class="p-2 bg-yellow-500/20 rounded-lg flex-shrink-0">
+                            <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-yellow-300 font-semibold text-lg mb-2">Security Warning</h4>
+                            <p class="text-yellow-200/90 text-sm leading-relaxed">Never share your appstate with anyone. It contains your session credentials and can grant full access to your Facebook account.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="appstateForm" class="space-y-6">
+                <div>
+                    <label for="appstate" class="block text-white font-semibold mb-4 text-lg flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                        </svg>
+                        Appstate JSON
+                    </label>
+                    <textarea 
+                        id="appstate" 
+                        name="appstate" 
+                        rows="14" 
+                        class="w-full rounded-2xl p-6 resize-none text-sm md:text-base"
+                        placeholder='[{"key":"...", "value":"...", "domain":"...", "path":"...", "hostOnly":...}, ...]'
+                        required
+                    ></textarea>
+                    <p class="text-slate-500 text-sm mt-3 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Paste the complete appstate array from your account.txt or cookie file
+                    </p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button 
+                        type="submit" 
+                        class="btn-primary flex-1 text-white font-bold py-5 px-8 rounded-xl relative overflow-hidden flex items-center justify-center gap-3 text-lg group"
+                    >
+                        <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                        </svg>
+                        <span>Save Appstate</span>
+                    </button>
+                    <button 
+                        type="button" 
+                        onclick="clearForm()" 
+                        class="btn-secondary text-white font-semibold py-5 px-8 rounded-xl relative overflow-hidden flex items-center justify-center gap-3 text-lg group"
+                    >
+                        <svg class="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Helper Buttons -->
+            <div class="mt-10 pt-10 border-t border-slate-700/50">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="p-3 bg-purple-500/20 rounded-xl">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white">Quick Tools</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="validateJSON()" class="tool-btn bg-slate-800/50 border border-slate-700/50 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 text-left flex items-center gap-4 group">
+                        <div class="p-2 bg-green-500/20 rounded-lg group-hover:bg-green-500/30 transition-colors">
+                            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-semibold">Validate JSON</div>
+                            <div class="text-slate-400 text-sm">Check syntax errors</div>
+                        </div>
+                    </button>
+                    <button onclick="formatJSON()" class="tool-btn bg-slate-800/50 border border-slate-700/50 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 text-left flex items-center gap-4 group">
+                        <div class="p-2 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition-colors">
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="font-semibold">Format JSON</div>
+                            <div class="text-slate-400 text-sm">Prettify your code</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="glass-morphism rounded-3xl p-6 md:p-10 gradient-border">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="p-3 bg-blue-500/20 rounded-xl">
+                    <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
+                <h3 class="text-2xl md:text-3xl font-bold text-white">How to Get Appstate</h3>
+            </div>
+            <div class="space-y-3">
+                <div class="instruction-item p-5 bg-slate-800/30 rounded-xl">
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
+                        <div>
+                            <h4 class="text-white font-semibold mb-1">Install Browser Extension</h4>
+                            <p class="text-slate-400 text-sm">Get a cookie management extension like "EditThisCookie" or "Cookie-Editor" from your browser's extension store</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="instruction-item p-5 bg-slate-800/30 rounded-xl">
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
+                        <div>
+                            <h4 class="text-white font-semibold mb-1">Login to Facebook</h4>
+                            <p class="text-slate-400 text-sm">Open Facebook in your browser and login with your account credentials</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="instruction-item p-5 bg-slate-800/30 rounded-xl">
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
+                        <div>
+                            <h4 class="text-white font-semibold mb-1">Export Cookies</h4>
+                            <p class="text-slate-400 text-sm">Click the extension icon and export all cookies in JSON format</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="instruction-item p-5 bg-slate-800/30 rounded-xl">
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">4</div>
+                        <div>
+                            <h4 class="text-white font-semibold mb-1">Copy JSON Array</h4>
+                            <p class="text-slate-400 text-sm">Copy the entire JSON array and paste it into the textarea above</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="instruction-item p-5 bg-slate-800/30 rounded-xl">
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">5</div>
+                        <div>
+                            <h4 class="text-white font-semibold mb-1">Save & Restart</h4>
+                            <p class="text-slate-400 text-sm">Click "Save Appstate" button to update your bot. The system will restart automatically</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('appstateForm');
+        const messageDiv = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const appstate = document.getElementById('appstate').value.trim();
+            
+            if (!appstate) {
+                showMessage('Please enter appstate', 'error');
+                return;
+            }
+
+            try {
+                JSON.parse(appstate);
+            } catch (error) {
+                showMessage('Invalid JSON format. Please check your appstate.', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/appstate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ appstate })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage('Appstate saved successfully! Bot will restart automatically.', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 3000);
+                } else {
+                    showMessage('Error: ' + (data.error || 'Failed to save appstate'), 'error');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            }
+        });
+
+        function showMessage(text, type) {
+            const icon = type === 'success' 
+                ? '<svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+                : '<svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+            
+            messageDiv.className = `success-message glass-morphism rounded-2xl p-6 mb-8 flex items-center gap-4 ${
+                type === 'success' 
+                    ? 'bg-green-500/20 border-2 border-green-500/50' 
+                    : 'bg-red-500/20 border-2 border-red-500/50'
+            }`;
+            messageDiv.innerHTML = `
+                <div class="p-2 ${type === 'success' ? 'bg-green-500/20' : 'bg-red-500/20'} rounded-lg">
+                    ${icon}
+                </div>
+                <span class="text-${type === 'success' ? 'green' : 'red'}-100 font-medium text-lg">${text}</span>
+            `;
+            messageDiv.classList.remove('hidden');
+        }
+
+        function clearForm() {
+            document.getElementById('appstate').value = '';
+            messageDiv.classList.add('hidden');
+        }
+
+        function validateJSON() {
+            const appstate = document.getElementById('appstate').value.trim();
+            if (!appstate) {
+                showMessage('Please enter appstate first', 'error');
+                return;
+            }
+            try {
+                JSON.parse(appstate);
+                showMessage('Valid JSON format!', 'success');
+            } catch (error) {
+                showMessage('Invalid JSON: ' + error.message, 'error');
+            }
+        }
+
+        function formatJSON() {
+            const appstate = document.getElementById('appstate').value.trim();
+            if (!appstate) {
+                showMessage('Please enter appstate first', 'error');
+                return;
+            }
+            try {
+                const formatted = JSON.stringify(JSON.parse(appstate), null, 2);
+                document.getElementById('appstate').value = formatted;
+                showMessage('JSON formatted successfully!', 'success');
+            } catch (error) {
+                showMessage('Invalid JSON: ' + error.message, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
