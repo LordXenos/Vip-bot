@@ -1,70 +1,63 @@
+const axios = require("axios");
+
 module.exports = {
   config: {
     name: "top",
-    aliases: ["dhoni", "borolokx", "borolok", "jomidar"],
-    version: "1.1",
-    prefix: false,
-    author: "Rasin",
-    shortDescription: "🥇 Boroloks Leaderboard",
-    longDescription: "Top users based on money ranking",
-    category: "Economy",
+    version: "1.7",
+    author: "MahMUD",
+    role: 0,
+    category: "economy",
     guide: {
-      en: "{p}top [count]"
+      en: "{pn} bal | {pn} exp"
     }
   },
 
-  onStart: async function ({ api, event, usersData, args }) {
+  onStart: async function ({ api, args, message, usersData }) {
+     const obfuscatedAuthor = String.fromCharCode(77, 97, 104, 77, 85, 68); 
+     if (module.exports.config.author !== obfuscatedAuthor) {
+     return api.sendMessage("You are not authorized to change the author name.", event.threadID, event.messageID);
+     }
     try {
+      const type = args[0]?.toLowerCase() || "bal";
       const allUsers = await usersData.getAll();
 
-      const topCount = args[0] ? Math.min(parseInt(args[0]), 20) : 10;
+      if (!allUsers || allUsers.length === 0) return;
 
-      const topUsers = allUsers
-        .filter(user => user.money !== undefined)
-        .sort((a, b) => b.money - a.money)
-        .slice(0, topCount);
+      if (type === "exp") {
+        const topExp = allUsers
+          .filter(u => (u.exp || 0) > 0)
+          .sort((a, b) => b.exp - a.exp)
+          .slice(0, 10);
 
-      if (topUsers.length === 0) {
-        return api.sendMessage("🚫 No borolok found in the server yet!", event.threadID);
+        const topList = topExp.map((user, index) => {
+          return `${index + 1}. ${user.name || "Unknown"}: ${formatShortNumber(user.exp)} EXP`;
+        });
+
+        return message.reply(`👑 Top 10 EXP Users:\n\n${topList.join("\n")}`);
       }
 
-      let leaderboardMsg = `💸 𝗧𝗢𝗣 ${topCount} 𝗥𝗜𝗖𝗛𝗘𝗦𝗧 𝗠𝗢𝗡𝗘𝗬 𝗛𝗢𝗟𝗗𝗘𝗥𝗦 💸\n━━━━━━━━━━━━━━━━━━\n`;
+      const topMoney = allUsers
+        .filter(u => (u.money || 0) > 0)
+        .sort((a, b) => b.money - a.money)
+        .slice(0, 10);
 
-      topUsers.forEach((user, index) => {
-        const rank = index + 1;
-        const name = user.name || "❔ Unknown";
-        const money = formatMoney(user.money || 0);
-
-        leaderboardMsg += `\n${rank} | ${name}\n𝗧𝗼𝘁𝗮𝗹 𝗪𝗲𝗮𝗹𝘁𝗵: ${money}`;
+      const topList = topMoney.map((user, index) => {
+        return `${index + 1}. ${user.name || "Unknown"}: $${formatShortNumber(user.money)}`;
       });
 
-      leaderboardMsg += `\n━━━━━━━━━━━━━━━━━━\nUse {p}top 5 / {p}top 20 to view different count`;
-
-      api.sendMessage(leaderboardMsg, event.threadID);
-
-    } catch (error) {
-      console.error("❌ Leaderboard Error:", error);
-      api.sendMessage("⚠️ Unable to fetch leaderboard. Try again later.", event.threadID);
-    }
+      return message.reply(`👑 Top 10 Richest Users:\n\n${topList.join("\n")}`);
+    } catch (e) {}
   }
 };
 
-function getRankEmoji(rank) {
-  const emojis = ["👑", "🥈", "🥉",];
-  if (rank === 1) return emojis[0];
-  if (rank === 2) return emojis[1];
-  if (rank === 3) return emojis[2];
-  if (rank <= 5) return emojis[3];
-  if (rank <= 10) return emojis[4];
-  if (rank <= 15) return emojis[5];
-  return emojis[6];
-}
-
-function formatMoney(amount) {
-  if (amount >= 1e15) return (amount / 1e15).toFixed(2) + " QT";
-  if (amount >= 1e12) return (amount / 1e12).toFixed(2) + " T";
-  if (amount >= 1e9) return (amount / 1e9).toFixed(2) + " B";
-  if (amount >= 1e6) return (amount / 1e6).toFixed(2) + " M";
-  if (amount >= 1e3) return (amount / 1e3).toFixed(2) + " K";
-  return amount.toString();
+function formatShortNumber(num) {
+  if (!num) return "0";
+  const units = ["", "K", "M", "B", "T"];
+  let unit = 0;
+  let value = typeof num !== "number" ? parseInt(num) || 0 : num;
+  while (value >= 1000 && unit < units.length - 1) {
+    value /= 1000;
+    unit++;
+  }
+  return Number(value.toFixed(1)).toString().replace(/\.0$/, "") + units[unit];
 }

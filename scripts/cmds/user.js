@@ -3,12 +3,12 @@ const { getTime } = global.utils;
 module.exports = {
 	config: {
 		name: "user",
-		version: "2.0",
-		prefix: false,
-		author: "NtKhang X Rasin",
+		version: "1.4",
+		author: "NTKhang",
 		countDown: 5,
 		role: 2,
 		description: {
+			vi: "Quản lý người dùng trong hệ thống bot",
 			en: "Manage users in bot system"
 		},
 		category: "owner",
@@ -17,16 +17,12 @@ module.exports = {
 				+ "\n"
 				+ "\n   {pn} [ban | -b] [<uid> | @tag | reply tin nhắn] <reason>: để cấm người dùng mang id <uid> hoặc người được tag hoặc người gửi của tin nhắn được reply sử dụng bot"
 				+ "\n"
-				+ "\n   {pn} unban [<uid> | @tag | reply tin nhắn]: để bỏ cấm người dùng sử dụng bot"
-				+ "\n"
-				+ "\n   {pn} [list | -l]: xem danh sách người dùng bị cấm",
+				+ "\n   {pn} unban [<uid> | @tag | reply tin nhắn]: để bỏ cấm người dùng sử dụng bot",
 			en: "   {pn} [find | -f | search | -s] <name to find>: search for users in bot data by name"
 				+ "\n"
 				+ "\n   {pn} [ban | -b] [<uid> | @tag | reply message] <reason>: to ban user with id <uid> or tagged user or sender of message replied using bot"
 				+ "\n"
 				+ "\n   {pn} unban [<uid> | @tag | reply message]: to unban user using bot"
-				+ "\n"
-				+ "\n   {pn} [list | -l]: view list of banned users"
 		}
 	},
 
@@ -40,9 +36,7 @@ module.exports = {
 			userBanned: "Đã cấm người dùng mang id [%1 | %2] sử dụng bot.\n» Lý do: %3\n» Thời gian: %4",
 			uidRequiredUnban: "Uid của người cần unban không được để trống",
 			userNotBanned: "Hiện tại người dùng mang id [%1 | %2] không bị cấm sử dụng bot",
-			userUnbanned: "Đã bỏ cấm người dùng mang id [%1 | %2], hiện tại người này có thể sử dụng bot",
-			noBannedUser: "❌ Hiện tại không có người dùng nào bị cấm",
-			bannedUserList: "📋 𝗕𝗮𝗻𝗻𝗲𝗱 𝗨𝘀𝗲𝗿 𝗟𝗶𝘀𝘁\n━━━━━━━━━━━━━━━\nTổng số: %1 người dùng\n\n%2"
+			userUnbanned: "Đã bỏ cấm người dùng mang id [%1 | %2], hiện tại người này có thể sử dụng bot"
 		},
 		en: {
 			noUserFound: "❌ No user found with name matching keyword: \"%1\" in bot data",
@@ -53,9 +47,7 @@ module.exports = {
 			userBanned: "User with id [%1 | %2] has been banned:\n» Reason: %3\n» Date: %4",
 			uidRequiredUnban: "Uid of user to unban cannot be empty",
 			userNotBanned: "User with id [%1 | %2] is not banned",
-			userUnbanned: "User with id [%1 | %2] has been unbanned",
-			noBannedUser: "❌ Currently no banned users",
-			bannedUserList: "📋 𝗕𝗮𝗻𝗻𝗲𝗱 𝗨𝘀𝗲𝗿 𝗟𝗶𝘀𝘁\n━━━━━━━━━━━━━━━\nTotal: %1 users\n\n%2"
+			userUnbanned: "User with id [%1 | %2] has been unbanned"
 		}
 	},
 
@@ -143,25 +135,6 @@ module.exports = {
 					banned: {}
 				});
 				message.reply(getLang("userUnbanned", uid, name));
-				break;
-			}
-			// list banned users
-			case "list":
-			case "-l": {
-				const allUser = await usersData.getAll();
-				const bannedUsers = allUser.filter(user => user.banned && user.banned.status === true);
-				
-				if (bannedUsers.length === 0)
-					return message.reply(getLang("noBannedUser"));
-
-				const msg = bannedUsers.map((user, index) => 
-					`${index + 1}. ${user.name || "Unknown"}\n` +
-					`   ├ ID: ${user.userID}\n` +
-					`   ├ Reason: ${user.banned.reason || "No reason"}\n` +
-					`   └ Date: ${user.banned.date || "Unknown"}`
-				).join("\n\n");
-
-				message.reply(getLang("bannedUserList", bannedUsers.length, msg));
 				break;
 			}
 			default:

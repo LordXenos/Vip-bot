@@ -1,130 +1,119 @@
 const axios = require("axios");
-module.exports = {
-  config: {
-    name: "spy",
-    aliases: ["whoishe", "whoami"],
-    version: "2.0",
-    prefix: false,
-    role: 0,
-    author: "Rasin",
-    Description: "Get user information",
-    category: "information",
-    countDown: 3,
-  },
-  onStart: async function ({
-    event,
-    message,
-    usersData,
-    api,
-    args,
-  }) {
-    const uid1 = event.senderID;
-    let uid;
 
-    const findUserByName = async (query) => {
-      try {
-        const cleanQuery = query.replace(/@/g, "").trim().toLowerCase();
-        const threadInfo = await api.getThreadInfo(event.threadID);
-        const ids = threadInfo.participantIDs || [];
-        const matches = [];
-
-        for (const id of ids) {
-          try {
-            const name = (await usersData.getName(id)).toLowerCase();
-            if (name.includes(cleanQuery)) {
-              matches.push({ uid: id, name });
-            }
-          } catch {}
-        }
-
-        return matches;
-      } catch {
-        return [];
-      }
-    };
-
-    if (event.type === "message_reply") {
-      uid = event.messageReply.senderID;
-    }
-
-    else if (args[0]) {
-      if (/^\d+$/.test(args[0])) {
-        uid = args[0];
-      }
-      else if (args[0].match(/profile\.php\?id=(\d+)/)) {
-        const match = args[0].match(/profile\.php\?id=(\d+)/);
-        uid = match[1];
-      }
-      else {
-        const query = args.join(" ");
-        const matches = await findUserByName(query);
-
-        if (matches.length === 0) {
-          return message.reply(`😵 𝐔ꜱer 𝐍ot 𝐅ound ✨\n𝐍o uꜱer ꜰound with name: ${query.replace(/@/g, "")}`);
-        }
-
-        if (matches.length > 1) {
-          const matchList = matches.map((m, i) => `${i + 1}. ${m.name}`).join('\n');
-          return message.reply(`😅 𝐌ultiple 𝐔ꜱerꜱ 𝐅ound ✨\n𝐏leaꜱe be more ꜱpeciꜰic:\n${matchList}`);
-        }
-
-        uid = matches[0].uid;
-      }
-    }
-    else {
-      uid = uid1;
-    }
-
-    const userInfo = await api.getUserInfo(uid);
-    const avatarUrl = `https://arshi-facebook-pp.vercel.app/api/pp?uid=${uid}`;
-    
-    let genderText;
-    switch (userInfo[uid].gender) {
-      case 1:
-        genderText = "𝐆irl🙋🏻‍♀️";
-        break;
-      case 2:
-        genderText = "𝐁oy🙋🏻‍♂️";
-        break;
-      default:
-        genderText = "𝐆ay🤷🏻‍♂️";
-    }
-
-    const money = (await usersData.get(uid)).money;
-    const allUser = await usersData.getAll();
-    const rank = allUser.slice().sort((a, b) => b.exp - a.exp).findIndex(user => user.userID === uid) + 1;
-    const moneyRank = allUser.slice().sort((a, b) => b.money - a.money).findIndex(user => user.userID === uid) + 1;
-    const position = userInfo[uid].type;
-
-    const userInformation = `
-╭────[ 𝐔ꜱer 𝐈nꜰo ]
-├‣ 𝐍ame: ${userInfo[uid].name}
-├‣ 𝐆ender: ${genderText}
-├‣ 𝐔id: ${uid}
-├‣ 𝐂laꜱꜱ: ${position ? position?.toUpperCase() : "𝐍ormal 𝐔ꜱer🥺"}
-├‣ 𝐔ꜱername: ${userInfo[uid].vanity ? userInfo[uid].vanity : "𝐍one"}
-├‣ 𝐏roꜰile 𝐔rl: ${userInfo[uid].profileUrl}
-├‣ 𝐁irthday: ${userInfo[uid].isBirthday !== false ? userInfo[uid].isBirthday : "𝐏rivate"}
-├‣ 𝐍ickname: ${userInfo[uid].alternateName || "𝐍one"}
-╰‣ 𝐅riend 𝐖ith 𝐁ot: ${userInfo[uid].isFriend ? "𝐘eꜱ✅" : "𝐍o❎"}
-`;
-
-    try {
-      const avatarStream = await global.utils.getStreamFromURL(avatarUrl);
-      message.reply({
-        body: userInformation,
-        attachment: avatarStream,
-      });
-    } catch (error) {
-      console.error("Error fetching avatar:", error.message);
-      message.reply(userInformation);
-    }
-  },
+const baseApiUrl = async () => {
+        const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/HINATA/main/baseApiUrl.json");
+        return base.data.mahmud;
 };
 
-function formatMoney(num) {
-  const units = ["", "K", "M", "B", "T", "Q", "Qi", "Sx", "Sp", "Oc", "N", "D"];
-  let unit = 0;
-  while (num >= 1000 && ++unit < units.length) num /= 1000;
-  return num.toFixed(1).replace(/\.0$/, "") + units[unit];
+module.exports = {
+        config: {
+                name: "spy",
+                aliases: ["spyinfo", "whoami"],
+                version: "1.7",
+                author: "MahMUD",
+                countDown: 10,
+                role: 0,
+                description: {
+                        bn: "যেকোনো ইউজারের প্রোফাইল এবং স্ট্যাটাস চেক করুন",
+                        en: "Check profile and stats of any user",
+                        vi: "Kiểm tra hồ sơ và trạng thái của bất kỳ người dùng nào"
+                },
+                category: "info",
+                guide: {
+                        bn: '   {pn}: নিজের তথ্য দেখুন\n   {pn} <@tag/reply/UID>: ইউজারের তথ্য দেখুন',
+                        en: '   {pn}: See your info\n   {pn} <@tag/reply/UID>: Check user info',
+                        vi: '   {pn}: Xem thông tin của bạn\n   {pn} <@tag/reply/UID>: Xem thông tin người dùng'
+                }
+        },
+
+        langs: {
+                bn: {
+                        error: "× তথ্য সংগ্রহ করতে সমস্যা হয়েছে: %1। প্রয়োজনে Contact MahMUD।"
+                },
+                en: {
+                        error: "× Failed to fetch info: %1. Contact MahMUD for help."
+                },
+                vi: {
+                        error: "× Lỗi lấy thông tin: %1. Liên hệ MahMUD để hỗ trợ."
+                }
+        },
+
+        onStart: async function ({ event, message, api, args, usersData, getLang }) {
+                const authorName = String.fromCharCode(77, 97, 104, 77, 85, 68);
+                if (this.config.author !== authorName) {
+                        return api.sendMessage("You are not authorized to change the author name.", event.threadID, event.messageID);
+                }
+
+                const { senderID, mentions, type, messageReply } = event;
+                let uid = type === "message_reply" ? messageReply.senderID : Object.keys(mentions)[0] || senderID;
+
+                if (args[0] && !args[0].startsWith("--")) {
+                        if (/^\d+$/.test(args[0])) uid = args[0];
+                        else {
+                                const match = args[0].match(/profile\.php\?id=(\d+)/);
+                                if (match) uid = match[1];
+                        }
+                }
+
+                try {
+                        const allUsers = await usersData.getAll();
+                        const userData = await usersData.get(uid) || {};
+                        const userInfo = await api.getUserInfo(uid);
+                        const user = userInfo[uid] || {};
+
+                        const money = userData.money || 0;
+                        const exp = userData.exp || 0;
+
+                        const expRank = allUsers.sort((a, b) => (b.exp || 0) - (a.exp || 0)).findIndex(u => u.userID == uid) + 1;
+                        const moneyRank = allUsers.sort((a, b) => (b.money || 0) - (a.money || 0)).findIndex(u => u.userID == uid) + 1;
+
+                        const baseUrl = await baseApiUrl();
+                        let janTeach = "0", janTeachRank = "N/A";
+                        
+                        try {
+                                const res = await axios.get(`${baseUrl}/api/jan/list/all`);
+                                const entries = Object.entries(res.data?.data || {})
+                                        .map(([id, val]) => ({ userID: id, value: parseInt(val) || 0 }))
+                                        .sort((a, b) => b.value - a.value);
+
+                                const userTeachData = entries.find(d => d.userID === uid);
+                                if (userTeachData) {
+                                        janTeach = userTeachData.value;
+                                        janTeachRank = entries.findIndex(d => d.userID === uid) + 1;
+                                }
+                        } catch (e) {}
+
+                        const genderText = user.gender === 1 ? "Girl" : user.gender === 2 ? "Boy" : "Other";
+                        
+                        const msg = `╭────[ 𝐔𝐒𝐄𝐑 𝐈𝐍𝐅𝐎 ]
+├‣ 𝙽𝚊𝚖𝚎: ${user.name || "Unknown"}
+├‣ 𝙶𝚎𝚗𝚍𝚎𝚛: ${genderText}
+├‣ 𝚄𝙸𝙳: ${uid}
+├‣ 𝙲𝚕𝚊𝚜𝚜: FRIEND
+├‣ 𝚄𝚜𝚎𝚛𝚗𝚊𝚖𝚎: ${user.vanity || "none"}
+├‣ 𝙱𝚒𝚛𝚝𝚑𝚍𝚊𝚢: Private
+├‣ 𝙽𝚒𝚌𝚔𝙽𝚊𝚖𝚎: None
+╰‣ 𝙵𝚛𝚒𝚎𝚗𝚍 𝚠𝚒𝚝𝚑 𝚋𝚘𝚝: ${user.isFriend ? "Yes ✅" : "No ❌"}
+
+╭────[ 𝐔𝐒𝐄𝐑 𝐒𝐓𝐀𝐓𝐒 ]
+├‣ 𝚄𝚜𝚎𝚛 𝚁𝚊𝚗𝚔: #${expRank}/${allUsers.length}
+├‣ 𝙴𝚇𝙿: ${formatNumber(exp)}
+├‣ 𝙱𝚊𝚕𝚊𝚗𝚌𝚎: ${formatNumber(money)}
+├‣ 𝙱𝚊𝚕𝚊𝚗𝚌𝚎 𝚁𝚊𝚗𝚔: #${moneyRank}
+╰‣ 𝙷𝚒𝚗𝚊𝚝𝚊 𝚃𝚎𝚊𝚌𝚑: ${janTeach} #${janTeachRank}`;
+
+                        return message.reply(msg);
+                } catch (err) {
+                        return message.reply(getLang("error", err.message));
+                }
+        }
+};
+
+function formatNumber(num) {
+        if (!num) return "0";
+        let n = typeof num !== "number" ? parseInt(num) || 0 : num;
+        const units = ["", "K", "M", "B", "T"];
+        let unit = 0;
+        while (n >= 1000 && ++unit < units.length) n /= 1000;
+        return n.toFixed(1).replace(/\.0$/, "") + units[unit];
 }

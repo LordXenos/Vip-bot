@@ -1,66 +1,48 @@
 const axios = require("axios");
 
+const mahmud = async () => {
+  const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/HINATA/main/baseApiUrl.json");
+  return base.data.mahmud;
+};
+
 module.exports = {
   config: {
     name: "quote",
-    aliases: ["quotes", "inspire"],
-    author: "Rasin",
+    aliases: ["quotes", "q"],
+    version: "1.7",
+    author: "MahMUD",
     countDown: 5,
     role: 0,
     category: "fun",
     shortDescription: {
-      en: "Get random inspirational quotes",
+      en: "Get a random Mahmud quote"
+    },
+    longDescription: {
+      en: "Fetches a deep or inspiring quote from Mahmud's global API"
     },
     guide: {
-      en: "{pn}\nGet a random inspirational quote!",
-    },
+      en: "{pn}"
+    }
   },
 
-  onStart: async function ({ api, event, message }) {
-    try {
-      const msg = await api.sendMessage(
-        `⭐ Searching a random quote...`,
-        event.threadID
-      );
-
-      const apiUrl = "https://api.quotable.io/random";
-      const response = await axios.get(apiUrl);
-      const data = response.data;
-
-      if (!data.content) {
-        message.unsend(msg.messageID);
-        return api.sendMessage(
-          `✘ Failed to fetch quote!`,
-          event.threadID,
-          event.messageID
-        );
-      }
-
-      let result = `⭐ INSPIRATIONAL QUOTE ⭐\n\n`;
-      result += `━━━━━━━━━━━━━━━━━━━━━━\n\n`;
-      result += `"${data.content}"\n\n`;
-      result += `━━━━━━━━━━━━━━━━━━━━━━\n`;
-      result += `❍ Author: ${data.author}\n`;
-      
-      if (data.tags && data.tags.length > 0) {
-        result += `❍ Tags: ${data.tags.join(", ")}\n`;
-      }
-
-      message.unsend(msg.messageID);
-
-      await api.sendMessage(
-        result,
-        event.threadID,
-        event.messageID
-      );
-
-    } catch (e) {
-      console.error(e);
+  onStart: async function ({ message, api, event }) {
+    const obfuscatedAuthor = String.fromCharCode(77, 97, 104, 77, 85, 68); 
+    if (module.exports.config.author !== obfuscatedAuthor) {
       return api.sendMessage(
-        "✘ Failed to fetch quote! Please try again later.",
+        "You are not authorized to change the author name.\n",
         event.threadID,
         event.messageID
       );
     }
-  },
+
+    try {
+      const apiUrl = `${await mahmud()}/api/quote`;
+      const res = await axios.get(apiUrl);
+      const { quote, message: msg } = res.data;
+
+      message.reply(`${msg}\n\n ${quote}`);
+    } catch (err) {
+      message.reply("🥹error, contact MahMUD.");
+    }
+  }
 };

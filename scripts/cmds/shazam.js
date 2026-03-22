@@ -1,175 +1,168 @@
 const axios = require('axios');
 const fs = require('fs');
-const path = require('path');
+const { Shazam } = require('node-shazam');
+const qs = require('qs');
+const yts = require('yt-search');
 
 module.exports = {
-    config: {
-        name: 'shazam',
-        aliases: ['recognize', 'whatsong'],
-        version: '2.0',
-        author: 'Rasin',
-        prefix: true,
-        description: 'Identify songs from audio/video',
-        usages: '!shazam <reply to audio/video>',
-        countDown: 10,
-        role: 0,
-        category: 'shazam'
-    },
+  config: {
+    name: 'shazam',
+    aliases: ["song"],
+    description: 'Identify a song from audio/video or by search text',
+    usage: 'Reply to an audio/video or type /shazam <song name>',
+    category: 'media',
+    cooldown: 0,
+    ownerOnly: false
+  },
 
-    onStart: async function ({ message, event, args, api }) {
-        try {
-            if (!event.messageReply || !event.messageReply.attachments || event.messageReply.attachments.length === 0) {
-                return message.reply('Please reply to an audio or video');
-            }
+  // Main command
+  onStart: async function({ event, api, args }) {
+    try {
+      // ---------- If user replied to media ----------
+      if (event.type === 'message_reply' && event.messageReply?.attachments?.length > 0) {
+        const type = event.messageReply.attachments[0].type;
+        let path;
 
-            const attachment = event.messageReply.attachments[0];
+        if (type === 'audio') path = __dirname + '/cache/song.mp3';
+        else if (type === 'video') path = __dirname + '/cache/song.mp4';
+        else return api.sendMessage('This is not an audio or video file.', event.threadID);
 
-            if (attachment.type !== 'audio' && attachment.type !== 'video') {
-                return message.reply('Please reply to an audio or video only');
-            }
+        // Download media
+        const mediaUrl = event.messageReply.attachments[0].url;
+        const buffer = Buffer.from((await axios.get(mediaUrl, { responseType: 'arraybuffer' })).data);
+        fs.writeFileSync(path, buffer);
 
-            const mediaUrl = attachment.url;
+        // Recognize song
+        const shazam = new Shazam();
+        const result = await shazam.recognise(path, 'en-US');
 
-            message.reply('Identifying song... Please wait...');
+        if (!result?.track) return api.sendMessage('❌ Could not recognize the song.', event.threadID);
 
-            try {
-                const auddResponse = await axios.post('https://api.audd.io/', 
-                    `url=${encodeURIComponent(mediaUrl)}&return=apple_music,spotify`,
-                    {
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        timeout: 60000
-                    }
-                );
+        const songInfo = {
+          title: result.track.title,
+          artist: result.track.subtitle,
+          cover: result.track.images.coverart
+        };
 
-                if (auddResponse.data && auddResponse.data.status === 'success' && auddResponse.data.result) {
-                    const track = auddResponse.data.result;
-                    
-                    let songInfo = `🎵 Details\n\n`;
-                    songInfo += `Title: ${track.title}\n`;
-                    songInfo += `Artist: ${track.artist}\n`;
-                    
-                    if (track.album) {
-                        songInfo += `Album: ${track.album}\n`;
-                    }
-                    
-                    if (track.release_date) {
-                        songInfo += `Released: ${track.release_date}\n`;
-                    }
-                    
-                    if (track.spotify) {
-                        songInfo += `\n🎧 Spotify: ${track.spotify.external_urls?.spotify || 'N/A'}`;
-                    }
-                    
-                    if (track.apple_music) {
-                        songInfo += `\n🍎 Apple Music: ${track.apple_music.url || 'N/A'}`;
-                    }
+        // Send song info & cover
+        const sentMsg = await api.sendMessage({
+          body: `🎵 Song: ${songInfo.title}\n👤 Artist: ${songInfo.artist}\nReply with "send" to get the audio.`,
+          attachment: (await axios.get(songInfo.cover, { responseType: 'stream' })).data
+        }, event.threadID);
 
-                    return message.reply(songInfo);
-                }
-            } catch (auddError) {
-                console.error('AudD API error:', auddError);
-            }
+        // Register reply listener
+        if (!global.GoatBot.onReply) global.GoatBot.onReply = new Map();
+        global.GoatBot.onReply.set(sentMsg.messageID, {
+          messageID: sentMsg.messageID,
+          commandName: 'shazam',
+          songName: songInfo.title,
+          author: event.senderID
+        });
 
-            try {
-                const acrResponse = await axios.post('https://api-v2.soundhound.com/audio/search', {
-                    url: mediaUrl
-                }, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    timeout: 60000
-                });
+        return;
+      }
 
-                if (acrResponse.data && acrResponse.data.tracks && acrResponse.data.tracks.length > 0) {
-                    const track = acrResponse.data.tracks[0];
-                    
-                    let songInfo = `🎵 Details \n\n`;
-                    songInfo += `Title: ${track.title}\n`;
-                    songInfo += `Artist: ${track.artist}\n`;
-                    
-                    if (track.album) {
-                        songInfo += `Album: ${track.album}\n`;
-                    }
+      // ---------- If user typed a search ----------
+      if (args.length > 0) {
+        const query = args.join(' ');
+        const search = await yts(query);
+        const video = search.videos[0];
+        if (!video) return api.sendMessage('❌ Could not find the song on YouTube.', event.threadID);
 
-                    return message.reply(songInfo);
-                }
-            } catch (acrError) {
-                console.error('ACRCloud API error:', acrError);
-            }
+        // Download MP3 via ssvid.net
+        const mp3Data = await getMp3(video.url);
+        if (!mp3Data?.dlink) return api.sendMessage('❌ Failed to get the MP3 link. Try again.', event.threadID);
 
-            try {
-                const shazamResponse = await axios.get(
-                    `https://shazam-api6.p.rapidapi.com/shazam/recognize?url=${encodeURIComponent(mediaUrl)}`,
-                    {
-                        headers: {
-                            'X-RapidAPI-Host': 'shazam-api6.p.rapidapi.com'
-                        },
-                        timeout: 60000
-                    }
-                );
+        const filePath = __dirname + `/cache/${Date.now()}.mp3`;
+        const response = await axios.get(mp3Data.dlink, { responseType: 'arraybuffer' });
+        fs.writeFileSync(filePath, Buffer.from(response.data));
 
-                if (shazamResponse.data && shazamResponse.data.track) {
-                    const track = shazamResponse.data.track;
-                    
-                    let songInfo = `🎵 Details \n\n`;
-                    songInfo += `Title: ${track.title}\n`;
-                    songInfo += `Artist: ${track.subtitle}\n`;
+        // Send audio
+        const stream = fs.createReadStream(filePath);
+        await api.sendMessage({ body: video.title, attachment: stream }, event.threadID);
 
-                    return message.reply(songInfo);
-                }
-            } catch (shazamError) {
-                console.error('Shazam API error:', shazamError);
-            }
+        // Clean up
+        fs.unlinkSync(filePath);
+        return;
+      }
 
-            try {
-                const audioResponse = await axios.get(mediaUrl, { 
-                    responseType: 'arraybuffer',
-                    timeout: 30000
-                });
+      // If neither reply nor search
+      return api.sendMessage('Reply to an audio/video or type /shazam <song name>', event.threadID);
 
-                const FormData = require('form-data');
-                const form = new FormData();
-                form.append('file', Buffer.from(audioResponse.data), 'audio.mp3');
-
-                const uploadResponse = await axios.post('https://api.audd.io/', form, {
-                    headers: {
-                        ...form.getHeaders()
-                    },
-                    timeout: 60000
-                });
-
-                if (uploadResponse.data && uploadResponse.data.status === 'success' && uploadResponse.data.result) {
-                    const track = uploadResponse.data.result;
-                    
-                    let songInfo = `🎵 Details \n\n`;
-                    songInfo += `Title: ${track.title}\n`;
-                    songInfo += `Artist: ${track.artist}\n`;
-                    
-                    if (track.album) {
-                        songInfo += `Album: ${track.album}\n`;
-                    }
-
-                    return message.reply(songInfo);
-                }
-            } catch (uploadError) {
-                console.error('Upload recognition error:', uploadError);
-            }
-
-            return message.reply(
-                '❌ Could not identify the song.\n\n' +
-                'Possible reasons:\n' +
-                '• Audio quality is too low\n' +
-                '• Song is not in the database\n' +
-                '• Background noise is too loud\n' +
-                '• Audio is too short\n\n' +
-                'Try uploading a clearer audio clip (at least 10 seconds).'
-            );
-
-        } catch (error) {
-            console.error('error:', error);
-            return message.reply('❌ Failed to identify song. Please try again later.');
-        }
+    } catch (err) {
+      console.error(err);
+      return api.sendMessage('❌ Error while downloading the song. Please try again.', event.threadID);
     }
+  },
+
+  // Reply handler for media
+  onReply: async function({ event, api, Reply }) {
+    const { songName, author } = Reply;
+    if (event.senderID !== author) return;
+    if (event.body.toLowerCase() !== 'send') return;
+
+    try {
+      const search = await yts(songName);
+      const video = search.videos[0];
+      if (!video) return api.sendMessage('❌ Could not find the song on YouTube.', event.threadID);
+
+      const mp3Data = await getMp3(video.url);
+      if (!mp3Data?.dlink) return api.sendMessage('❌ Failed to get the MP3 link. Try again.', event.threadID);
+
+      const filePath = __dirname + `/cache/${Date.now()}.mp3`;
+      const response = await axios.get(mp3Data.dlink, { responseType: 'arraybuffer' });
+      fs.writeFileSync(filePath, Buffer.from(response.data));
+
+      const stream = fs.createReadStream(filePath);
+      await api.sendMessage({ body: video.title, attachment: stream }, event.threadID);
+
+      fs.unlinkSync(filePath);
+
+    } catch (err) {
+      console.error(err);
+      api.sendMessage('❌ Error while downloading the song. Please try again.', event.threadID);
+    }
+  }
 };
+
+// ------------------- Original ssvid.net helper functions -------------------
+async function getInfo(url) {
+  const data = qs.stringify({ query: url, cf_token: '', vt: 'youtube' });
+  const config = {
+    method: 'POST',
+    url: 'https://ssvid.net/api/ajax/search',
+    headers: {
+      'User-Agent': 'Mozilla/5.0',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'x-requested-with': 'XMLHttpRequest',
+      'origin': 'https://ssvid.net',
+      'referer': 'https://ssvid.net/youtube-to-mp4'
+    },
+    data
+  };
+  return (await axios.request(config)).data;
+}
+
+async function download(vidCode, KCode) {
+  const data = qs.stringify({ vid: vidCode, k: KCode });
+  const config = {
+    method: 'POST',
+    url: 'https://ssvid.net/api/ajax/convert',
+    headers: {
+      'User-Agent': 'Mozilla/5.0',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'x-requested-with': 'XMLHttpRequest',
+      'origin': 'https://ssvid.net',
+      'referer': 'https://ssvid.net/youtube-to-mp4'
+    },
+    data
+  };
+  return (await axios.request(config)).data;
+}
+
+async function getMp3(link) {
+  const info = await getInfo(link);
+  const firstMp3 = Object.values(info.links.mp3)[0];
+  const data = await download(info.vid, firstMp3.k);
+  return data;
+          }

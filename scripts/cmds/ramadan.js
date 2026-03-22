@@ -1,169 +1,106 @@
-const axios = require('axios');
+const axios = require("axios");
+const fs = require("fs-extra");
+const path = require("path");
 
-module.exports = {
-  config: {
-    name: 'ramadan',
-    author: 'Rasin',
-    cooldown: 5,
-    role: 0,
-    prefix: false,
-    description: 'Get Ramadan prayer times (Suhoor & Iftar) by city or coordinates',
-    category: 'islamic',
-    usage: 'ramadan <city> or ramadan <lat,lng>'
-  },
-
-  onStart: async function({ event, args, message, api }) {
-    try {
-      if (args.length < 1) {
-        return message.reply(`🕌 Please provide a city name`);
-      }
-
-     
-      const waiting = await message.reply(`🕋 𝐒ᴇᴀʀᴄʜɪɴɢ 𝐑ᴀᴍᴀᴅᴀɴ 𝐓ɪᴍᴇꜱ...\n`);
-
-      let latitude, longitude, locationLabel;
-      const input = args.join(' ');
-
-
-      const coordMatch = input.match(/^(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)$/);
-
-      if (coordMatch) {
-        // Input is coordinates
-        latitude = parseFloat(coordMatch[1]);
-        longitude = parseFloat(coordMatch[2]);
-        locationLabel = `${latitude}, ${longitude}`;
-
-        if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
-          message.unsend(waiting.messageID);
-          return message.reply(
-            `❌ 𝐈ɴᴠᴀʟɪᴅ 𝐂ᴏᴏʀᴅɪɴᴀᴛᴇꜱ!\n\n` +
-            `━━━━━━━━━━━━━━━━━━━\n\n` +
-            `➤ Latitude: -90 to 90\n` +
-            `➤ Longitude: -180 to 180\n\n` +
-            `━━━━━━━━━━━━━━━━━━━`
-          );
-        }
-      } else {
-    
-        const parts = input.split(',').map(p => p.trim());
-        const city = parts[0];
-        const country = parts[1] || 'Bangladesh'; // default country
-
-        locationLabel = `${city}, ${country}`;
-
-        // Use AlAdhan's timingsByCity endpoint directly (no geocoding needed)
-        const cityUrl = `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=2`;
-
-        try {
-          const cityResponse = await axios.get(cityUrl, { timeout: 15000 });
-          const cityData = cityResponse.data;
-
-          if (cityData.code !== 200) {
-            message.unsend(waiting.messageID);
-            return message.reply(
-              `❌ 𝐂ɪᴛʏ 𝐍ᴏᴛ 𝐅ᴏᴜɴᴅ!\n\n` +
-              `━━━━━━━━━━━━━━━━━━━\n\n` +
-              `➤ 𝐓ʀʏ: ramadan <City>, <Country>\n` +
-              `   e.g: ramadan Dhaka, Bangladesh\n\n` +
-              `➤ 𝐎ʀ 𝐔ꜱᴇ 𝐂ᴏᴏʀᴅɪɴᴀᴛᴇꜱ:\n` +
-              `   e.g: ramadan 23.8103,90.4125\n\n` +
-              `━━━━━━━━━━━━━━━━━━━`
-            );
-          }
-
-          // We already have the timing data from city endpoint, use it directly
-          message.unsend(waiting.messageID);
-          return sendRamadanReply(message, cityData.data, locationLabel);
-
-        } catch (err) {
-          message.unsend(waiting.messageID);
-          return message.reply(
-            `❌ 𝐅ᴀɪʟᴇᴅ 𝐓ᴏ 𝐅ᴇᴛᴄʜ 𝐓ɪᴍᴇꜱ\n\n` +
-            `━━━━━━━━━━━━━━━━━━━\n\n` +
-            `𝐏ʟᴇᴀꜱᴇ 𝐓ʀʏ 𝐀ɢᴀɪɴ ᴏʀ 𝐔ꜱᴇ 𝐂ᴏᴏʀᴅɪɴᴀᴛᴇꜱ\n\n` +
-            `━━━━━━━━━━━━━━━━━━━`
-          );
-        }
-      }
-
-      // ─── Fetch by Coordinates ───
-      const apiUrl = `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=2`;
-      const response = await axios.get(apiUrl, { timeout: 15000 });
-      const data = response.data;
-
-      if (data.code !== 200) {
-        message.unsend(waiting.messageID);
-        return message.reply(
-          `❌ 𝐅ᴀɪʟᴇᴅ 𝐓ᴏ 𝐅ᴇᴛᴄʜ 𝐓ɪᴍᴇꜱ\n\n` +
-          `━━━━━━━━━━━━━━━━━━━\n\n` +
-          `𝐏ʟᴇᴀꜱᴇ 𝐂ʜᴇᴄᴋ 𝐘ᴏᴜʀ 𝐂ᴏᴏʀᴅɪɴᴀᴛᴇꜱ\n\n` +
-          `━━━━━━━━━━━━━━━━━━━`
-        );
-      }
-
-      message.unsend(waiting.messageID);
-      return sendRamadanReply(message, data.data, locationLabel);
-
-    } catch (err) {
-      console.error("Ramadan command error:", err);
-
-      if (err.code === 'ECONNABORTED' || err.message.includes('timeout')) {
-        return message.reply(
-          `𝐑ᴇϙᴜᴇꜱᴛ 𝐓ɪᴍᴇᴅ 𝐎ᴜᴛ\n\n` +
-          `𝐓ʜᴇ 𝐀ᴘɪ 𝐈ꜱ 𝐓ᴀᴋɪɴɢ 𝐓ᴏᴏ 𝐋ᴏɴɢ. 𝐏ʟᴇᴀꜱᴇ 𝐓ʀʏ 𝐀ɢᴀɪɴ.\n` +
-          `━━━━━━━━━━━━━━━━━━━`
-        );
-      }
-
-      if (err.response) {
-        return message.reply(
-          `𝐀ᴘɪ 𝐄ʀʀᴏʀ\n\n` +
-          `𝐒ᴛᴀᴛᴜꜱ: ${err.response.status}\n` +
-          `𝐌ᴇꜱꜱᴀɢᴇ: ${err.response.data?.error || 'Unknown error'}\n` +
-          `━━━━━━━━━━━━━━━━━━━`
-        );
-      }
-
-      return message.reply(
-        `𝐀ɴ 𝐔ɴᴇxᴘᴇᴄᴛᴇᴅ 𝐄ʀʀᴏʀ 𝐎ᴄᴄᴜʀʀᴇᴅ\n\n` +
-        `𝐏ʟᴇᴀꜱᴇ 𝐓ʀʏ 𝐀ɢᴀɪɴ 𝐋ᴀᴛᴇʀ.\n` +
-        `━━━━━━━━━━━━━━━━━━━`
-      );
-    }
-  }
+const baseApiUrl = async () => {
+        const res = await axios.get("https://raw.githubusercontent.com/mahmudx7/HINATA/main/baseApiUrl.json");
+        return res.data.mahmud;
 };
 
-function sendRamadanReply(message, data, locationLabel) {
-  const timings = data.timings;
-  const gregorian = data.date.gregorian;
-  const hijri = data.date.hijri;
+module.exports = {
+        config: {
+                name: "ramadan",
+                aliases: ["ifter", "iftar", "sehri", "রমজান"],
+                version: "1.7",
+                author: "MahMUD",
+                countDown: 5,
+                role: 0,
+                description: {
+                        bn: "রমজানের সেহরি ও ইফতারের সময়সূচী এবং কার্ড তৈরি করুন",
+                        en: "Ramadan Sehri & Iftar schedule with image card",
+                        vi: "Lịch Sehri & Iftar tháng Ramadan với thẻ hình ảnh"
+                },
+                category: "Islamic",
+                guide: {
+                        bn: '   {pn} <শহর> <স্টাইল>: (যেমন: {pn} dhaka 2)',
+                        en: '   {pn} <city> <style>: (Ex: {pn} dhaka 2)',
+                        vi: '   {pn} <thành phố> <phong cách>: (VD: {pn} dhaka 2)'
+                }
+        },
 
-  const formattedDate = `${gregorian.day} ${gregorian.month.en} ${gregorian.year}`;
-  const hijriDate = `${hijri.day} ${hijri.month.en} ${hijri.year}`;
+        langs: {
+                bn: {
+                        success: "🌙 %1 রমজানুল মোবারক 🌙\n• শহর: %2\n• হিজরি: %3\n\n✨ আজকের সময়সূচী:\n• সেহরি: %4\n• ইফতার: %5\n\n⏳ সময় বাকি:\n• সেহরি: %6\n• ইফতার: %7\n\n📆 আগামীকাল (%8):\n• সেহরি: %9\n• ইফতার: %10\n\n⏰ বর্তমান সময়: %11",
+                        error: "× সমস্যা হয়েছে: %1। প্রয়োজনে Contact MahMUD।"
+                },
+                en: {
+                        success: "🌙 %1 RAMADAN KAREEM 🌙\n• City: %2\n• Hijri: %3\n\n✨ Today's Schedule:\n• Sehri: %4\n• Iftar: %5\n\n⏳ Time Remaining:\n• To Sehri: %6\n• To Iftar: %7\n\n📆 Tomorrow (%8):\n• Sehri: %9\n• Iftar: %10\n\n⏰ Current Time: %11",
+                        error: "× API error: %1. Contact MahMUD for help."
+                },
+                vi: {
+                        success: "🌙 %1 RAMADAN KAREEM 🌙\n• Thành phố: %2\n• Hijri: %3\n\n✨ Lịch trình hôm nay:\n• Sehri: %4\n• Iftar: %5\n\n⏳ Thời gian còn lại:\n• Đến Sehri: %6\n• Đến Iftar: %7\n\n📆 Ngày mai (%8):\n• Sehri: %9\n• Iftar: %10\n\n⏰ Giờ hiện tại: %11",
+                        error: "× Lỗi: %1. Liên hệ MahMUD để hỗ trợ."
+                }
+        },
 
-  let replyText = `🕋 𝐑ᴀᴍᴀᴅᴀɴ 𝐏ʀᴀʏᴇʀ 𝐓ɪᴍᴇꜱ\n\n`;
-  replyText += `━━━━━━━━━━━━━━━━━━━\n\n`;
-  replyText += `📍 𝐋ᴏᴄᴀᴛɪᴏɴ: ${locationLabel}\n`;
-  replyText += `📅 ${formattedDate}\n`;
-  replyText += `🕌 ${hijriDate}\n\n`;
+        onStart: async function ({ api, event, args, message, getLang }) {
+                const authorName = String.fromCharCode(77, 97, 104, 77, 85, 68);
+                if (this.config.author !== authorName) {
+                        return api.sendMessage("You are not authorized to change the author name.", event.threadID, event.messageID);
+                }
 
-  replyText += `━━━━━ 🌙 𝐑ᴀᴍᴀᴅᴀɴ 𝐓ɪᴍᴇꜱ ━━━━━\n\n`;
+                const { threadID, messageID, senderID } = event;
+                let city = args[0] || "Dhaka";
+                let style = "1";
 
-  // Suhoor (last time to eat before dawn)
-  replyText += `🌙 𝐒ᴜʜᴏᴏʀ (𝐋ᴀꜱᴛ 𝐄ᴀᴛ): ${timings.Fajr}\n`;
-  replyText += `🌅 𝐅ᴀʲʀ (𝐃ᴀᴡɴ):       ${timings.Fajr}\n`;
-  replyText += `🌄 𝐒ᴜɴʀɪꜱᴇ:           ${timings.Sunrise}\n`;
-  replyText += `☀️ 𝐃ʜᴜʜʀ (𝐍ᴏᴏɴ):     ${timings.Dhuhr}\n`;
-  replyText += `🕌 𝐀ꜱʀ:               ${timings.Asr}\n`;
-  replyText += `🌆 𝐌ᴀɢʜʀɪᴙ (𝐈ꜰᴛᴀʀ): ${timings.Maghrib}\n`;
-  replyText += `🌙 𝐈ꜱʜᴀ:             ${timings.Isha}\n\n`;
+                if (args.includes("--style")) {
+                        const styleIndex = args.indexOf("--style");
+                        style = args[styleIndex + 1] || "1";
+                        city = args.slice(0, styleIndex).join(" ") || "Dhaka";
+                } else if (args[1]) {
+                        style = args[1];
+                }
 
-  replyText += `━━━━━━━━━━━━━━━━━━━\n`;
-  replyText += `📌 𝐍ᴏᴛᴇ: 𝐒ᴜʜᴏᴏʀ ᴇɴᴅꜱ ᴀᴛ 𝐅ᴀʲʀ ᴛɪᴍᴇ\n`;
-  replyText += `📌 𝐈ꜰᴛᴀʀ ᴛɪᴍᴇ ᴀᴛ 𝐌ᴀɢʜʀɪᴙ\n\n`;
-  replyText += `━━━━━━━━━━━━━━━━━━━\n`;
-  replyText += `𝐏ᴏᴡᴇʀᴇᴅ 𝐁ʏ 𝐀ʟ𝐀ᴅʜᴀɴ 𝐀ᴘɪ\n`;
-  replyText += `━━━━━━━━━━━━━━━━━━━`;
+                const cacheDir = path.join(__dirname, "cache");
+                const cachePath = path.join(cacheDir, `ramadan_${senderID}_${Date.now()}.png`);
 
-  return message.reply(replyText);
-}
+                try {
+                        api.setMessageReaction("⏳", messageID, () => {}, true);
+                        
+                        const baseUrl = await baseApiUrl();
+                        const res = await axios.get(`${baseUrl}/api/ramadan`, { params: { city, style } });
+                        const data = res.data;
+
+                        if (typeof data === "string") {
+                                throw new Error(data);
+                        }
+
+                        const bodyMsg = getLang("success", 
+                                data.today.ramadan, data.city, data.today.hijri,
+                                data.today.sehri, data.today.iftar,
+                                data.sahriRemain, data.iftarRemain,
+                                data.tomorrow.date, data.tomorrow.sehri, data.tomorrow.iftar,
+                                data.currentTime
+                        );
+
+                        await fs.ensureDir(cacheDir);
+                        const imageBuffer = Buffer.from(data.image, "base64");
+                        await fs.writeFile(cachePath, imageBuffer);
+
+                        return message.reply({
+                                body: bodyMsg,
+                                attachment: fs.createReadStream(cachePath)
+                        }, () => {
+                                api.setMessageReaction("🪽", messageID, () => {}, true);
+                                if (fs.existsSync(cachePath)) fs.unlinkSync(cachePath);
+                        });
+
+                } catch (err) {
+                        console.error("Ramadan Error:", err);
+                        api.setMessageReaction("❌", messageID, () => {}, true);
+                        if (fs.existsSync(cachePath)) fs.unlinkSync(cachePath);
+                        const errorDetail = err.response?.data?.error || err.message;
+                        return message.reply(getLang("error", errorDetail));
+                }
+        }
+};

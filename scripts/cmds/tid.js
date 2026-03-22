@@ -2,7 +2,6 @@ module.exports = {
 	config: {
 		name: "tid",
 		version: "1.2",
-		prefix: false,
 		author: "NTKhang",
 		countDown: 5,
 		role: 0,

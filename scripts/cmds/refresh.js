@@ -4,7 +4,6 @@ module.exports = {
 		version: "1.2",
 		author: "NTKhang",
 		countDown: 60,
-		prefix: false,
 		role: 0,
 		description: {
 			vi: "làm mới thông tin nhóm chat hoặc người dùng",

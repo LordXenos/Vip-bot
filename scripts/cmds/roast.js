@@ -1,85 +1,95 @@
+const axios = require("axios");
+
+// লোকাল ব্যাকআপ রোস্ট (যখন API fail করবে)
+const localRoasts = [
+  "@{name}, তোর সেলফি দেখে পারদ -১০ ডিগ্রিতে নেমে গেছে 🥶",
+  "@{name}, তোর ফেস দেখে কান্না জমে বরফ হয়ে গেছে ❄️",
+  "@{name}, তোর এই লুক দেখে নাইট কিং বলল, 'মাই ব্রাদার' 🥶",
+  "@{name}, তোর ডার্কনেস দেখে শ্যাডো পালিয়েছে 🖤",
+  "@{name}, সিগমা রুল ১: তোর ছবি কখনও জুম করো না 👑"
+];
+
+const localTips = [
+  "stay cold 🥶",
+  "sigma never cry 🗿",
+  "darkness is home 🖤",
+  "ice in veins ❄️",
+  "lonely but powerful 👑",
+  "grind in silence 💪"
+];
+
+// AI রোস্ট জেনারেট
+async function getAIRoast(name) {
+  try {
+    // ফ্রি ইনসাল্ট API (কোন API key লাগে না)
+    const response = await axios.get("https://evilinsult.com/generate_insult.php?lang=en&type=json");
+    const insult = response.data.insult;
+
+    // র‍্যান্ডম টিপ
+    const tip = localTips[Math.floor(Math.random() * localTips.length)];
+
+    return `@${name} ${insult}, ${tip}`;
+  } catch (error) {
+    // API fail করলে লোকাল ইউজ কর
+    const randomRoast = localRoasts[Math.floor(Math.random() * localRoasts.length)];
+    const randomTip = localTips[Math.floor(Math.random() * localTips.length)];
+    return `${randomRoast.replace("@{name}", name)}, ${randomTip}`;
+  }
+}
+
 module.exports = {
   config: {
     name: "roast",
-    author: "Rasin",
-    countDown: 10,
+    version: "5.0",
+    author: "Vydron1122",
+    countDown: 5,
     role: 0,
+    description: {
+      en: "🔥 AI Generated roasts (infinite new captions)"
+    },
     category: "fun",
-    shortDescription: {
-      en: "Absolutely roasted",
-    },
     guide: {
-      en: "{pn} or reply to someone's message",
-    },
-  },
-
-  onStart: async function ({ args, api, event }) {
-    try {
-      let id, name;
-      
-      if (event.messageReply) {
-        id = event.messageReply.senderID;
-      } else {
-        id = event.senderID;
-      }
-
-      const info = await api.getUserInfo(id);
-      name = info[id]?.name || "Unknown User";
-
-      const roasts = [
-        `${name}, your IQ test came back negative 💀`,
-        `${name} is the human version of a participation trophy 🏆`,
-        `If ${name}'s brain was dynamite, there wouldn't be enough to blow their nose 🧨`,
-        `${name} brings everyone so much joy... when they leave the room 🚪`,
-        `${name}'s so dense, light bends around them 🌑`,
-        `${name} is proof that evolution can go in reverse 🦍`,
-        `I'd agree with ${name}, but then we'd both be wrong 🤷`,
-        `${name}'s the reason the gene pool needs a lifeguard 🏊`,
-        `${name} has delusions of adequacy`,
-        `If ${name} was any slower, they'd be going backwards ⏪`,
-        `${name}'s elevator doesn't go to the top floor 🏢`,
-        `Somewhere out there is a tree tirelessly producing oxygen for ${name}. They owe it an apology 🌳`,
-        `${name}'s the type to study for a COVID test and still fail 🦠`,
-        `${name} couldn't pour water out of a boot with instructions on the heel 👢`,
-        `${name} is why aliens won't visit us 👽`,
-        `${name}'s so fake, even China denied making them 🏭`,
-        `${name} has a face made for radio and a voice made for silent films 📻`,
-        `${name}'s personality is like a white crayon - useless 🖍️`,
-        `${name} is what happens when you order a person from Wish 📦`,
-        `${name}'s the type to get locked in a grocery store and starve to death 🛒`,
-        `I've seen more life in a retirement home than in ${name}'s DMs 💬`,
-        `${name}'s so boring, their own reflection falls asleep 😴`,
-        `${name} is the human equivalent of a software update nobody asked for 💾`,
-        `If ${name} was a spice, they'd be flour 🍞`,
-        `${name}'s the reason shampoo has instructions 🧴`,
-        `${name}'s WiFi signal is stronger than their personality 📶`,
-        `${name} makes Internet Explorer look fast 🐌`,
-        `${name}'s the human equivalent of a 'Skip Ad' button ⏭️`,
-        `${name} is why Noah left two of everything... except them 🚢`,
-        `${name}'s such a clown, even the circus rejected their application 🎪`,
-      ];
-
-      const randomRoast = roasts[Math.floor(Math.random() * roasts.length)];
-
-      const msg = await api.sendMessage(
-        `👽`,
-        event.threadID
-      );
-
-      await new Promise(r => setTimeout(r, 2500));
-
-      await api.editMessage(
-        `💀 ROASTED 💀\n\n${randomRoast}\n\n😈 Destruction Level: 100%\n\n⚠️ Disclaimer: This is just for fun!`,
-        msg.messageID
-      );
-
-    } catch (e) {
-      console.error(e);
-      return api.sendMessage(
-        "❌ Error roasting! Even the bot couldn't handle it 😂",
-        event.threadID,
-        event.messageID
-      );
+      en: "{pn} [@mention] (reply to a message)"
     }
   },
+
+  onStart: async function ({ message, event, args, api }) {
+    let targetID;
+    let targetName;
+
+    try {
+      // টার্গেট আইডি সেট
+      if (event.messageReply) {
+        targetID = event.messageReply.senderID;
+      }
+      else if (Object.keys(event.mentions).length > 0) {
+        targetID = Object.keys(event.mentions)[0];
+      }
+      else if (args[0] && args[0].length > 10 && !isNaN(args[0])) {
+        targetID = args[0];
+      } else {
+        targetID = event.senderID;
+      }
+
+      // ইউজারের নাম
+      try {
+        const userInfo = await api.getUserInfo(targetID);
+        targetName = userInfo[targetID]?.name || "Unknown";
+      } catch (e) {
+        targetName = "Unknown";
+      }
+
+      // ওয়েট মেসেজ
+      const waitMsg = await message.reply("⏳ Generating AI roast... 🔥");
+
+      // AI রোস্ট জেনারেট
+      const roastText = await getAIRoast(targetName);
+
+      return api.editMessage(roastText, waitMsg.messageID, event.threadID);
+
+    } catch (error) {
+      console.error("Roast Error:", error);
+      return message.reply(`❌ Error: ${error.message || 'Something went wrong!'}`);
+    }
+  }
 };
