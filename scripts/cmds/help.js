@@ -1,131 +1,184 @@
-const fs = require("fs");
+const fs = require("fs-extra");
+
+const axios = require("axios");
+
 const path = require("path");
 
-module.exports = {
-  config: {
-    name: "help",
-    aliases: ["menu"],
-    version: "2.1",
-    author: "Rasin",
-    prefix: false,
-    countDown: 5,
-    role: 0,
-    shortDescription: {
-      en: "Displays a list of commands or details for a specific command"
-    },
-    longDescription: {
-      en: "Provides a list of all available commands or detailed information about a specific command"
-    },
-    category: "info",
-    guide: {
-      en: "help [page_number | command_name]"
-    }
-  },
-  onStart: async function ({ api, event, args }) {
-    const { threadID, messageID } = event;
-    const { commands, aliases } = global.GoatBot;
-    const totalCommands = commands.size;
-    
-    if (args.length > 0 && isNaN(args[0])) {
-      const commandName = args[0].toLowerCase();
-      const command = commands.get(commandName) || commands.get(aliases.get(commandName));
-      
-      if (!command) {
-        return api.sendMessage(`❌ Command "${commandName}" not found.`, threadID, messageID);
-      }
-      
-      const config = command.config;
-      const guide = config.guide?.en || "No usage guide available.";
-      const description = config.longDescription?.en || config.shortDescription?.en || config.longDescription || config.shortDescription || config.description || "No description available.";
-      
-      const response =
-        "🌻✨ ⋆˚✿˖°────୨ᰔ୧────°˖✿˚⋆ 🌷🧸\n\n✦ 𝐂𝐨𝐦𝐦𝐚𝐧𝐝 𝐃𝐞𝐭𝐚𝐢𝐥𝐬 ✦\n\n" +
-        `❏ 𝐍𝐚𝐦𝐞: ${config.name}\n` +
-        `❏ 𝐀𝐥𝐢𝐚𝐬𝐞𝐬: ${config.aliases?.join(", ") || "None"}\n` +
-        `❏ 𝐏𝐫𝐞𝐟𝐢𝐱 𝐑𝐞𝐪𝐮𝐢𝐫𝐞𝐝: ${config.prefix}\n` +
-        `❏ 𝐃𝐞𝐬𝐜𝐫𝐢𝐩𝐭𝐢𝐨𝐧: ${description}\n` +
-        `❏ 𝐔𝐬𝐚𝐠𝐞: ${guide}\n` +
-        `❏ 𝐕𝐞𝐫𝐬𝐢𝐨𝐧: ${config.version || "1.0"}\n` +
-        `❏ 𝐀𝐮𝐭𝐡𝐨𝐫: ${config.author || "Unknown"}♡🧸🎀\n` +
-        `❏ 𝐂𝐨𝐨𝐥𝐝𝐨𝐰𝐧: ${config.countDown || 0}s\n` +
-        `❏ 𝐑𝐨𝐥𝐞: ${config.role || 0}\n\n🧸🎀 ⋆˚✿˖°────୨ᰔ୧────°˖✿˚⋆ ✨🌻`
-      
-      return api.sendMessage(response, threadID, messageID);
-    }
-    
-    const categories = {};
-    for (const [name, cmd] of commands) {
-      if (!categories[cmd.config.category]) {
-        categories[cmd.config.category] = [];
-      }
-      categories[cmd.config.category].push(name);
-    }
-    
-    const categoriesArray = Object.entries(categories);
-    const itemsPerPage = 7;
-    const totalPages = Math.ceil(categoriesArray.length / itemsPerPage);
-    
-  
-    let page = args.length > 0 ? parseInt(args[0]) : 1;
-    
-  
-    if (isNaN(page) || page < 1) page = 1;
-    if (page > totalPages) page = totalPages;
-    
-  
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = Math.min(startIndex + itemsPerPage, categoriesArray.length);
-    const pageCategories = categoriesArray.slice(startIndex, endIndex);
-    
+const { getPrefix } = global.utils;
 
-    let responseMessage = `ᥫ᭡ 🧸🎀𝐂𝐨𝐦𝐦𝐚𝐧𝐝 𝐋𝐢𝐬𝐭 🧸🎀 ᥫ᭡\n\n🎀 ˚✿˖°────୨ᰔ୧────°˖✿ 🌻\n\n❍ Pᴀɢᴇ ${page}/${totalPages}\n\n`;
-    
-    for (const [category, cmds] of pageCategories) {
-      responseMessage += `┌─❏ ${smallCaps(category)}\n`;
-      const perLine = 2;
-      for (let i = 0; i < cmds.length; i += perLine) {
-        const row = cmds.slice(i, i + perLine).map(c => `❍ ${c}`).join("   ");
-        responseMessage += `│  ${row}\n`;
+const { commands, aliases } = global.GoatBot;
+
+const doNotDelete = "[ ☣️ | 𝗚𝗼𝗷𝗼]"; // changing this wont change the goatbot V2 of list cmd it is just a decoyy
+
+
+module.exports = {
+
+  config: {
+
+    name: "help",
+
+    version: "1.17",
+
+    author: "NTKhang", // original author Kshitiz 
+
+    countDown: 10,
+
+    role: 0,
+
+    shortDescription: {
+
+      en: "View command usage and list all commands directly",
+
+    },
+
+    longDescription: {
+
+      en: "View command usage and list all commands directly",
+
+    },
+
+    category: "system",
+
+    guide: {
+
+      en: "{pn} / help cmdName ",
+
+    },
+
+    priority: 1,
+
+  },
+
+
+  onStart: async function ({ message, args, event, threadsData, role }) {
+
+    const { threadID } = event;
+
+    const threadData = await threadsData.get(threadID);
+
+    const prefix = getPrefix(threadID);
+
+
+    if (args.length === 0) {
+
+      const categories = {};
+
+      let msg = "";
+
+
+      msg += ``; // replace with your name 
+
+
+      for (const [name, value] of commands) {
+
+        if (value.config.role > 1 && role < value.config.role) continue;
+
+
+        const category = value.config.category || "Uncategorized";
+
+        categories[category] = categories[category] || { commands: [] };
+
+        categories[category].commands.push(name);
+
       }
-      responseMessage += "└──────────────⚬\n";
-    }
-    
-    responseMessage +=
-      "\n╭───────────────⚬\n" +
-      `│ Cᴜʀʀᴇɴᴛʟʏ, Tʜᴇ Bᴏᴛ Hᴀs [${totalCommands}] \n│ Cᴏᴍᴍᴀɴᴅs 😘🎀\n` +
-      `│ Usᴇ Hᴇʟᴘ (Cᴍᴅ) ᴛᴏ Gᴇᴛ Mᴏʀᴇ \n│ Dᴇᴛᴀɪʟs ☕\n` +
-      `│ Usᴇ Hᴇʟᴘ [Pᴀɢᴇ] Tᴏ Sᴇᴇ Oᴛʜᴇʀ \n│ Pᴀɢᴇs 🌷\n` +
-      "╰───────────────⚬\n\n🌻👀 ˚✿˖°────୨ᰔ୧────°˖✿˚ 🧸✨";
-    
-    const imagePath = path.join(__dirname, "...", "..", "rasin", "cutie.jpg");
-    
-    try {
-      if (fs.existsSync(imagePath)) {
-        return api.sendMessage({
-          body: responseMessage,
-          attachment: fs.createReadStream(imagePath)
-        }, threadID, messageID);
+
+
+      Object.keys(categories).forEach((category) => {
+
+        if (category !== "info") {
+
+          msg += `\n╭── 『  ${category.toUpperCase()}  』`;
+
+
+          const names = categories[category].commands.sort();
+
+          for (let i = 0; i < names.length; i += 3) {
+
+            const cmds = names.slice(i, i + 3).map((item) => `♡ ${item}`);
+
+            msg += `\n${cmds.join(" ".repeat(Math.max(1, 10 - cmds.join("").length)))}`;
+
+          }
+
+
+          msg += `\n╰───────────◊`;
+
+        }
+
+      });
+
+
+      const totalCommands = commands.size;
+
+      msg += `\n\n╭──────────◊\n» 𝙏𝙤𝙩𝙖𝙡 𝙘𝙢𝙙𝙨: [ ${totalCommands} ]\n`;
+
+      msg += `» 𝙏𝙮𝙥𝙚 [ ${prefix}help <𝙘𝙢𝙙> ] 𝙩𝙤 𝙡𝙚𝙖𝙧𝙣 𝙪𝙨𝙖𝙜𝙚.\n╰────────◊\n\n`;
+
+      msg += ``; // its not decoy so change it if you want 
+
+
+      await message.reply(msg);
+
+    } else {
+
+      const commandName = args[0].toLowerCase();
+
+      const command = commands.get(commandName) || commands.get(aliases.get(commandName));
+
+
+      if (!command) {
+
+        await message.reply(`Command "${commandName}" not found.`);
+
       } else {
-        console.error("Image not found at:", imagePath);
-        return api.sendMessage(responseMessage, threadID, messageID);
+
+        const configCommand = command.config;
+
+        const roleText = roleTextToString(configCommand.role);
+
+        const author = configCommand.author || "Unknown";
+
+
+        const longDescription = configCommand.longDescription ? configCommand.longDescription.en || "No description" : "No description";
+
+
+        const guideBody = configCommand.guide?.en || "No guide available.";
+
+        const usage = guideBody.replace(/{p}/g, prefix).replace(/{n}/g, configCommand.name);
+
+         const response = `𝗖𝗢𝗠𝗠𝗔𝗡𝗗 𝗜𝗡𝗙𝗢\n\n›› 𝗡𝗮𝗺𝗲: ${configCommand.name}\n››𝗗𝗲𝘀𝗰𝗿𝗶𝗽𝘁𝗶𝗼𝗻: ${longDescription}\n››𝗔𝗹𝗶𝗮𝘀𝗲𝘀: ${configCommand.aliases ? configCommand.aliases.join(", ") : "do not have."}\n››𝗩𝗲𝗿𝘀𝗶𝗼𝗻: ${configCommand.version || "1.0"}\n››𝗥𝗼𝗹𝗲: ${roleText}\n››𝗖𝗼𝘂𝗻𝘁𝗱𝗼𝘄𝗻: ${configCommand.countDown || 1}s\n››𝗔𝘂𝘁𝗵𝗼𝗿: ${author}\n››𝗨𝘀𝗮𝗴𝗲: ${usage}`;
+
+            await message.reply(response);
+
       }
-    } catch (error) {
-      console.error("Error loading image:", error);
-      return api.sendMessage(responseMessage, threadID, messageID);
+
     }
-  }
+
+  },
+
 };
 
-function smallCaps(text) {
-  const map = {
-    a: "a", b: "b", c: "c", d: "d", e: "e", f: "ꜰ", g: "g",
-    h: "h", i: "i", j: "j", k: "k", l: "l", m: "m", n: "n",
-    o: "o", p: "p", q: "q", r: "r", s: "s", t: "t", u: "u",
-    v: "v", w: "w", x: "x", y: "y", z: "z",
-    A: "a", B: "b", C: "c", D: "d", E: "e", F: "ꜰ", G: "g",
-    H: "h", I: "i", J: "j", K: "k", L: "l", M: "m", N: "n",
-    O: "o", P: "p", Q: "q", R: "r", S: "s", T: "t", U: "u",
-    V: "v", W: "w", X: "x", Y: "y", Z: "z"
-  };
-  return text.split("").map(c => map[c] || c).join("");
-}
+
+function roleTextToString(roleText) {
+
+  switch (roleText) {
+
+    case 0:
+
+      return "0 (All users)";
+
+    case 1:
+
+      return "1 (Group administrators)";
+
+    case 2: 
+
+      return "2 (Admin bot)";
+
+    default:
+
+      return "Unknown role";
+
+  }
+
+      }

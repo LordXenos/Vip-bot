@@ -7,39 +7,38 @@ const getBase = async () => {
 
 module.exports = {
         config: {
-                name: "imgur",
-                aliases: ["i"],
+                name: "imgbb",
                 version: "1.7",
                 author: "MahMUD",
                 countDown: 10,
                 role: 0,
                 description: {
-                        bn: "যেকোনো ছবি বা ভিডিওকে Imgur লিঙ্কে রূপান্তর করুন",
-                        en: "Convert any image or video into an Imgur link",
-                        vi: "Chuyển đổi bất kỳ hình ảnh hoặc video nào thành liên kết Imgur"
+                        bn: "যেকোনো মিডিয়া ফাইলকে লিঙ্কে রূপান্তর করুন",
+                        en: "Convert any media file into a URL link",
+                        vi: "Chuyển đổi bất kỳ tệp phương tiện nào thành liên kết URL"
                 },
                 category: "tools",
                 guide: {
-                        bn: '   {pn}: মিডিয়া ফাইলে রিপ্লাই দিয়ে ব্যবহার করুন',
-                        en: '   {pn}: Reply to a media file to get the link',
-                        vi: '   {pn}: Phản hồi tệp phương tiện để lấy liên kết'
+                        bn: '   {pn} [রিপ্লাই মিডিয়া]: ফাইল লিঙ্কে রূপান্তর করতে রিপ্লাই দিন',
+                        en: '   {pn} [reply media]: Reply to a file to get the link',
+                        vi: '   {pn} [phản hồi phương tiện]: Phản hồi một tệp để lấy liên kết'
                 }
         },
 
         langs: {
                 bn: {
-                        noMedia: "🐤 | বেবি, একটি ছবি বা ভিডিওতে রিপ্লাই দাও! 🖼️",
-                        success: "%1",
+                        noMedia: "× বেবি, একটি ছবি বা ভিডিওতে রিপ্লাই দাও! 🐤",
+                        success: "• 𝐔𝐩𝐥𝐨𝐚𝐝𝐞𝐝 𝐒𝐮𝐜𝐜𝐞𝐬𝐬 ✅\n• 𝐔𝐑𝐋: %1",
                         error: "× সমস্যা হয়েছে: %1। প্রয়োজনে Contact MahMUD।"
                 },
                 en: {
-                        noMedia: "🐤 | Baby, please reply to a media file (image/video)! 🖼️",
-                        success: "%1",
+                        noMedia: "× Baby, please reply to a media file (image/video)! 🐤",
+                        success: "• 𝐔𝐩𝐥𝐨𝐚𝐝𝐞𝐝 𝐒𝐮𝐜𝐜𝐞𝐬𝐬 ✅\n• 𝐔𝐑𝐋: %1",
                         error: "× API error: %1. Contact MahMUD for help."
                 },
                 vi: {
-                        noMedia: "🐤 | Cưng ơi, vui lòng phản hồi một tệp phương tiện! 🖼️",
-                        success: "%1",
+                        noMedia: "× Cưng ơi, hãy phản hồi một tệp phương tiện! 🐤",
+                        success: "• 𝐔𝐩𝐥𝐨𝐚𝐝 𝐭𝐡𝐚̀𝐧𝐡 𝐜𝐨̂𝐧𝐠 ✅\n• 𝐋𝐢𝐞̂𝐧 𝐤𝐞̂́𝐭: %1",
                         error: "× Lỗi: %1. Liên hệ MahMUD để hỗ trợ."
                 }
         },
@@ -55,11 +54,11 @@ module.exports = {
                 }
 
                 try {
-                        api.setMessageReaction("⌛", event.messageID, () => {}, true);
+                         api.setMessageReaction("⌛", event.messageID, () => {}, true);
 
                         const attachmentUrl = encodeURIComponent(event.messageReply.attachments[0].url);
                         const baseUrl = await getBase();
-                        const apiUrl = `${baseUrl.replace(/\/$/, "")}/api/imgur?url=${attachmentUrl}`;
+                        const apiUrl = `${baseUrl.replace(/\/$/, "")}/api/imgbb?url=${attachmentUrl}`;
 
                         const response = await axios.get(apiUrl, { timeout: 100000 });
 
@@ -70,11 +69,11 @@ module.exports = {
                                         api.setMessageReaction("✅", event.messageID, () => {}, true);
                                 });
                         } else {
-                                throw new Error("Imgur API response status false.");
+                                throw new Error("API returned false status.");
                         }
 
                 } catch (err) {
-                        console.error("Imgur Error:", err);
+                        console.error("ImgBB Error:", err);
                         api.setMessageReaction("❌", event.messageID, () => {}, true);
                         return message.reply(getLang("error", err.message));
                 }

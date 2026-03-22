@@ -1,137 +1,96 @@
-const fs = require("fs-extra");
-const { createCanvas, loadImage } = require("canvas");
+const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
 
-module.exports = {
-  config: {
-    name: "kiss",
-    version: "1.1.0",
-    author: "Rasin",
-    countDown: 5,
-    role: 0,
-    longDescription: "{p}kiss @mention or reply someone you want to kiss that person",
-    category: "fun",
-    guide: {
-      en: "{pn} @mention - Kiss mentioned user"
-        + "\n{pn} <name> - Search and kiss user by name"
-        + "\n{pn} <uid> - Kiss user by ID"
-        + "\n{pn} [reply] - Kiss replied user"
-    },
-    prefix: true,
-    premium: false,
-    notes: "If you change the author then the command will not work and not usable"
-  },
-
-  langs: {
-    en: {
-      noTarget: "Please mention, reply, or enter a name of someone to kiss 🌚",
-      notFound: "User '%1' not found in this conversation",
-      multiple: "Multiple users found with name '%1':\n%2\n\nPlease use their UID or be more specific.",
-      authError: "You've changed the author name. Change the author name to Rasin - otherwise this command will not work 👀☕",
-      kissMessage: "🧸✨ 𝐔𝐦𝐦𝐦𝐦𝐚𝐚𝐚𝐚𝐚𝐡𝐡𝐡! 🌻😘",
-      error: "An error occurred, please try again later"
-    }
-  },
-
-  onStart: async function ({ api, message, event, usersData, args, getLang }) {
-    const owner = module.exports.config;
-    const eAuth = "UmFzaW4=";
-    const dAuth = Buffer.from(eAuth, "base64").toString("utf8");
-    if (owner.author !== dAuth) return message.reply(getLang("authError"));
-
-    let one = event.senderID, two;
-    const mention = Object.keys(event.mentions || {});
-    
-    if (mention.length > 0) {
-      two = mention[0];
-    }
-    else if (event.type === "message_reply") {
-      two = event.messageReply.senderID;
-    }
-    else if (args[0] && /^\d+$/.test(args[0])) {
-      two = args[0];
-    }
-    else if (args[0]) {
-      const query = args.join(" ");
-      const matches = await findUserByName(api, usersData, event.threadID, query);
-
-      if (matches.length === 0) {
-        return message.reply(getLang("notFound", query.replace(/@/g, "")));
-      }
-
-      if (matches.length > 1) {
-        const matchList = matches.map(m => `• ${m.name}: ${m.uid}`).join('\n');
-        return message.reply(getLang("multiple", query.replace(/@/g, ""), matchList));
-      }
-
-      two = matches[0].uid;
-    }
-    else {
-      return message.reply(getLang("noTarget"));
-    }
-
-    try {
-      const avatarURL1 = `https://arshi-facebook-pp.vercel.app/api/pp?uid=${one}`;
-      const avatarURL2 = `https://arshi-facebook-pp.vercel.app/api/pp?uid=${two}`;
-
-      const canvas = createCanvas(950, 850);
-      const ctx = canvas.getContext("2d");
-
-      const background = await loadImage("https://files.catbox.moe/6qg782.jpg");
-      ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-      const avatar1 = await loadImage(avatarURL1);
-      const avatar2 = await loadImage(avatarURL2);
-
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(535, 260, 85, 0, Math.PI * 2);
-      ctx.closePath();
-      ctx.clip();
-      ctx.drawImage(avatar1, 445, 175, 170, 170);
-      ctx.restore();
-
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(175, 370, 85, 0, Math.PI * 2);
-      ctx.closePath();
-      ctx.clip();
-      ctx.drawImage(avatar2, 90, 280, 170, 170);
-      ctx.restore();
-
-      const outputPath = `${__dirname}/tmp/kiss_image.png`;
-      const buffer = canvas.toBuffer("image/png");
-
-      fs.writeFileSync(outputPath, buffer);
-
-      message.reply({
-        body: getLang("kissMessage"),
-        attachment: fs.createReadStream(outputPath)
-      }, () => fs.unlinkSync(outputPath));
-    } catch (error) {
-      console.error(error.message);
-      message.reply(getLang("error"));
-    }
-  }
+const mahmud = async () => {
+        const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/HINATA/main/baseApiUrl.json");
+        return base.data.mahmud;
 };
 
-async function findUserByName(api, usersData, threadID, query) {
-  try {
-    const cleanQuery = query.replace(/@/g, "").trim().toLowerCase();
-    const threadInfo = await api.getThreadInfo(threadID);
-    const ids = threadInfo.participantIDs || [];
-    const matches = [];
+module.exports = {
+        config: {
+                name: "kiss",
+                aliases: ["চুমা", "কিস"],
+                version: "1.7",
+                author: "MahMUD",
+                countDown: 5,
+                role: 0,
+                description: {
+                        bn: "কাউকে মেনশন দিয়ে একটি রোমান্টিক কিস ইমেজ তৈরি করুন",
+                        en: "Generate a romantic kiss image by mentioning someone",
+                        vi: "Tạo hình ảnh hôn lãng mạn bằng cách gắn thẻ ai đó"
+                },
+                category: "love",
+                guide: {
+                        bn: '   {pn} <@tag>: কাউকে কিস করতে ট্যাগ করুন',
+                        en: '   {pn} <@tag>: Tag someone to kiss',
+                        vi: '   {pn} <@tag>: Gắn thẻ ai đó để hôn'
+                }
+        },
 
-    for (const uid of ids) {
-      try {
-        const name = (await usersData.getName(uid)).toLowerCase();
-        if (name.includes(cleanQuery)) {
-          matches.push({ uid, name: await usersData.getName(uid) });
+        langs: {
+                bn: {
+                        noTarget: "× বেবি, কিস করার জন্য কাউকে তো মেনশন দাও! 💋",
+                        wait: "তোমার কিস ইমেজটি তৈরি করছি... একটু অপেক্ষা করো বেবি! <😘",
+                        success: "এই নাও তোমাদের কিস ইমেজ বেবি! 🙈",
+                        error: "× সমস্যা হয়েছে: %1। প্রয়োজনে Contact MahMUD।"
+                },
+                en: {
+                        noTarget: "× Baby, please mention someone to kiss! 💋",
+                        wait: "Generating your kiss image... Please wait a moment baby! <😘",
+                        success: "Here’s your kiss image baby! 🙈",
+                        error: "× API error: %1. Contact MahMUD for help."
+                },
+                vi: {
+                        noTarget: "× Cưng ơi, hãy gắn thẻ ai đó để hôn đi! 💋",
+                        wait: "Đang tạo hình ảnh hôn cho cưng... Chờ chút nhé! <😘",
+                        success: "Ảnh hôn của cưng đây! 🙈",
+                        error: "× Lỗi: %1. Liên hệ MahMUD để hỗ trợ."
+                }
+        },
+
+        onStart: async function ({ api, event, message, getLang }) {
+                const authorName = String.fromCharCode(77, 97, 104, 77, 85, 68);
+                if (this.config.author !== authorName) {
+                        return api.sendMessage("You are not authorized to change the author name.", event.threadID, event.messageID);
+                }
+
+                const mentions = Object.keys(event.mentions);
+                if (mentions.length === 0) return message.reply(getLang("noTarget"));
+
+                const senderID = event.senderID;
+                const targetID = mentions[0];
+                const cacheDir = path.join(__dirname, "cache");
+                if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
+                const imgPath = path.join(cacheDir, `kiss_${senderID}_${targetID}.png`);
+
+                try {
+                        api.setMessageReaction("😘", event.messageID, () => {}, true);
+                        const waitMsg = await message.reply(getLang("wait"));
+
+                        const base = await mahmud();
+                        const response = await axios.post(`${base}/api/kiss`, 
+                                { senderID, targetID }, 
+                                { responseType: "arraybuffer" }
+                        );
+
+                        fs.writeFileSync(imgPath, Buffer.from(response.data));
+
+                        if (waitMsg?.messageID) api.unsendMessage(waitMsg.messageID);
+
+                        return message.reply({
+                                body: getLang("success"),
+                                attachment: fs.createReadStream(imgPath)
+                        }, () => {
+                                api.setMessageReaction("✅", event.messageID, () => {}, true);
+                                if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+                        });
+
+                } catch (err) {
+                        console.error("Kiss Error:", err);
+                        api.setMessageReaction("❌", event.messageID, () => {}, true);
+                        if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+                        return message.reply(getLang("error", err.message));
+                }
         }
-      } catch {}
-    }
-
-    return matches;
-  } catch {
-    return [];
-  }
-}
+};

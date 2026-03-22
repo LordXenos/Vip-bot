@@ -1,138 +1,86 @@
 const axios = require("axios");
-const fs = require("fs-extra");
-const path = require("path");
+
+const baseApiUrl = async () => {
+  const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/HINATA/main/baseApiUrl.json");
+  return base.data.mahmud;
+};
+
+/**
+* @author MahMUD
+* @author: do not delete it
+*/
 
 module.exports = {
   config: {
     name: "github",
-    aliases: ["gh", "git"],
-    author: "Rasin",
-    countDown: 5,
-    role: 0,
-    category: "info",
-    shortDescription: {
-      en: "Get GitHub user information",
-    },
-    guide: {
-      en: "{pn} <username>\nExample: {pn} torvalds",
-    },
+    aliases: ["git"],
+    version: "1.7",
+    author: "MahMUD",
+    countDown: 10,
+    category: "github",
+    guide: { en: "{pn} [username]" }
   },
 
-  onStart: async function ({ args, api, event, message }) {
+  onStart: async function ({ api, event, args }) {
+    const obfuscatedAuthor = String.fromCharCode(77, 97, 104, 77, 85, 68); 
+    if (module.exports.config.author !== obfuscatedAuthor) {
+      return api.sendMessage("You are not authorized to change the author name.", event.threadID, event.messageID);
+    }
+    
+    const { threadID, messageID } = event;
+    const username = args[0];
+    if (!username) return api.sendMessage("Please Provide a Github Username.\n\nExample: {pn} Github Mahmudx7", threadID, messageID);
+
     try {
-      if (args.length === 0) {
-        return api.sendMessage(
-          "Please provide a GitHub username!",
-          event.threadID,
-          event.messageID
-        );
-      }
+      const apiUrl = await baseApiUrl();
+      const res = await axios.get(`${apiUrl}/api/github?user=${encodeURIComponent(username)}`);
+      const d = res.data.data;
 
-      const username = args[0];
+      const info = `>🎀 USER GITHUB INFO
+• Name: ${d.profile.name || "N/A"}
+• Username: ${d.profile.username}
+• ID: ${d.profile.id}
+• Type: ${d.profile.type}
+• Verified: ${d.profile.is_staff ? "GitHub Staff" : "No"}
+• Bio: ${d.profile.bio || "N/A"}
+• Most Use Language: ${d.stats.favorite_language}
 
-      const msg = await api.sendMessage(
-        `⭐ Searching for GitHub user "${username}"...`,
-        event.threadID
-      );
+👥 FOLLOWER 
+• Followers: ${d.stats.followers}
+• Following: ${d.stats.following}
 
-      const headers = {
-        'User-Agent': 'GoatBot-v3',
-        'Accept': 'application/vnd.github.v3+json'
-      };
+📧 USER CONTACT 
+• Public Email: ${d.contact.email || "Not Found"}
+• Location: ${d.contact.location || "N/A"}
+• Website: ${d.contact.website || "N/A"}
 
-      const userUrl = `https://api.github.com/users/${username}`;
-      const userResponse = await axios.get(userUrl, { headers });
-      const user = userResponse.data;
+📦 PUBLIC REPO 
+• Public Repos: ${d.stats.public_repos}
+• Archived: ${d.stats.archived_repos}
+• Total Forks: ${d.stats.total_forks}
+• Total Stars: ${d.stats.total_stars}
+• Code Size: ${d.stats.code_size_mb} MB
 
-      if (user.message === "Not Found") {
-        message.unsend(msg.messageID);
-        return api.sendMessage(
-          `✘ User "${username}" not found on GitHub!`,
-          event.threadID,
-          event.messageID
-        );
-      }
+🔗 TOP REPOSITORY
+• Repo Name: ${d.highlights.top_repo ? d.highlights.top_repo.name : "N/A"} 
+• Repo Star: ${d.highlights.top_repo ? d.highlights.top_repo.stars : "0"} 
+• Repo Fork: ${d.highlights.top_repo ? d.highlights.top_repo.forks : "0"}
+• Repo Link: ${d.highlights.top_repo ? d.highlights.top_repo.url : "N/A"}
 
-      let result = `⭐ USER INFO ⭐\n\n`;
-      result += `֎ Name: ${user.name || user.login}\n`;
-      result += `֎ Username: @${user.login}\n\n`;
-      result += `━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+📅 JOIN & UPDATE 
+• Joined: ${new Date(d.meta.joined_at).toDateString()}
+• Account Age: ${d.meta.account_age_years} years
+• Last Active Repo: ${d.highlights.last_active_repo || "N/A"}
+• Last Profile Update: ${new Date(d.meta.updated_at).toDateString()}`;
 
-      if (user.bio) {
-        result += `❍ Bio: ${user.bio}\n\n`;
-      }
-
-      if (user.company) {
-        result += `❍ Company: ${user.company}\n`;
-      }
-
-      if (user.location) {
-        result += `❍ Location: ${user.location}\n`;
-      }
-
-      if (user.blog) {
-        result += `❍ Website: ${user.blog}\n`;
-      }
-
-      if (user.twitter_username) {
-        result += `❍ Twitter: @${user.twitter_username}\n`;
-      }
-
-      result += `\n❍ STATISTICS:\n`;
-      result += `❍ Public Repos: ${user.public_repos}\n`;
-      result += `❍ Public Gists: ${user.public_gists}\n`;
-      result += `❍ Followers: ${user.followers}\n`;
-      result += `❍ Following: ${user.following}\n\n`;
-
-      result += `❍ Created: ${new Date(user.created_at).toLocaleDateString()}\n`;
-      result += `❍ Updated: ${new Date(user.updated_at).toLocaleDateString()}\n\n`;
-
-      result += `━━━━━━━━━━━━━━━━━━━━━━\n`;
-      result += `❍ Profile: ${user.html_url}`;
-
-      const imagePath = path.join(__dirname, "cache", `github_${username}_${Date.now()}.jpg`);
-      const writer = fs.createWriteStream(imagePath);
-      
-      const imageResponse = await axios({
-        url: user.avatar_url,
-        method: 'GET',
-        responseType: 'stream'
-      });
-
-      imageResponse.data.pipe(writer);
-
-      await new Promise((resolve, reject) => {
-        writer.on('finish', resolve);
-        writer.on('error', reject);
-      });
-
-      message.unsend(msg.messageID);
-
-      await api.sendMessage(
-        {
-          body: result,
-          attachment: fs.createReadStream(imagePath)
-        },
-        event.threadID,
-        event.messageID
-      );
-
-      fs.unlinkSync(imagePath);
+      return api.sendMessage({
+        body: info,
+        attachment: await global.utils.getStreamFromURL(d.profile.avatar)
+      }, threadID, messageID);
 
     } catch (e) {
       console.error(e);
-      if (e.response && e.response.status === 404) {
-        return api.sendMessage(
-          `✘ User not found on GitHub!`,
-          event.threadID,
-          event.messageID
-        );
-      }
-      return api.sendMessage(
-        "✘ Failed to fetch GitHub data! Please try again.",
-        event.threadID,
-        event.messageID
-      );
+      return api.sendMessage("API error, Contact MahMUD.", threadID, messageID);
     }
-  },
+  }
 };
