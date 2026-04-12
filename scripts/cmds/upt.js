@@ -40,9 +40,9 @@ module.exports = {
     const groups = await threadsData.getAll()
 
     const response =
-`🧸🎀 ⋆˚✿°────୨ᰔ୧────°✿˚ ✨
+`🎀 ⋆˚✿°────୨ᰔ୧────°✿˚ ✨
 
-⭐🧸  𝐁𝐨𝐭 𝐒𝐭𝐚𝐭𝐮𝐬  🌷🤍
+🕊️🥀  𝐁𝐨𝐭 𝐒𝐭𝐚𝐭𝐮𝐬  🌷🤍
 
 ᥫ᭡ 𝐁𝐨𝐭 𝐔𝐩𝐭𝐢𝐦𝐞 : ${systemInfo.botUptime} ⏳
 ᥫ᭡ 𝐒𝐲𝐬𝐭𝐞𝐦 𝐔𝐩𝐭𝐢𝐦𝐞 : ${systemInfo.systemUptime} 🕰️
@@ -53,8 +53,8 @@ module.exports = {
 ᰔ 𝐓𝐨𝐭𝐚𝐥 𝐔𝐬𝐞𝐫𝐬 : ${users.length} 🧸
 ᰔ 𝐓𝐨𝐭𝐚𝐥 𝐆𝐫𝐨𝐮𝐩𝐬 : ${groups.length} 🌸
 
-🎀˚✿ 𝐁𝐨𝐭 𝐀𝐝𝐦𝐢𝐧 :
-୨ᰔ୧ 𝚃𝙰𝚂𝙱𝙸𝚄𝙻 𝙸𝚂𝙻𝙰𝙼 𝚁𝙰𝚂𝙸𝙽 ୨ᰔ୧
+🎀˚✿ 𝐁𝐨𝐭 Owner :
+୨ᰔ୧ 🩶─⃝‌‌Sɪʏꫝᴍ🌸🦋 ୨ᰔ୧
 
 🎀✨ ˚✿°────୨ᰔ୧────°✿˚ 🫶🏻`
 
