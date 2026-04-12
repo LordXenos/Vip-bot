@@ -20,7 +20,7 @@ onStart: async function ({ api, message, args, event }) {
 ❍ ᴀɢᴇ : ᴘʀɪᴠᴀᴛᴇ 
 ❍ ꜰʀᴏᴍ : ʙᴀɴɢʟᴀᴅᴇꜱʜ  🇧🇩
 ❍ ᴄɪᴛʏ: ᴅʜᴀᴋᴀ 
-❍ ᴀᴅᴅʀᴇꜱꜱ: ᴅʜᴀᴋᴀ, TONGI
+❍ ᴀᴅᴅʀᴇꜱꜱ: ᴅʜᴀᴋᴀ,....
 ❍ ᴡᴏʀᴋ : ᴘʀɪᴠᴀᴛᴇ
 ❍ ᴄʟᴀꜱꜱ : ᴘʀɪᴠᴀᴛᴇ
 ❍ ʀᴇʟᴀᴛɪᴏɴꜱʜɪᴘ : ꜱɪɴɢʟᴇ
@@ -32,7 +32,7 @@ onStart: async function ({ api, message, args, event }) {
 😺 ғᴀᴠ ᴘᴇʀꜱᴏɴ : ᴍʏ ᴍᴏᴛʜᴇʀ 👀✨
 🥹 ᴄʀᴜꜱʜ : ɴᴇᴇᴅ 🙃
 🚫 ᴇx : 0 — ʙᴇᴄᴀᴜꜱᴇ ɴᴏ ᴏɴᴇ ᴅᴀʀᴇᴅ👽
-😺 ᴛɪᴍᴇ ᴘᴀꜱꜱ : GAMING,BLA ,BLA ,BLA... `
+😺 ᴛɪᴍᴇ ᴘᴀꜱꜱ : Gaming .....`
 
 
 await message.reply({
