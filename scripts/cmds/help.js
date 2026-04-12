@@ -87,7 +87,7 @@ module.exports = {
 
         if (category !== "info") {
 
-          msg += `\n✨╭── 『  ${category.toUpperCase()}  』`;
+          msg += `\n🕊️╭──✨ 『  ${category.toUpperCase()}  』`;
 
 
           const names = categories[category].commands.sort();
@@ -101,7 +101,7 @@ module.exports = {
           }
 
 
-          msg += `\n🕊️╰───────────◊🕊️`;
+          msg += `\n🌸╰───────────◊🦋`;
 
         }
 
@@ -110,12 +110,11 @@ module.exports = {
 
       const totalCommands = commands.size;
 
-      msg += `\n\n🌸╭──────────◊🦋\n» 𝙏𝙤𝙩𝙖𝙡 𝙘𝙢𝙙𝙨: [ ${totalCommands} ]\n`;
+      msg += `\n\n🌺╭──────────◊🍃\n» 𝙏𝙤𝙩𝙖𝙡 𝙘𝙢𝙙𝙨: [ ${totalCommands} ]\n`;
 
       msg += `» 𝙏𝙮𝙥𝙚 [ ${prefix}help <𝙘𝙢𝙙> ] 𝙩𝙤 𝙡𝙚𝙖𝙧𝙣 𝙪𝙨𝙖𝙜𝙚.\n🦋╰────────◊🌸\n\n`;
 
-      msg += ``; //╭─✦❤️‍🩹OWNER+_+—͞Sɪʏꫝᴍ🎀\n├‣ fb=> https://www.facebook.com/xSiyam69x
-
+      msg += ``; //......
 
       await message.reply(msg);
 
