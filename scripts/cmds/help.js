@@ -66,7 +66,7 @@ module.exports = {
       let msg = "";
 
 
-      msg += ``; // replace with your name 
+      msg += ``; // 🩶─⃝‌‌Sɪʏꫝᴍ 🦋
 
 
       for (const [name, value] of commands) {
@@ -114,7 +114,7 @@ module.exports = {
 
       msg += `» 𝙏𝙮𝙥𝙚 [ ${prefix}help <𝙘𝙢𝙙> ] 𝙩𝙤 𝙡𝙚𝙖𝙧𝙣 𝙪𝙨𝙖𝙜𝙚.\n🦋╰────────◊🌸\n\n`;
 
-      msg += ``; // its not decoy so change it if you want 
+      msg += ``; //╭─✦❤️‍🩹OWNER+_+—͞Sɪʏꫝᴍ🎀\n├‣ fb=> https://www.facebook.com/xSiyam69x
 
 
       await message.reply(msg);
