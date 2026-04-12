@@ -38,9 +38,8 @@ module.exports = function (defaultFuncs, api, ctx) {
         .then(utils.saveCookies(ctx.jar))
         .then(utils.parseAndCheckLogin(ctx, defaultFuncs))
         .then((resData) => {
-          if (resData.error) {
-            throw resData;
-          }
+          if (!resData) return markFolderAsRead(index + 1);
+          if (resData.error) throw resData;
           markFolderAsRead(index + 1);
         })
         .catch((err) => {
