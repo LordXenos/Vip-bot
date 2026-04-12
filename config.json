@@ -56,14 +56,14 @@
   ],
   "adminGroup": "1160320489300782",
   "whiteListMode": {
-    "enable": true,
+    "enable": false,
     "whiteListIds": [
       "100083520680035"
     ],
     "notes": "if you enable this feature, only the ids in the whiteListIds list can use the bot"
   },
   "whiteListModeThread": {
-    "enable": true,
+    "enable": false,
     "whiteListThreadIds": [
       "9313321558687040",
       "1360930988697683",
