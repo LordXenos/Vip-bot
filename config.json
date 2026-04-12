@@ -28,7 +28,7 @@
     "bio": "The difference between a believer and a disbeliever is Salah — 🤍✨"
   },
   "notesLanguage": "change to your language with ISO 639-1 code, available languages: vi (Vietnamese), en (English)",
-  "nickNameBot": "Miraaaa 🥹🎀",
+  "nickNameBot": "─꯭─⃝‌‌愛|Mɪᴋᴀsᴀ🎀🦋",
   "prefix": "!",
   "api": "https://rasin-apis.onrender.com",
   "approval": false,
@@ -48,13 +48,13 @@
     "ignoreCommand": []
   },
   "adminBot": [
-    "100083520680035",
-    "100081284882260"
+    "100065590940242",
+    "100090895866311"
   ],
   "mainAdmin": [
-    "100083520680035"
+    "100065590940242"
   ],
-  "adminGroup": "9313321558687040",
+  "adminGroup": "1160320489300782",
   "whiteListMode": {
     "enable": true,
     "whiteListIds": [
