@@ -31,7 +31,7 @@ module.exports = {
 			session2: "noon",
 			session3: "afternoon",
 			session4: "evening",
-			welcomeMessage: "🌻👀 ˚✿˖°────୨ᰔ୧────°˖✿˚ 🧸\nMɪʀᴀᴀᴀ 👀🫶🏻\nCᴏɴɴᴇᴄᴛᴇᴅ Sᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ 🌸\n\nι'м Mιяα 🧸🎀\nYᴏᴜʀ Pᴇʀꜱᴏɴᴀʟ Bʙ'ᴢ  🧸✨\nPʀᴇғɪx : !\nUsᴇ !Hᴇʟᴘ Tᴏ Sᴇᴇ Aʟʟ Aᴠᴀɪʟᴀʙʟᴇ Cᴏᴍᴍᴀɴᴅꜱ 🧸🎀\n\n🎀˚✿ 𝐎𝐰𝐧𝐞𝐝 𝐛𝐲 𝐑𝐚𝐬𝐢𝐧 🧸✨\nFᴏʀ Tᴇᴄʜɴɪᴄᴀʟ Iꜱsᴜᴇs \nUꜱᴇ !Cᴀʟʟᴀᴅ\nOʀ Cᴏɴᴛᴀᴄᴛ ☁️\nhttps://www.facebook.com/your.bbz.xyz/ \n\n🧸🎀 ⋆˚✿°────୨ᰔ୧────°✿˚ ✨",
+			welcomeMessage: "🌻👀 ˚✿˖°────୨ᰔ୧────°˖✿˚ 🧸\nMikasa 👀🫶🏻\nCᴏɴɴᴇᴄᴛᴇᴅ Sᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ 🌸\n\nι'м Mikasa 🧸🎀\nYᴏᴜʀ Pᴇʀꜱᴏɴᴀʟ Bʙ'ᴢ  🧸✨\nPʀᴇғɪx : !\nUsᴇ !Hᴇʟᴘ Tᴏ Sᴇᴇ Aʟʟ Aᴠᴀɪʟᴀʙʟᴇ Cᴏᴍᴍᴀɴᴅꜱ 🧸🎀\n\n🎀˚✿ 𝐎𝐰𝐧𝐞𝐝 𝐛𝐲 —͞SIYAM i! 🌸\nFᴏʀ Tᴇᴄʜɴɪᴄᴀʟ Iꜱsᴜᴇs \nUꜱᴇ !Cᴀʟʟᴀᴅ\nOʀ Cᴏɴᴛᴀᴄᴛ ☁️\nhttps://m.me/xSiyam69x \n\n🧸🎀 ⋆˚✿°────୨ᰔ୧────°✿˚ ✨",
 			multiple1: "you",
 			multiple2: "you guys",
 			defaultWelcomeMessage: `🎀 𝙰𝚜𝚜𝚊𝚕𝚊𝚖𝚞𝚊𝚕𝚊𝚒𝚔𝚞𝚖 {userName} ✨
