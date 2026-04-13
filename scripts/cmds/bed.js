@@ -16,7 +16,7 @@ module.exports = {
                 role: 0,
                 description: {
                         bn: "প্রিয়জনের সাথে বেড হাগ ইমেজ জেনারেট করুন",
-                        en: "Generate a bed hug image with your loved one",
+                        en: "🌚🫶🏻... bed hug image with your loved one",
                         vi: "Tạo hình ảnh ôm nhau trên giường với người yêu"
                 },
                 category: "love",
