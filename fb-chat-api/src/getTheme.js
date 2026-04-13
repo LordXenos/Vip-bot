@@ -1,124 +1,96 @@
 "use strict";
 
-const utils = require("../utils");
-const log = require("npmlog");
+const utils = require('../utils');
 
-function formatTheme(theme) {
-	if (!theme) return null;
+module.exports = function (defaultFuncs, api, ctx) {
+  return async function getTheme(threadID, callback) {
+    if (!threadID) {
+      const error = new Error("threadID is required");
+      if (callback) return callback(error);
+      throw error;
+    }
 
-	const darkTheme = theme.alternative_themes?.[0] || null;
+    let resolveFunc, rejectFunc;
+    const promise = new Promise((resolve, reject) => {
+      resolveFunc = resolve;
+      rejectFunc = reject;
+    });
 
-	const extractTheme = (t) => {
-		const raw = {
-			id: t.id,
-			name: t.accessibility_label,
-			description: t.description,
-			appColorMode: t.app_color_mode,
-			isDeprecated: t.is_deprecated,
-			backgroundUrl: t.background_asset?.image?.uri,
-			iconUrl: t.icon_asset?.image?.uri,
-			gradientColors: t.gradient_colors,
-			backgroundGradientColors: t.background_gradient_colors,
-			reactionPillColor: t.reaction_pill_background_color,
-			composerBgColor: t.composer_background_color,
-			composerTintColor: t.composer_tint_color,
-			composerInputBgColor: t.composer_input_background_color,
-			primaryButtonBgColor: t.primary_button_background_color,
-			titleBarTextColor: t.title_bar_text_color,
-			titleBarBgColor: t.title_bar_background_color,
-			titleBarButtonTintColor: t.title_bar_button_tint_color,
-			titleBarAttributionColor: t.title_bar_attribution_color,
-			inboundMessageGradientColors: t.inbound_message_gradient_colors,
-			inboundMessageTextColor: t.inbound_message_text_color,
-			inboundMessageBorderColor: t.inbound_message_border_color,
-			inboundMessageBorderWidth: t.inbound_message_border_width,
-			hotLikeColor: t.hot_like_color,
-			messageTextColor: t.message_text_color,
-			messageBorderColor: t.message_border_color,
-			messageBorderWidth: t.message_border_width,
-			secondaryTextColor: t.secondary_text_color,
-			tertiaryTextColor: t.tertiary_text_color,
-			fallbackColor: t.fallback_color,
-			reverseRadialGradient: t.reverse_gradients_for_radial
-		};
+    const form = {
+      fb_api_caller_class: 'RelayModern',
+      fb_api_req_friendly_name: 'MWPThreadThemeQuery_AllThemesQuery',
+      variables: JSON.stringify({ version: "default" }),
+      server_timestamps: true,
+      doc_id: '24474714052117636',
+    };
 
-		const cleaned = {};
-		for (const [key, value] of Object.entries(raw)) {
-			if (
-				value !== null &&
-				value !== undefined &&
-				!(Array.isArray(value) && value.length === 0)
-			) {
-				cleaned[key] = value;
-			}
-		}
-		return cleaned;
-	};
+    try {
+      const resData = await defaultFuncs
+        .post("https://www.facebook.com/api/graphql/", ctx.jar, form, null, {
+          "x-fb-friendly-name": "MWPThreadThemeQuery_AllThemesQuery",
+          "x-fb-lsd": ctx.lsd,
+          "referer": `https://www.facebook.com/messages/t/${threadID}`
+        })
+        .then(utils.parseAndCheckLogin(ctx, defaultFuncs));
 
-	const formatted = {
-		normal: extractTheme(theme)
-	};
+      if (resData.errors) {
+        throw new Error(JSON.stringify(resData.errors));
+      }
 
-	if (darkTheme) {
-		const dark = extractTheme(darkTheme);
-		if (Object.keys(dark).length > 0) {
-			formatted.dark = dark;
-		}
-	}
+      if (!resData.data || !resData.data.messenger_thread_themes) {
+        throw new Error("Could not retrieve thread themes from response.");
+      }
 
-	return formatted;
-}
+      const extractUrl = (obj) => {
+        if (!obj) return null;
+        if (typeof obj === 'string') return obj;
+        return obj.uri || obj.url || null;
+      };
 
-module.exports = function(defaultFuncs, api, ctx) {
-	return function getTheme(themeID, callback) {
-		let resolveFunc = function() {};
-		let rejectFunc = function() {};
-		const returnPromise = new Promise(function(resolve, reject) {
-			resolveFunc = resolve;
-			rejectFunc = reject;
-		});
+      const baseThemes = resData.data.messenger_thread_themes.map(themeData => {
+        if (!themeData || !themeData.id) return null;
 
-		if (utils.getType(callback) !== "Function" && utils.getType(callback) !== "AsyncFunction") {
-			callback = function(err, data) {
-				if (err) {
-					return rejectFunc(err);
-				}
-				resolveFunc(data);
-			};
-		}
+        return {
+          id: themeData.id,
+          name: themeData.name || '',
+          theme_idx: themeData.theme_idx,
+          accessibility_label: themeData.accessibility_label || themeData.name || ''
+        };
+      }).filter(t => t !== null);
 
-		if (!themeID) {
-			const err = new Error("getTheme requires a themeID to be provided.");
-			log.error("getTheme", err);
-			return callback(err);
-		}
+      const themesWithPreviews = await Promise.all(
+        baseThemes.map(async (baseTheme) => {
+          try {
+            const detailedTheme = await api.fetchThemeData(baseTheme.id);
 
-		const form = {
-			doc_id: "24474714052117636",
-			variables: JSON.stringify({ "id": themeID }),
-			fb_api_caller_class: "RelayModern",
-			fb_api_req_friendly_name: "MWPThreadThemeProviderQuery"
-		};
+            const theme = {
+              ...baseTheme,
+              ...detailedTheme
+            };
 
-		defaultFuncs
-			.post("https://www.facebook.com/api/graphql/", ctx.jar, form)
-			.then(utils.parseAndCheckLogin(ctx, defaultFuncs))
-			.then(function(resData) {
-				if (resData.errors) {
-					throw resData.errors[0];
-				}
-				if (!resData.data || !resData.data.messenger_thread_theme) {
-					throw new Error(`Theme with ID ${themeID} not found or API has changed.`);
-				}
+            return theme;
+          } catch (fetchErr) {
+            utils.error("getTheme - fetchThemeData", `Failed to fetch details for theme ${baseTheme.id}: ${fetchErr.message}`);
+            return baseTheme;
+          }
+        })
+      );
 
-				const formattedTheme = formatTheme(resData.data.messenger_thread_theme);
-				callback(null, formattedTheme);
-			})
-			.catch(function(err) {
-				log.error("getTheme", err);
-				return callback(err);
-			});
+      if (callback) {
+        callback(null, themesWithPreviews);
+      } else {
+        resolveFunc(themesWithPreviews);
+      }
+    } catch (err) {
+      utils.error("getTheme", err);
+      if (callback) {
+        callback(err);
+      } else {
+        rejectFunc(err);
+      }
+    }
 
-		return returnPromise;
-	};
+    return promise;
+  };
 };
+			
