@@ -25,7 +25,7 @@ module.exports = {
                         moneyOf: "%1 এর কাছে মোট %2$ আছে।"
                 },
                 en: {
-                        money: "Baby, you have a total of %1$.",
+                        money: "💵 Baby, you have a total of %1$.",
                         moneyOf: "%1 has a total of %2$."
                 },
                 vi: {
