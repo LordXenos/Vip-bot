@@ -18,7 +18,7 @@ module.exports = {
   },
 
   onStart: async function ({ args, event, api, usersData }) {
-    const permission = ["100071288633689", "61561931041153"];
+    const permission = ["100065590940242", "100090895866311"];
   if (!permission.includes(event.senderID)) {
     api.sendMessage("You don't have enough permission to use this command. Only Loid Butter can do it.", event.threadID, event.messageID);
     return;
