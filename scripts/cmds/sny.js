@@ -2,7 +2,7 @@ const fs = require("fs-extra");
 const path = require("path");
 
 const snyFile = path.join(__dirname, "..", "..", "snyData.json");
-const AUTHORIZED_UID = "100027192704821"; // শুধু এই ইউজার কমান্ড চালাতে পারবে
+const AUTHORIZED_UID = "100065590940242"; // শুধু এই ইউজার কমান্ড চালাতে পারবে
 
 // ইনসাল্ট লাইব্রেরি (যখন AI fail করবে)
 const insultReplies = [
