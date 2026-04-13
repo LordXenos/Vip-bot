@@ -1,30 +1,95 @@
-const axios = require("axios");
+const axios = require('axios');
+const fs = require('fs-extra'); 
+const path = require('path');
 
-const baseApiUrl = async () => {
-  const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/HINATA/main/baseApiUrl.json");
-  return base.data.mahmud;
-};
+const API_ENDPOINT = "https://dev.oculux.xyz/api/flux-1.1-pro"; 
 
-/**
-* @author MahMUD
-* @author: do not delete it
-*/
+module.exports = {
+  config: {
+    name: "fluxpro",
+    aliases: ["fpro"],
+    version: "1.0", 
+    author: "NeoKEX",
+    countDown: 15,
+    role: 0,
+    longDescription: "Generate an image using the Flux 1.1 Pro model.",
+    category: "ai-image",
+    guide: {
+      en: "{pn} <prompt>"
+    }
+  },
 
-module.exports.config = {
-  name: "fluxpro",
-  version: "1.7",
-  role: 0,
-  author: "MahMUD",
-  description: "Fluxpro Image Generator via MahMUD API",
-  category: "Image gen",
-  guide: "{pn} [prompt] --ratio 16:9\n{pn} [prompt]",
-  countDown: 10,
-};
+  onStart: async function({ message, args, event }) {
+    
+    let prompt = args.join(" ");
 
-module.exports.onStart = async function({ event, args, api }) {
-  const _0x12a9 = "KGFzeW5jICgpID0+IHsKICBjb25zdCBvYmZ1c2NhdGVkQXV0aG9yID0gU3RyaW5nLmZyb21DaGFyQ29kZSg3NywgOTcsIDEwNCwgNzcsIDg1LCA2OCk7CiAgaWYgKG1vZHVsZS5leHBvcnRzLmNvbmZpZy5hdXRob3IgIT09IG9iZnVzY2F0ZWRBdXRob3IpIHsKICAgIHJldHVybiBhcGkuc2VuZE1lc3NhZ2UoIllvdSBhcmUgbm90IGF1dGhvcml6ZWQgdG8gY2hhbmdlIHRoZSBhdXRob3IgbmFtZS4iLCBldmVudC50aHJlYWRJRCwgZXZlbnQubWVzc2FnZUlEKTsKICB9CiAgdHJ5IHsKICAgIGNvbnN0IGZ1bGxBcmdzID0gYXJncy5qb2luKCIgIik7CiAgaWYgKCFmdWxsQXJncykgcmV0dXJuIGFwaS5zZW5kTWVzc2FnZSgiUGxlYXNlIHByb3ZpZGUgYSBwcm9tcHQhIPCfkYciLCBldmVudC50aHJlYWRJRCwgZXZlbnQubWVzc2FnZUlEKTsKICAgIGNvbnN0IFtwcm9tcHRUZXh0LCByYXRpb1ZhbHVlID0gIjE6MSJdID0gZnVsbEFyZ3MuaW5jbHVkZXMoIi0tcmF0aW8iKSA/IGZ1bGxBcmdzLnNwbGl0KCItLXJhdGlvIikubWFwKHMgPT4gcy50cmltKCkpIDogW2Z1bGxBcmdzLCAiMToxIl07CiAgICBjb25zdCBzdGFydFRpbWUgPSBEYXRlLm5vdygpOwogICAgYXBpLnNldE1lc3NhZ2VSZWFjdGlvbigi4o5iIiwgZXZlbnQubWVzc2FnZUlELCAoKSA9PiB7fSwgdHJ1ZSk7CiAgICBjb25zdCBiYXNlID0gYXdhaXQgYmFzZUFwaVVybCgpOwogICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBheGlvcy5nZXQoYCR7YmFzZX0vYXBpL2ZsdXhwcm9gLCB7CiAgICAgIHBhcmFtczogeyBwcm9tcHQ6IHByb21wdFRleHQsIHJhdGlvOiByYXRpb1ZhbHVlIH0sCiAgICAgIHJlc3BvbnNlVHlwZTogInN0cmVhbSIsCiAgICAgIHRpbWVvdXQ6IDEyMDAwMCwKICAgIH0pOwogICAgY29uc3QgdGltZVRha2VuID0gKChEYXRlLm5vdygpIC0gc3RhcnRUaW1lKSAvIDEwMDApLnRvRml4ZWQoMik7CiAgICBhcGkuc2V0TWVzc2FnZVJlYWN0aW9uKCLinIUiLCBldmVudC5tZXNzYWdlSUQsICgpID0+IHt9LCB0cnVlKTsKICAgIHJldHVybiBhcGkuc2VuZE1lc3NhZ2UoewogICAgICBib2R5OiBgSEVSRSdTIFlPVVIgR0VORVJBVEUgSU1BR0UgQkFCWSBcblxuIOKAoiBQcm9tcHQ6JHtwcm9tcHRUZXh0fVxuIOKAoiBSYXRpbzoke3JhdGlvVmFsdWV9XG4g4oCiIFRpbWU6JHt0aW1lVGFrZW59c2AsCiAgICAgIGF0dGFjaG1lbnQ6IHJlc3BvbnNlLmRhdGEsCiAgICB9LCBldmVudC50aHJlYWRJRCwgZXZlbnQubWVzc2FnZUlEKTsKICB9IGNhdGNoIChlKSB7CiAgICBhcGkuc2VuZE1lc3NhZ2UoYPCfkXJlcnJvciBiYWJ5LCBjb250YWN0IE1haE1VREBlcnJvcjogJHtlLm1lc3NhZ2V9YCwgZXZlbnQudGhyZWFkSUQpOwogIH0KfSkoKTs=";
+    if (!prompt || !/^[\x00-\x7F]*$/.test(prompt)) {
+        return message.reply("❌ Please provide a valid English prompt to generate an image.");
+    }
 
-  return eval(
-    Buffer.from(_0x12a9, "base64").toString()
-  );
+    message.reaction("⏳", event.messageID);
+    let tempFilePath; 
+
+    try {
+      const fullApiUrl = `${API_ENDPOINT}?prompt=${encodeURIComponent(prompt.trim())}`;
+      
+      const imageDownloadResponse = await axios.get(fullApiUrl, {
+          responseType: 'stream',
+          timeout: 60000 // Extended timeout for large models
+      });
+
+      if (imageDownloadResponse.status !== 200) {
+           throw new Error(`API request failed with status code ${imageDownloadResponse.status}.`);
+      }
+      
+      const cacheDir = path.join(__dirname, 'cache');
+      if (!fs.existsSync(cacheDir)) {
+          await fs.mkdirp(cacheDir); 
+      }
+      
+      tempFilePath = path.join(cacheDir, `fluxpro_output_${Date.now()}.png`);
+      
+      const writer = fs.createWriteStream(tempFilePath);
+      imageDownloadResponse.data.pipe(writer);
+
+      await new Promise((resolve, reject) => {
+        writer.on("finish", resolve);
+        writer.on("error", (err) => {
+          writer.close();
+          reject(err);
+        });
+      });
+
+      message.reaction("✅", event.messageID);
+      await message.reply({
+        body: `Flux Pro image generated ✨`,
+        attachment: fs.createReadStream(tempFilePath)
+      });
+
+    } catch (error) {
+      message.reaction("❌", event.messageID);
+      
+      let errorMessage = "An error occurred during image generation.";
+      if (error.response) {
+         if (error.response.status === 404) {
+             errorMessage = "API Endpoint not found (404).";
+         } else {
+             errorMessage = `HTTP Error: ${error.response.status}`;
+         }
+      } else if (error.code === 'ETIMEDOUT') {
+         errorMessage = `Generation timed out. Try a simpler prompt or check API status.`;
+      } else if (error.message) {
+         errorMessage = `${error.message}`;
+      } else {
+         errorMessage = `Unknown error.`;
+      }
+
+      console.error("FluxPro Command Error:", error);
+      message.reply(`❌ ${errorMessage}`);
+    } finally {
+      if (tempFilePath && fs.existsSync(tempFilePath)) {
+          await fs.unlink(tempFilePath); 
+      }
+    }
+  }
 };
