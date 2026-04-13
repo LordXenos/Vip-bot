@@ -42,7 +42,7 @@ module.exports = {
     const response =
 `🎀 ⋆˚✿°────୨ᰔ୧────°✿˚ ✨
 
-🕊️🥀  𝐁𝐨𝐭 𝐒𝐭𝐚𝐭𝐮𝐬  🌷🤍
+🕊️🥀  𝐁𝐨𝐭 𝐒𝐭𝐚𝐭𝐮𝐬  🤍✨
 
 ᥫ᭡ 𝐁𝐨𝐭 𝐔𝐩𝐭𝐢𝐦𝐞 : ${systemInfo.botUptime} ⏳
 ᥫ᭡ 𝐒𝐲𝐬𝐭𝐞𝐦 𝐔𝐩𝐭𝐢𝐦𝐞 : ${systemInfo.systemUptime} 🕰️
@@ -56,7 +56,7 @@ module.exports = {
 🎀˚✿ 𝐁𝐨𝐭 Owner :
 ୨ᰔ୧ ❤️‍🩹SIYAM 🌸🦋 ୨ᰔ୧
 
-🎀✨ ˚✿°────୨ᰔ୧────°✿˚ 🫶🏻`
+🎀✨ ˚✿°───୨ᰔ୧───°✿˚ 🫶🏻`
 
     message.reply({ body: response, attachment: fs.createReadStream(__dirname + '/rasin/cutiee0.jpg')})
   }
