@@ -94,7 +94,7 @@ module.exports = function(defaultFuncs, api, ctx) {
 		}
 
 		const form = {
-			doc_id: "9734829906576883",
+			doc_id: "24474714052117636",
 			variables: JSON.stringify({ "id": themeID }),
 			fb_api_caller_class: "RelayModern",
 			fb_api_req_friendly_name: "MWPThreadThemeProviderQuery"
