@@ -38,7 +38,7 @@ module.exports = {
                 },
                 en: {
                         noTarget: "× Baby, mention or reply to someone to slap!",
-                        success: "Here's a slap! 💥",
+                        success: "ja shor🫩🫵🏻! 💥",
                         error: "× Failed to slap: %1. Contact MahMUD for help."
                 }
         },
