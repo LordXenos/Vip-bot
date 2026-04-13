@@ -40,7 +40,7 @@ module.exports = {
 
         if (response.data.status === "success") {
           message.reply({
-            body: `🧸🎀 ⋆˚✿°────୨ᰔ୧────°✿˚ ✨🌸
+            body: `🧸 ⋆˚✿°───୨ᰔ୧───°✿˚ ✨🌸
 
 ✿ 𝐓𝐞𝐚𝐜𝐡𝐢𝐧𝐠 𝐒𝐮𝐜𝐜𝐞𝐬𝐬𝐟𝐮𝐥 🥹🎀  
 
