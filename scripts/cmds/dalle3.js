@@ -1,41 +1,75 @@
-const axios = require("axios");
+const axios = require('axios');
+const fs = require('fs-extra'); 
+const path = require('path');
 
-const baseApiUrl = async () => {
-  const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/HINATA/main/baseApiUrl.json");
-  return base.data.mahmud;
-};
+const API_ENDPOINT = "https://neokex-img-api.vercel.app/generate"; 
 
-module.exports.config = {
-  name: "dalle3",
-  version: "1.7",
-  role: 0,
-  author: "MahMUD",
-  category: "Image gen",
-  guide: "{pn} [prompt]",
-  countDown: 10
-};
+module.exports = {
+  config: {
+    name: "dalle3",
+    aliases: ["dalle"],
+    version: "1.0", 
+    author: "NeoKEX",
+    countDown: 15,
+    role: 0,
+    longDescription: "Generate an image using the DALL-E 3 model.",
+    category: "ai-image",
+    guide: {
+      en: "{pn} <prompt>"
+    }
+  },
 
-module.exports.onStart = async ({ api, event, args }) => {
-  const prompt = args.join(" ");
-  if (!prompt) return api.sendMessage("❌ Please provide a prompt.", event.threadID, event.messageID);
+  onStart: async function({ message, args, event }) {
+    
+    let prompt = args.join(" ");
 
-  try {
-    const wait = await api.sendMessage("🎨 Generating image, please wait...", event.threadID);
-    const res = await axios.post(`${await baseApiUrl()}/api/dalle3`, { prompt });
-    const imageUrl = res.data.imageUrl;
-    const imgRes = await axios.get(imageUrl, { responseType: "stream" });
+    if (!prompt) {
+        return message.reply("❌ Please provide a prompt.");
+    }
 
-    api.unsendMessage(wait.messageID);
-    api.sendMessage(
-      {
-        body: "✨ | Here's your image",
-        attachment: imgRes.data
-      },
-      event.threadID,
-      event.messageID
-    );
-  } catch (err) {
-    console.error("Dalle3 Error:", err.response?.data || err.message);
-    api.sendMessage("❌ Failed to generate image.", event.threadID, event.messageID);
+    message.reaction("🎨", event.messageID);
+    let tempFilePath; 
+
+    try {
+      const fullApiUrl = `${API_ENDPOINT}?prompt=${encodeURIComponent(prompt.trim())}&model=dalle3`;
+      
+      const response = await axios.get(fullApiUrl, {
+          responseType: 'stream',
+          timeout: 60000 
+      });
+
+      if (response.status !== 200) {
+           throw new Error(`API error: ${response.status}`);
+      }
+      
+      const cacheDir = path.join(__dirname, 'cache');
+      if (!fs.existsSync(cacheDir)) {
+          await fs.ensureDir(cacheDir); 
+      }
+      
+      tempFilePath = path.join(cacheDir, `dalle3_${Date.now()}.png`);
+      
+      const writer = fs.createWriteStream(tempFilePath);
+      response.data.pipe(writer);
+
+      await new Promise((resolve, reject) => {
+        writer.on("finish", resolve);
+        writer.on("error", reject);
+      });
+
+      message.reaction("✅", event.messageID);
+      await message.reply({
+        body: `DALL-E 3 image generated 🐦`,
+        attachment: fs.createReadStream(tempFilePath)
+      });
+
+    } catch (error) {
+      message.reaction("❌", event.messageID);
+      message.reply(`❌ Error: ${error.message}`);
+    } finally {
+      if (tempFilePath && fs.existsSync(tempFilePath)) {
+          await fs.unlink(tempFilePath);
+      }
+    }
   }
 };
