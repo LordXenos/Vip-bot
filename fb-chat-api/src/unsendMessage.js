@@ -29,6 +29,10 @@ module.exports = function (defaultFuncs, api, ctx) {
       .post("https://www.facebook.com/messaging/unsend_message/", ctx.jar, form)
       .then(utils.parseAndCheckLogin(ctx, defaultFuncs))
       .then(function (resData) {
+        if (!resData) {
+          throw { error: "No valid response from Facebook API. The IP might be blocked or the session is invalid." };
+        }
+        
         if (resData.error) {
           throw resData;
         }
@@ -43,3 +47,4 @@ module.exports = function (defaultFuncs, api, ctx) {
     return returnPromise;
   };
 };
+    
