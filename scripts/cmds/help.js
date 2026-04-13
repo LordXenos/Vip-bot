@@ -112,7 +112,7 @@ module.exports = {
 
       msg += `\n\n🌺╭──────────◊\n» 𝙏𝙤𝙩𝙖𝙡 𝙘𝙢𝙙𝙨: [ ${totalCommands} ]\n`;
 
-      msg += `» 𝙏𝙮𝙥𝙚 [ ${prefix}help <𝙘𝙢𝙙> ] 𝙩𝙤 𝙡𝙚𝙖𝙧𝙣 𝙪𝙨𝙖𝙜𝙚.\n owner 🩶─⃝‌‌Sɪʏꫝᴍ 🦋\n\n`;
+      msg += `» 𝙏𝙮𝙥𝙚 [ ${prefix}help <𝙘𝙢𝙙> ] 𝙩𝙤 𝙡𝙚𝙖𝙧𝙣 𝙪𝙨𝙖𝙜𝙚.\n ʙᴏᴛ ᴏᴡɴᴇʀ 🩶─⃝‌‌Sɪʏꫝᴍツ\n\n`;
 
       msg += ``; //......
 
