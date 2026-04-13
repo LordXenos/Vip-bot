@@ -1,50 +1,49 @@
-const axios = require('axios');
+const axios = require("axios");
 
 module.exports = {
   config: {
-    name: "p",
-    aliases: ["prompt"],
-    version: "1.3",
-    author: "Rasin",
+    name: "prompt",
+    version: "1.0",
+    author: "NeoKEX",
     countDown: 5,
     role: 0,
-    longDescription: {
-      vi: "",
-      en: "Get prompts"
-    },
-    category: "image"
+    shortDescription: { en: "Get prompt from image" },
+    longDescription: { en: "Extracts prompt from an image URL or replied image." },
+    category: "ai",
+    guide: { en: "{pn} [image url] or reply to an image" }
   },
-  onStart: async function ({ message, event, args }) {
+
+  onStart: async function ({ message, args, event, api }) {
+    let imageUrl = args[0];
+    const { type, messageReply } = event;
+
+    if (type === "message_reply" && messageReply.attachments?.[0]?.type === "photo") {
+      imageUrl = messageReply.attachments[0].url;
+    }
+
+    if (!imageUrl) return message.reply("Please provide an image URL or reply to an image.");
+
     try {
-      const promptText = args.join(" ").trim();
-      let imageUrl;
-      let response;
-
-      if (event.type === "message_reply") {
-        const attach = event.messageReply.attachments?.[0];
-        if (attach && ["photo", "sticker"].includes(attach.type)) {
-          imageUrl = attach.url;
-        } else {
-          return message.reply("Reply must be an image");
+      api.setMessageReaction("⏳", event.messageID);
+      
+      const res = await axios.get(`https://smfahim.xyz/ai/img2prompt/v3`, {
+        params: {
+          imageUrl: imageUrl,
+          language: "en",
+          model: "0"
         }
-      } 
-      else if (args[0]?.match(/https?:\/\/.*\.(?:png|jpg|jpeg|webp)/i)) {
-        imageUrl = args[0];
-      } 
-      else if (!promptText) {
-        return message.reply("Reply to an image");
+      });
+
+      if (res.data.success && res.data.prompt) {
+        message.reply(res.data.prompt);
+        api.setMessageReaction("✅", event.messageID);
+      } else {
+        throw new Error();
       }
 
-      if (imageUrl) {
-        response = await axios.get(`https://arshi-prompt-api.vercel.app/api/prompt?url=${encodeURIComponent(imageUrl)}`);
-        const description = response.data.prompt;
-        return message.reply(description);
-      }
-
-    
-    } catch (error) {
-      console.error(error.response?.data || error.message);
-      message.reply(`❌ | An error occurred: ${error.message}`);
+    } catch (err) {
+      api.setMessageReaction("❌", event.messageID);
+      message.reply("Failed to extract prompt from this image.");
     }
   }
 };
