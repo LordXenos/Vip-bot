@@ -39,7 +39,7 @@ module.exports = {
     };
 
     const createFlatDisplay = (title, contentLines) => {
-      return `😍 ${title} ✨\n` + 
+      return `👽 ${title} ✨\n` + 
         contentLines.map(line => `${line}`).join('\n') + '\n';
     };
 
@@ -174,7 +174,7 @@ module.exports = {
     }
 
     const userMoney = await usersData.get(senderID, "money");
-    return message.reply(createFlatDisplay("🤗 Your Balance", [
+    return message.reply(createFlatDisplay("→ Your Balance", [
       `💵 ${formatMoney(userMoney)}`,
     ]));
   }
