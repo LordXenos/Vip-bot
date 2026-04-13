@@ -1,3 +1,5 @@
+const utils = require("../utils.js");
+
 module.exports = function (defaultFuncs, api, ctx) {
   return function Bypass() {
     return defaultFuncs
@@ -10,13 +12,12 @@ module.exports = function (defaultFuncs, api, ctx) {
         doc_id: "23944951558421605",
         fb_dtsg: ctx.fb_dtsg
       })
-      .then(require("../utils.js").parseAndCheckLogin(ctx, defaultFuncs))
+      .then(utils.parseAndCheckLogin(ctx, defaultFuncs))
       .then(function (resData) {
-        if (resData.errors) {
-          throw resData;
-        }
+        if (!resData) return null;
+        if (resData.errors) throw resData;
         utils.log.info("fbScrap", "Done Bypassed!");
-        return resData.data.fb_scraping_warning_clear;
+        return resData.data?.fb_scraping_warning_clear;
       })
       .catch(function (err) {
         utils.log.error("fbScrap", err);
