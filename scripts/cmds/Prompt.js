@@ -1,46 +1,49 @@
 const axios = require("axios");
 
-const mahmud = async () => {
-  const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/HINATA/main/baseApiUrl.json");
-  return base.data.mahmud;
-};
-
 module.exports = {
   config: {
     name: "prompt",
-    aliases: ["p"],
-    version: "1.7",
-    author: "MahMUD",
+    version: "1.0",
+    author: "NeoKEX",
+    countDown: 5,
+    role: 0,
+    shortDescription: { en: "Get prompt from image" },
+    longDescription: { en: "Extracts prompt from an image URL or replied image." },
     category: "ai",
-    guide: {
-      en: "{pn} reply with an image",
-    },
+    guide: { en: "{pn} [image url] or reply to an image" }
   },
 
-  onStart: async function ({ api, args, event }) {
-    const obfuscatedAuthor = String.fromCharCode(77, 97, 104, 77, 85, 68);   if (module.exports.config.author !== obfuscatedAuthor) {  return api.sendMessage("You are not authorized to change the author name.", event.threadID, event.messageID);   }
-    const apiUrl = `${await mahmud()}/api/prompt`;
-    let prompt = args.join(" ") || "Describe this image";
+  onStart: async function ({ message, args, event, api }) {
+    let imageUrl = args[0];
+    const { type, messageReply } = event;
 
-    if (event.type === "message_reply" && event.messageReply.attachments[0]?.type === "photo") {
-      try {
-        const response = await axios.post(apiUrl, {
-          imageUrl: event.messageReply.attachments[0].url,
-          prompt
-        }, {
-          headers: { "Content-Type": "application/json", "author": module.exports.config.author }
-        });
-
-        const reply = response.data.error || response.data.response || "No response";
-        api.sendMessage(reply, event.threadID, event.messageID);
-        return api.setMessageReaction("🪽", event.messageID, () => {}, true);
-
-      } catch (error) {
-        api.sendMessage("moye moye🥹", event.threadID, event.messageID);
-        return api.setMessageReaction("❌", event.messageID, () => {}, true);
-      }
+    if (type === "message_reply" && messageReply.attachments?.[0]?.type === "photo") {
+      imageUrl = messageReply.attachments[0].url;
     }
 
-    api.sendMessage("Please reply with an image.", event.threadID, event.messageID);
+    if (!imageUrl) return message.reply("Please provide an image URL or reply to an image.");
+
+    try {
+      api.setMessageReaction("⏳", event.messageID);
+      
+      const res = await axios.get(`https://smfahim.xyz/ai/img2prompt/v3`, {
+        params: {
+          imageUrl: imageUrl,
+          language: "en",
+          model: "0"
+        }
+      });
+
+      if (res.data.success && res.data.prompt) {
+        message.reply(res.data.prompt);
+        api.setMessageReaction("✅", event.messageID);
+      } else {
+        throw new Error();
+      }
+
+    } catch (err) {
+      api.setMessageReaction("❌", event.messageID);
+      message.reply("Failed to extract prompt from this image.");
+    }
   }
 };
