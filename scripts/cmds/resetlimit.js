@@ -8,7 +8,7 @@ const gameFiles = {
 	animal: path.join(__dirname, "..", "..", "dailyAnimalLimit.json")
 };
 
-const AUTHORIZED_UID = "61581548070081";
+const AUTHORIZED_UID = "100065590940242";
 
 module.exports = {
 	config: {
