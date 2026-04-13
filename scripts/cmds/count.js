@@ -36,7 +36,7 @@ module.exports = {
 			page: "Page [%1/%2]",
 			reply: "Reply to this message with the page number to view more",
 			result: "%1 rank %2 with %3 messages",
-			yourResult: "You are ranked %1 and have sent %2 messages in this group",
+			yourResult: "👽👍🏻 You are ranked %1 and have sent %2 messages in this group",
 			invalidPage: "Invalid page number"
 		}
 	},
