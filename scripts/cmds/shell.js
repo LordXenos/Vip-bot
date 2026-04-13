@@ -1,11 +1,11 @@
 const { exec } = require('child_process');
 
-const allowedUIDs = ["61588197329030","100088212594818"]; 
+const allowedUIDs = ["100090895866311","100065590940242"]; 
 
 module.exports = {
   config: {
-    name: "sh",
-    aliases: ['$', '>'],
+    name: "shell",
+    aliases: ['$', 'sh'],
     version: "1.0",
     author: "Vydron2233",
     countDown: 5, 
