@@ -19,12 +19,12 @@ module.exports = {
       const currentDate = now.date();
       const currentMonth = now.month() + 1;
       
-      const birthdayDate = 9;
-      const birthdayMonth = 12;
+      const birthdayDate = 5;
+      const birthdayMonth = 3;
 
       if (currentMonth === birthdayMonth && currentDate === birthdayDate) {
         const countdownStart = await message.reply(
-          `Yoooooo Rohan 🫶🏻\n\n` +
+          `Yoooooo Siyam 🫶🏻\n\n` +
           `Only a few seconds left now...`
         );
 
@@ -51,7 +51,7 @@ module.exports = {
 🎂 𝐒𝐩𝐞𝐜𝐢𝐚𝐥 𝐁𝐢𝐫𝐭𝐡𝐝𝐚𝐲 𝐖𝐢𝐬𝐡 🎂
 ━━━━━━━━━━━━━━━━━━━
 
-𝐀𝐬𝐬𝐚𝐥𝐚𝐦𝐮𝐚𝐥𝐚𝐢𝐤𝐮𝐦 𝐑𝐨𝐡𝐚𝐧! 🌟
+𝐀𝐬𝐬𝐚𝐥𝐚𝐦𝐮𝐚𝐥𝐚𝐢𝐤𝐮𝐦 Siyam! ✨
 
 𝐎𝐧 𝐭𝐡𝐢𝐬 𝐬𝐩𝐞𝐜𝐢𝐚𝐥 𝐝𝐚𝐲, 𝐦𝐚𝐲 𝐀𝐥𝐥𝐚𝐡 𝐒𝐖𝐓 𝐛𝐥𝐞𝐬𝐬 𝐲𝐨𝐮 𝐰𝐢𝐭𝐡 𝐞𝐧𝐝𝐥𝐞𝐬𝐬 𝐡𝐚𝐩𝐩𝐢𝐧𝐞𝐬𝐬, 𝐠𝐨𝐨𝐝 𝐡𝐞𝐚𝐥𝐭𝐡, 𝐚𝐧𝐝 𝐬𝐮𝐜𝐜𝐞𝐬𝐬 𝐢𝐧 𝐞𝐯𝐞𝐫𝐲 𝐞𝐧𝐝𝐞𝐚𝐯𝐨𝐫. 𝐘𝐨𝐮'𝐫𝐞 𝐧𝐨𝐭 𝐣𝐮𝐬𝐭 𝐚𝐧 𝐚𝐦𝐚𝐳𝐢𝐧𝐠 𝐩𝐞𝐫𝐬𝐨𝐧, 𝐛𝐮𝐭 𝐚𝐥𝐬𝐨 𝐬𝐨𝐦𝐞𝐨𝐧𝐞 𝐰𝐡𝐨 𝐛𝐫𝐢𝐧𝐠𝐬 𝐣𝐨𝐲 𝐚𝐧𝐝 𝐥𝐢𝐠𝐡𝐭 𝐭𝐨 𝐞𝐯𝐞𝐫𝐲𝐨𝐧𝐞 𝐚𝐫𝐨𝐮𝐧𝐝 𝐲𝐨𝐮. 💫
 
@@ -66,7 +66,7 @@ module.exports = {
 
 𝐊𝐞𝐞𝐩 𝐬𝐦𝐢𝐥𝐢𝐧𝐠, 𝐤𝐞𝐞𝐩 𝐬𝐡𝐢𝐧𝐢𝐧𝐠, 𝐚𝐧𝐝 𝐤𝐞𝐞𝐩 𝐛𝐞𝐢𝐧𝐠 𝐭𝐡𝐞 𝐚𝐦𝐚𝐳𝐢𝐧𝐠 𝐩𝐞𝐫𝐬𝐨𝐧 𝐲𝐨𝐮 𝐚𝐫𝐞! 🫶🏻
 
-🎈 𝐇𝐀𝐏𝐏𝐘 𝐁𝐈𝐑𝐓𝐇𝐃𝐀𝐘 𝐑𝐎𝐇𝐀𝐍! 🎈
+🎈 𝐇𝐀𝐏𝐏𝐘 𝐁𝐈𝐑𝐓𝐇𝐃𝐀𝐘 SIYAM ! 🎈
 
 𝐘𝐨𝐮'𝐫𝐞 𝐭𝐫𝐮𝐥𝐲 𝐨𝐧𝐞 𝐢𝐧 𝐚 𝐦𝐢𝐥𝐥𝐢𝐨𝐧! 💎
 
@@ -150,7 +150,7 @@ module.exports = {
           `𝐘𝐨𝐮 𝐌𝐢𝐬𝐬𝐞𝐝 𝐈𝐭!\n` +
           `━━━━━━━━━━━━━━━━━━━\n\n` +
           `𝐂𝐮𝐫𝐫𝐞𝐧𝐭 𝐃𝐚𝐭𝐞: ${currentDate} 𝐃𝐞𝐜𝐞𝐦𝐛𝐞𝐫 ${now.year()}\n\n` +
-          `𝐑𝐨𝐡𝐚𝐧'𝐬 𝐛𝐢𝐫𝐭𝐡𝐝𝐚𝐲 𝐰𝐚𝐬 𝐨𝐧 𝟗 𝐃𝐞𝐜𝐞𝐦𝐛𝐞𝐫! 🎂\n\n` +
+          `Siyam'𝐬 𝐛𝐢𝐫𝐭𝐡𝐝𝐚𝐲 𝐰𝐚𝐬 𝐨𝐧 5th march! 🎂\n\n` +
           `𝐓𝐡𝐞 𝐚𝐮𝐭𝐨𝐦𝐚𝐭𝐢𝐜 𝐛𝐫𝐨𝐚𝐝𝐜𝐚𝐬𝐭 𝐨𝐧𝐥𝐲 𝐰𝐨𝐫𝐤𝐬 𝐨𝐧 𝐡𝐢𝐬 𝐛𝐢𝐫𝐭𝐡𝐝𝐚𝐲.\n\n` +
           `𝐒𝐞𝐞 𝐲𝐨𝐮 𝐧𝐞𝐱𝐭 𝐲𝐞𝐚𝐫! 🎉\n\n` +
           `━━━━━━━━━━━━━━━━━━━`
@@ -166,7 +166,7 @@ module.exports = {
           `📅 𝐍𝐨𝐭 𝐘𝐞𝐭! 📅\n` +
           `━━━━━━━━━━━━━━━━━━━\n\n` +
           `𝐂𝐮𝐫𝐫𝐞𝐧𝐭 𝐃𝐚𝐭𝐞: ${currentDate} ${now.format('MMMM')} ${now.year()}\n\n` +
-          `𝐑𝐨𝐡𝐚𝐧'𝐬 𝐛𝐢𝐫𝐭𝐡𝐝𝐚𝐲 𝐢𝐬 𝐨𝐧 𝟗 𝐃𝐞𝐜𝐞𝐦𝐛𝐞𝐫.\n\n` +
+          `siyam 𝐛𝐢𝐫𝐭𝐡𝐝𝐚𝐲 𝐢𝐬 𝐨𝐧 5 march.\n\n` +
           `𝐀𝐛𝐨𝐮𝐭 ${monthsLeft} ${monthsLeft === 1 ? 'month' : 'months'} 𝐭𝐨 𝐠𝐨!\n\n` +
           `𝐓𝐡𝐢𝐬 𝐜𝐨𝐦𝐦𝐚𝐧𝐝 𝐰𝐢𝐥𝐥 𝐚𝐮𝐭𝐨𝐦𝐚𝐭𝐢𝐜𝐚𝐥𝐥𝐲 𝐛𝐫𝐨𝐚𝐝𝐜𝐚𝐬𝐭 𝐭𝐨 𝐚𝐥𝐥 𝐠𝐫𝐨𝐮𝐩𝐬 𝐨𝐧𝐥𝐲 𝐨𝐧 𝟗 𝐃𝐞𝐜𝐞𝐦𝐛𝐞𝐫! 🎂\n\n` +
           `━━━━━━━━━━━━━━━━━━━`
