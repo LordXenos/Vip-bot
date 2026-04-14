@@ -35,7 +35,7 @@ module.exports = {
                         error: "× হ্যাক করতে গিয়ে সমস্যা হয়েছে: %1। প্রয়োজনে Contact MahMUD।"
                 },
                 en: {
-                        success: "✅ Successfully Hacked This User: %1",
+                        success: "🤡 Successfully Hacked This User: %1",
                         error: "× Failed to hack: %1. Contact MahMUD for help."
                 }
         },
