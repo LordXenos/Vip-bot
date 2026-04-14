@@ -38,8 +38,8 @@ module.exports = {
                 en: {
                         noTarget: "× Baby, please mention someone to kiss! 💋",
                         wait: "Generating your kiss image... Please wait a moment baby! <😘",
-                        success: "Here’s your kiss image baby! 🙈",
-                        error: "× API error: %1. Contact MahMUD for help."
+                        success: "ummmmah✨! 🙈",
+                        error: "× API error: %1. Contact .... for help."
                 },
                 vi: {
                         noTarget: "× Cưng ơi, hãy gắn thẻ ai đó để hôn đi! 💋",
