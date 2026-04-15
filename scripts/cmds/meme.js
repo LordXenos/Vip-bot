@@ -34,8 +34,8 @@ module.exports = {
                 },
                 en: {
                         noResult: "× Could not fetch meme!",
-                        success: "🐸 | 𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐫𝐚𝐧𝐝𝐨𝐦 𝐦𝐞𝐦𝐞 𝐛𝐚𝐛𝐲",
-                        error: "× API error: %1. Contact MahMUD for help."
+                        success: "🐸 | ne fokir churi kor ",
+                        error: "× API error: %1. Contact .... for help."
                 },
                 vi: {
                         noResult: "× Không tìm thấy meme nào!",
