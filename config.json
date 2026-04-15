@@ -28,13 +28,13 @@
     "bio": "The difference between a believer and a disbeliever is Salah — 🤍✨"
   },
   "notesLanguage": "change to your language with ISO 639-1 code, available languages: vi (Vietnamese), en (English)",
-  "nickNameBot": "─꯭─⃝‌‌愛|Mɪᴋᴀsᴀ🎀🦋",
+  "nickNameBot": "─꯭─⃝‌‌愛|Mɪᴋᴀsᴀ🥹🎀",
   "prefix": "!",
   "api": "https://rasin-apis.onrender.com",
   "approval": false,
   "reactBy": {
     "delete": [
-      "🙃",
+      "💔",
       "😡",
       "😠"
     ],
@@ -180,7 +180,7 @@
     "selfListen": false,
     "selfListenEvent": false,
     "autoMarkDelivery": false,
-    "autoReconnect": false,
+    "autoReconnect": true,
     "notes": "Document here: https://github.com/ntkhang03/fb-chat-api/blob/master/DOCS.md#apisetoptionsoptions "
   }
 }
