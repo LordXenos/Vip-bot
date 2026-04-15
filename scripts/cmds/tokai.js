@@ -61,14 +61,14 @@ module.exports = {
       fs.writeFileSync(filePath, response.data);
       
       api.sendMessage(
-        { attachment: fs.createReadStream(filePath), body: "Here's your tokai image 🐸" },
+        { attachment: fs.createReadStream(filePath), body: "gwk gwk gwk🐸" },
         threadID,
         () => fs.unlinkSync(filePath),
         messageID
       );
 
     } catch (err) {
-      api.sendMessage(`🥹error, contact MahMUD.`, threadID, messageID);
+      api.sendMessage(`🥹error, contact .....`, threadID, messageID);
     }
   }
 };
