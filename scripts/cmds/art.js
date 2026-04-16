@@ -33,7 +33,7 @@ module.exports = {
                         list_header: "✅ | 𝐀𝐯𝐚𝐢𝐥𝐚𝐛𝐥𝐞 𝐀𝐫𝐭 𝐒𝐭𝐲𝐥𝐞𝐬 𝐋𝐢𝐬𝐭:\n\n",
                         no_image: "• Baby, অনুগ্রহ করে একটি ছবিতে রিপ্লাই দিন।",
                         invalid_style: "❌ স্টাইল নম্বর অবশ্যই ১ থেকে ১০০ এর মধ্যে হতে হবে।",
-                        generating: "🔄 | Applying art, please wait...\n• Style: %1\n• Style name: %2",
+                        generating: "🎨 | Applying art, please wait...🪄\n• Style: %1\n• Style name: %2",
                         error: "❌ An error occurred: contact MahMUD %1",
                         success: "✅ | Here's your art image baby\n• Style: %1\n• Style name: %2"
                 },
@@ -41,7 +41,7 @@ module.exports = {
                         list_header: "✅ | 𝐀𝐯𝐚𝐢𝐥𝐚𝐛𝐥𝐞 𝐀𝐫𝐭 𝐒𝐭𝐲𝐥𝐞𝐬 𝐋𝐢𝐬𝐭:\n\n",
                         no_image: "• Baby, Please reply to a photo.",
                         invalid_style: "❌ Style number must be between 1 and 100.",
-                        generating: "🔄 | Applying art, please wait...\n• Style: %1\n• Style name: %2",
+                        generating: "🎨 | Applying art, please wait...\n• Style: %1\n• Style name: %2",
                         error: "❌ An error occurred: contact MahMUD %1",
                         success: "✅ | Here's your art image baby\n• Style: %1\n• Style name: %2"
                 },
