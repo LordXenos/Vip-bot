@@ -1,66 +1,87 @@
-const axios = require("axios");
-const { createReadStream } = require("fs");
-const { writeFile } = require("fs/promises");
-const path = require("path");
+const axios = require('axios');
+const fs = require('fs-extra'); 
+const path = require('path');
+
+const API_ENDPOINT = "https://neokex-img-api.vercel.app/generate"; 
 
 module.exports = {
   config: {
-    name: "dalle",
-    aliases: ['imagine'],
-    version: "1.0.0",
-    prefix: false,
-    author: "Rasin",
-    countDown: 10,
-    role: 2,
-    description: "Gen Image Using DALL-E 3",
-    category: "image generation",
+    name: "imagen4",
+    aliases: ["img4", "gen4"],
+    version: "1.0", 
+    author: "NeoKEX",
+    countDown: 15,
+    role: 0,
+    longDescription: "Generate a high-quality image using the Imagen 4 model.",
+    category: "ai-image",
     guide: {
-      en: "   {pn}dalle [prompt]"
-    },
+      en: "{pn} <prompt>"
+    }
   },
 
-  onStart: async function ({ event, args, message, api }) {
-    const rasinAPI = "https://rasin-apis.onrender.com/api/rasin/dalle";
-    const prompt = args.join(" ");
+  onStart: async function({ message, args, event }) {
+    
+    let prompt = args.join(" ");
 
-    if (!prompt) return message.reply("Please provide a prompt!");
+    if (!prompt) {
+        return message.reply("❌ Please provide a prompt to generate an image.");
+    }
+
+    message.reaction("🎨", event.messageID);
+    let tempFilePath; 
 
     try {
-      const startTime = Date.now();
-      const waitMessage = await message.reply("𝐆𝐞𝐧𝐞𝐫𝐚𝐭𝐢𝐧𝐠 𝐢𝐦𝐚𝐠𝐞...");
-      api.setMessageReaction("⌛", event.messageID, () => {}, true);
-
-      const apiUrl = `${rasinAPI}?prompt=${encodeURIComponent(prompt)}&apikey=rs_646sp6jj-vawq-1w25-rflw-z8`;
-      const res = await axios.get(apiUrl);
-
-      const dalleImages = res.data?.dalle;
-
-      if (!dalleImages || dalleImages.length === 0) {
-        return message.reply("No images returned!");
-      }
-
-      const imageBuffers = [];
-
-      for (let i = 0; i < dalleImages.length; i++) {
-        const imgRes = await axios.get(dalleImages[i].url, { responseType: "arraybuffer" });
-        const buffer = Buffer.from(imgRes.data, "binary");
-        const filePath = path.join(__dirname, `/tmp/dalle_img_${i}.png`);
-        await writeFile(filePath, buffer);
-        imageBuffers.push(createReadStream(filePath));
-      }
-
-      const time = ((Date.now() - startTime) / 1000).toFixed(2);
-      api.setMessageReaction("✅", event.messageID, () => {}, true);
-      message.unsend(waitMessage.messageID);
-
-      message.reply({
-        body: `✅ 𝐇𝐞𝐫𝐞 𝐚𝐫𝐞 𝐲𝐨𝐮𝐫 𝐠𝐞𝐧𝐞𝐫𝐚𝐭𝐞𝐝 𝐢𝐦𝐚𝐠𝐞𝐬 (${time}s)`,
-        attachment: imageBuffers
+      const fullApiUrl = `${API_ENDPOINT}?prompt=${encodeURIComponent(prompt.trim())}&m=imagen4`;
+      
+      const imageDownloadResponse = await axios.get(fullApiUrl, {
+          responseType: 'stream',
+          timeout: 60000
       });
 
-    } catch (e) {
-      console.error(e);
-      message.reply(`❌ Error: ${e.message || "Something went wrong!"}`);
+      if (imageDownloadResponse.status !== 200) {
+           throw new Error(`API returned status ${imageDownloadResponse.status}`);
+      }
+      
+      const cacheDir = path.join(__dirname, 'cache');
+      if (!fs.existsSync(cacheDir)) {
+          await fs.ensureDirSync(cacheDir); 
+      }
+      
+      tempFilePath = path.join(cacheDir, `imagen4_${Date.now()}.png`);
+      
+      const writer = fs.createWriteStream(tempFilePath);
+      imageDownloadResponse.data.pipe(writer);
+
+      await new Promise((resolve, reject) => {
+        writer.on("finish", resolve);
+        writer.on("error", (err) => {
+          writer.close();
+          reject(err);
+        });
+      });
+
+      message.reaction("✅", event.messageID);
+      await message.reply({
+        body: `✨ Imagen 4 image Generated`,
+        attachment: fs.createReadStream(tempFilePath)
+      });
+
+    } catch (error) {
+      message.reaction("❌", event.messageID);
+      console.error("Imagen4 Error:", error);
+      
+      let msg = "Failed to generate image.";
+      if (error.code === 'ECONNABORTED') msg = "The request timed out. The server is taking too long.";
+      
+      message.reply(`❌ ${msg}\nError: ${error.message}`);
+    } finally {
+      if (tempFilePath && fs.existsSync(tempFilePath)) {
+          try {
+            await fs.unlink(tempFilePath);
+          } catch (e) {
+            console.error("Cleanup error:", e);
+          }
+      }
     }
   }
 };
