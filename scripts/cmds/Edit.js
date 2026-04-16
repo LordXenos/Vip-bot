@@ -40,9 +40,9 @@ module.exports = {
                 },
                 en: {
                         noInput: "× Baby, please reply to a photo with your prompt to edit it! 🪄",
-                        wait: "🔄 | Editing your image, please wait...",
+                        wait: "🎨 | Editing your image, please wait...🪄",
                         success: "✅ Here's your Edited image\nPrompt: %1",
-                        error: "× Failed to edit: %1. Contact MahMUD for help."
+                        error: "× Failed to edit: %1. Contact .... for help."
                 },
                 vi: {
                         noInput: "× Cưng ơi, vui lòng phản hồi ảnh kèm lời nhắc chỉnh sửa! 🪄",
