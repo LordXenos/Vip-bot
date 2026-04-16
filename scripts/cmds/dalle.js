@@ -1,87 +1,43 @@
 const axios = require('axios');
-const fs = require('fs-extra'); 
 const path = require('path');
-
-const API_ENDPOINT = "https://neokex-img-api.vercel.app/generate"; 
+const fs = require('fs-extra');
 
 module.exports = {
   config: {
-    name: "imagen4",
-    aliases: ["img4", "gen4"],
-    version: "1.0", 
-    author: "NeoKEX",
-    countDown: 15,
+    name: "genx",
+    aliases: [],
+    version: "1.0",
+    author: "Vex_Kshitiz",
+    countDown: 50,
     role: 0,
-    longDescription: "Generate a high-quality image using the Imagen 4 model.",
-    category: "ai-image",
+    longDescription: {
+      vi: '',
+      en: "Generate images"
+    },
+    category: "ai",
     guide: {
+      vi: '',
       en: "{pn} <prompt>"
     }
   },
 
-  onStart: async function({ message, args, event }) {
-    
-    let prompt = args.join(" ");
-
-    if (!prompt) {
-        return message.reply("❌ Please provide a prompt to generate an image.");
-    }
-
-    message.reaction("🎨", event.messageID);
-    let tempFilePath; 
-
+  onStart: async function ({ api, commandName, event, args }) {
     try {
-      const fullApiUrl = `${API_ENDPOINT}?prompt=${encodeURIComponent(prompt.trim())}&m=imagen4`;
-      
-      const imageDownloadResponse = await axios.get(fullApiUrl, {
-          responseType: 'stream',
-          timeout: 60000
-      });
+      api.setMessageReaction("✅", event.messageID, (a) => {}, true);
+      const prompt = args.join(' ');
 
-      if (imageDownloadResponse.status !== 200) {
-           throw new Error(`API returned status ${imageDownloadResponse.status}`);
-      }
-      
-      const cacheDir = path.join(__dirname, 'cache');
-      if (!fs.existsSync(cacheDir)) {
-          await fs.ensureDirSync(cacheDir); 
-      }
-      
-      tempFilePath = path.join(cacheDir, `imagen4_${Date.now()}.png`);
-      
-      const writer = fs.createWriteStream(tempFilePath);
-      imageDownloadResponse.data.pipe(writer);
+      const response = await axios.get(`https://dall-e-tau-steel.vercel.app/kshitiz?prompt=${encodeURIComponent(prompt)}`);
+      const imageUrl = response.data.response;
 
-      await new Promise((resolve, reject) => {
-        writer.on("finish", resolve);
-        writer.on("error", (err) => {
-          writer.close();
-          reject(err);
-        });
-      });
+      const imgResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+      const imgPath = path.join(__dirname, 'cache', 'dalle_image.jpg');
+      await fs.outputFile(imgPath, imgResponse.data);
+      const imgData = fs.createReadStream(imgPath);
 
-      message.reaction("✅", event.messageID);
-      await message.reply({
-        body: `✨ Imagen 4 image Generated`,
-        attachment: fs.createReadStream(tempFilePath)
-      });
-
+      await api.sendMessage({ body: '', attachment: imgData }, event.threadID, event.messageID);
     } catch (error) {
-      message.reaction("❌", event.messageID);
-      console.error("Imagen4 Error:", error);
-      
-      let msg = "Failed to generate image.";
-      if (error.code === 'ECONNABORTED') msg = "The request timed out. The server is taking too long.";
-      
-      message.reply(`❌ ${msg}\nError: ${error.message}`);
-    } finally {
-      if (tempFilePath && fs.existsSync(tempFilePath)) {
-          try {
-            await fs.unlink(tempFilePath);
-          } catch (e) {
-            console.error("Cleanup error:", e);
-          }
-      }
+      console.error("Error:", error);
+      api.sendMessage("Error generating image. Please try again later.", event.threadID, event.messageID);
     }
   }
 };
