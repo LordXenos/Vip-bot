@@ -62,7 +62,7 @@ module.exports = {
 
       message.reaction("✅", event.messageID);
       await message.reply({
-        body: `✨ Imagen 4 image Generated`,
+        body: `✨ Imagen 4 image Generated🪄`,
         attachment: fs.createReadStream(tempFilePath)
       });
 
