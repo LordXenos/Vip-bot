@@ -86,14 +86,14 @@ module.exports = {
                         const genderText = user.gender === 1 ? "Girl" : user.gender === 2 ? "Boy" : "Other";
                         
                         const msg = `╭────[ 𝐔𝐒𝐄𝐑 𝐈𝐍𝐅𝐎 ]
-├‣ 𝙽𝚊𝚖𝚎: ${user.name || "Unknown"}
-├‣ 𝙶𝚎𝚗𝚍𝚎𝚛: ${genderText}
-├‣ 𝚄𝙸𝙳: ${uid}
-├‣ 𝙲𝚕𝚊𝚜𝚜: FRIEND
-├‣ 𝚄𝚜𝚎𝚛𝚗𝚊𝚖𝚎: ${user.vanity || "none"}
-├‣ 𝙱𝚒𝚛𝚝𝚑𝚍𝚊𝚢: Private
-├‣ 𝙽𝚒𝚌𝚔𝙽𝚊𝚖𝚎: None
-╰‣ 𝙵𝚛𝚒𝚎𝚗𝚍 𝚠𝚒𝚝𝚑 𝚋𝚘𝚝: ${user.isFriend ? "Yes ✅" : "No ❌"}
+├‣ 𝙽𝚊𝚖𝚎 ✨: ${user.name || "Unknown"}
+├‣ 𝙶𝚎𝚗𝚍𝚎𝚛 🫥: ${genderText}
+├‣ 𝚄𝙸𝙳 🤷🏻: ${uid}
+├‣ 𝙲𝚕𝚊s𝚜 🥀: FRIEND
+├‣ 𝚄𝚜𝚎𝚛𝚗𝚊𝚖𝚎 🕊️: ${user.vanity || "none"}
+├‣ 𝙱𝚒𝚛𝚝𝚑𝚍𝚊𝚢 ✨: Private
+├‣ 𝙽𝚒𝚌𝚔𝙽𝚊𝚖𝚎 🌸: None
+╰‣ 𝙵𝚛𝚒𝚎𝚗𝚍 𝚠𝚒𝚝𝚑 𝚋𝚘𝚝 👍🏻: ${user.isFriend ? "Yes ✅" : "No ❌"}
 
 ╭────[ 𝐔𝐒𝐄𝐑 𝐒𝐓𝐀𝐓𝐒 ]
 ├‣ 𝚄𝚜𝚎𝚛 𝚁𝚊𝚗𝚔: #${expRank}/${allUsers.length}
