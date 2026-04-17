@@ -4,7 +4,7 @@ const path = require("path");
 
 module.exports = {
   config: {
-    name: "apod",
+    name: "nasa",
     aliases: ["nasa", "astronomy"],
     author: "Rasin",
     countDown: 10,
