@@ -39,8 +39,8 @@ module.exports = {
                 },
                 en: {
                         noLink: "× Baby, please provide a valid video link or reply to one! 🔗",
-                        success: "𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐝𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐯𝐢𝐝𝐞𝐨 𝐛𝐚𝐛𝐲 <😘",
-                        error: "× Failed to download: %1. Contact MahMUD for help."
+                        success: "𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐌𝐞𝐝𝐢𝐚 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐞𝐝 🎀 𝐛𝐚𝐛𝐲 <🌹",
+                        error: "× Failed to download: %1. Contact siyam for help."
                 },
                 vi: {
                         noLink: "× Cưng ơi, vui lòng cung cấp liên kết video hợp lệ! 🔗",
@@ -82,7 +82,7 @@ module.exports = {
                         const stats = fs.statSync(filePath);
                         if (stats.size < 100) throw new Error("Invalid video file received.");
 
-                        api.setMessageReaction("✅", event.messageID, () => {}, true);
+                        api.setMessageReaction("✨", event.messageID, () => {}, true);
 
                         return message.reply({
                                 body: getLang("success"),
