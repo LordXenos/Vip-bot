@@ -7,19 +7,19 @@ const teacherx = `${apix}/teachers`;
 
 const rasinx = {};
 
-const arshi = ["mira", "bby", "babe", "xuna", "janu", "xanu", "bot", 'বট', 'jaan', 'jan'];
+const arshi = ["mira", "bby", "mikasa", "xuna", "janu", "xanu", "bot", 'বট', 'jaan', 'jan'];
 
 module.exports = {
   config: {
-    name: "mira",
+    name: "mikasaa",
     aliases: arshi,
     version: "3.1.0",
     author: "Tasbiul Islam Rasin",
     countDown: 1,
     role: 0,
-    longDescription: { en: "Chat with mira" },
+    longDescription: { en: "Chat with mikasa" },
     category: "Simsimi",
-    guide: { en: "mira <your_message>" }
+    guide: { en: "mikasa <your_message>" }
   },
 
   onStart: async function ({ api, event, args, messageID, threadID, senderID, message }) {
