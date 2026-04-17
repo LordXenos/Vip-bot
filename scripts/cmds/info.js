@@ -122,8 +122,8 @@ ${socialInfo.battleTag && socialInfo.battleTag.length > 0 ? `❍ 𝐁attle 𝐓a
 
 ━━━━━━━━━━━━━━━━━━━
 𝐏owered 𝐁y  
-━━━━ 𝐑aꜱin 𝐀pi ━━━━  
-𝐃eveloper: 𝐑aꜱin 𝐁b'𝐳 😩🫶🏻
+━━━━ ... 𝐀pi ━━━━  
+𝐃eveloper: 𝗦𝗶𝘆𝗮𝗺🌸🦋 
 ━━━━━━━━━━━━━━━━━━━
 𝐓hiꜱ 𝐌eꜱꜱage 𝐖ill 𝐁e 𝐔nꜱent 𝐈n 𝟏 𝐌inute
 `;
