@@ -82,7 +82,7 @@ async function saveNabiDetail(nabiId, detailText) {
 
 module.exports = {
   config: {
-    name: "nabi",
+    name: "religion",
     version: "1.0",
     author: "Vydron1122",
     countDown: 5,
