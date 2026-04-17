@@ -29,7 +29,7 @@ module.exports = {
 			session4: "evening",
 			leaveType1: "left",
 			leaveType2: "was kicked from",
-			defaultLeaveMessage: "💔 {userName} {type} the group.\n\n🌸 We'll miss you! Take care and stay safe ✨"
+			defaultLeaveMessage: "😢👍🏻 {userName} {type} the group.\n\n🌸 We'll miss you! Take care and stay safe ✨"
 		}
 	},
 
