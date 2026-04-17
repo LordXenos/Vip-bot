@@ -70,8 +70,8 @@ module.exports = {
         throw new Error("Invalid video data.");
       }
 
-        api.setMessageReaction("✅", event.messageID, () => {}, true);
-        const msgBody = `• 𝐏𝐥𝐚𝐭𝐟𝐨𝐫𝐦: ${platform}\n• 𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐯𝐢𝐝𝐞𝐨 𝐛𝐚𝐛𝐲 <😘`;
+        api.setMessageReaction("✔️", event.messageID, () => {}, true);
+        const msgBody = `• 𝐏𝐥𝐚𝐭𝐟𝐨𝐫𝐦: ${platform}\n• 🎀 𝐌𝐞𝐝𝐢𝐚 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐞𝐝 🎀 <🌹`;
         return api.sendMessage( { body: msgBody,
         attachment: fs.createReadStream(filePath) },
         event.threadID, () => { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); },  event.messageID );
