@@ -12,7 +12,7 @@ const mahmud = async () => {
 
 module.exports = {
   config: {
-    name: "aniqz2",
+    name: "animeqz",
     aliases: ["animeqz2"],
     version: "1.7",
     author: "MahMUD",
