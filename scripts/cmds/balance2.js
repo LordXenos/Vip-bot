@@ -1,181 +1,75 @@
-module.exports = {
-  config: {
-    name: "balance2",
-    aliases: ["bal2", "money", "taka"],
-    version: "3.1",
-    author: "Rasin",
-    prefix: true,
-    countDown: 3,
-    role: 0,
-    description: "Balance",
-    category: "economy",
-    guide: {
-      en: "{pn} balance | Check your balance\n"
-        + "{pn} balance <name> | Check others by name\n"
-        + "{pn} balance t <name> amount | Transfer by name\n"
-        + "{pn} balance [reply] | Check replied user's balance\n"
-    }
-  },
+ module.exports = {
+	config: {
+		name: "balance2",
+		aliases: ["bal2"],
+		version: "1.3",
+		author: "NTKhang",
+		countDown: 5,
+		role: 0,
+		description: {
+			vi: "xem số tiền hiện có của bạn hoặc người được tag",
+			en: "view your money or the money of the tagged person"
+		},
+		category: "economy",
+		guide: {
+			vi: "   {pn}: xem số tiền của bạn"
+				+ "\n   {pn} <@tag>: xem số tiền của người được tag"
+				+ "\n   {pn} [reply]: xem số tiền của người bạn reply",
+			en: "   {pn}: view your money"
+				+ "\n   {pn} <@tag>: view the money of the tagged person"
+				+ "\n   {pn} [reply]: view the money of the person you reply to"
+		}
+	},
 
-  onStart: async function ({ message, event, args, usersData, prefix, api }) {
-    const { senderID, messageReply, threadID } = event;
+	langs: {
+		vi: {
+			money: "Bạn đang có %1$",
+			moneyOf: "%1 đang có %2$"
+		},
+		en: {
+			money: "𝐁𝐚𝐛𝐲✨, 𝐘𝐨𝐮 𝐡𝐚𝐯𝐞 %1$",
+			moneyOf: "%1 has %2$"
+		}
+	},
 
-    const formatMoney = (amount) => {
-      if (isNaN(amount)) return "$0";
-      amount = Number(amount);
-      const scales = [
-        { value: 1e15, suffix: 'Q' },
-        { value: 1e12, suffix: 'T' },
-        { value: 1e9, suffix: 'B' },
-        { value: 1e6, suffix: 'M' },
-        { value: 1e3, suffix: 'k' }
-      ];
-      const scale = scales.find(s => amount >= s.value);
-      if (scale) {
-        const scaledValue = amount / scale.value;
-        return `$${scaledValue.toFixed(1)}${scale.suffix}`;
-      }
-      return `$${amount.toLocaleString()}`;
-    };
+	// Helper function to format numbers into short form
+	formatMoney: function (amount) {
+		if (amount === undefined || amount === null) return "0"; // Handle case when money is undefined or null
+		if (amount >= 1e12) return (amount / 1e12).toFixed(1) + 't';
+		if (amount >= 1e9) return (amount / 1e9).toFixed(1) + 'b';
+		if (amount >= 1e6) return (amount / 1e6).toFixed(1) + 'm';
+		if (amount >= 1e3) return (amount / 1e3).toFixed(1) + 'k';
+		return amount.toString();
+	},
 
-    const createFlatDisplay = (title, contentLines) => {
-      return `👽 ${title} ✨\n` + 
-        contentLines.map(line => `${line}`).join('\n') + '\n';
-    };
+	onStart: async function ({ message, usersData, event, getLang }) {
+		let targetUserID = event.senderID;  // Default to the command caller's ID
 
+		// Check if the message is a reply
+		if (event.messageReply) {
+			targetUserID = event.messageReply.senderID;
+		}
 
-    const findUserByName = async (query) => {
-      try {
+		// Check if the message mentions someone
+		if (Object.keys(event.mentions).length > 0) {
+			const uids = Object.keys(event.mentions);
+			let msg = "";
+			for (const uid of uids) {
+				const userMoney = await usersData.get(uid, "money");
 
-        const cleanQuery = query.replace(/@/g, "").trim().toLowerCase();
-        
-        const threadInfo = await api.getThreadInfo(threadID);
-        const ids = threadInfo.participantIDs || [];
-        const matches = [];
+				// If no money found for the user, handle it
+				const formattedMoney = this.formatMoney(userMoney || 0);
+				msg += getLang("moneyOf", event.mentions[uid].replace("@", ""), formattedMoney) + '\n';
+			}
+			return message.reply(msg);
+		}
 
-        for (const uid of ids) {
-          try {
-            const name = (await usersData.getName(uid)).toLowerCase();
-            if (name.includes(cleanQuery)) {
-              matches.push({ uid, name });
-            }
-          } catch {}
-        }
+		// Get money of the person who replied or the sender
+		const userData = await usersData.get(targetUserID);
 
-        return matches;
-      } catch {
-        return [];
-      }
-    };
-
-    if (args[0]?.toLowerCase() === 't') {
-      let targetID = messageReply?.senderID;
-      let amount;
-
-      const lastArg = args[args.length - 1];
-      amount = parseFloat(lastArg);
-
-      if (isNaN(amount)) {
-        return message.reply(createFlatDisplay("Invalid Uꜱage", [
-          `Uꜱe: ${prefix}balance t <name> <amount>`
-        ]));
-      }
-
-
-      if (!targetID) {
-        const nameQuery = args.slice(1, -1).join(" ");
-        
-        if (!nameQuery) {
-          return message.reply(createFlatDisplay("Invalid Uꜱage", [
-            `Uꜱe: ${prefix}balance t <name> <amount>`
-          ]));
-        }
-
-        const matches = await findUserByName(nameQuery);
-
-        if (matches.length === 0) {
-          return message.reply(createFlatDisplay("User Not Found", [
-            `No user found with name: ${nameQuery.replace(/@/g, "")}`
-          ]));
-        }
-
-        if (matches.length > 1) {
-          const matchList = matches.map(m => `• ${m.name}`).join('\n');
-          return message.reply(createFlatDisplay("Multiple Uꜱerꜱ Found", [
-            `Please be more ꜱpeciꜰic:\n${matchList}`
-          ]));
-        }
-
-        targetID = matches[0].uid;
-      }
-
-      if (amount <= 0) return message.reply(createFlatDisplay("Error", ["Amount muꜱt be poꜱitive"]));
-      if (senderID === targetID) return message.reply(createFlatDisplay("Error", ["You can't ꜱend money to yourꜱelꜰ"]));
-
-      const [sender, receiver] = await Promise.all([
-        usersData.get(senderID),
-        usersData.get(targetID)
-      ]);
-
-      if (sender.money < amount) {
-        return message.reply(createFlatDisplay("Inꜱuꜰꜰicient Balance", [
-          `You Need ${formatMoney(amount - sender.money)} More`
-        ]));
-      }
-
-      await Promise.all([
-        usersData.set(senderID, { money: sender.money - amount }),
-        usersData.set(targetID, { money: receiver.money + amount })
-      ]);
-
-      const receiverName = await usersData.getName(targetID);
-      return message.reply(createFlatDisplay("Money Tranꜱꜰer Complete 🥹 🎀", [
-        `😺 To: ${receiverName}`,
-        `✌ Sent: ${formatMoney(amount)}`,
-        `🤗 Your New Balance: ${formatMoney(sender.money - amount)}`
-      ]));
-    }
-
-    if (messageReply?.senderID && !args[0]) {
-      const targetID = messageReply.senderID;
-      const name = await usersData.getName(targetID);
-      const money = await usersData.get(targetID, "money");
-      return message.reply(createFlatDisplay(`${name}'ꜱ Balance 😌`, [
-        `🎀 Balance: ${formatMoney(money)}`
-      ]));
-    }
-
-    if (args[0]) {
-      const query = args.join(" ");
-      const matches = await findUserByName(query);
-
-      if (matches.length === 0) {
-        return message.reply(createFlatDisplay("User Not Found", [
-          `No user found with name: ${query.replace(/@/g, "")}`
-        ]));
-      }
-
-      if (matches.length > 1) {
-        const balances = await Promise.all(
-          matches.map(async (match) => {
-            const money = await usersData.get(match.uid, "money");
-            return `${match.name}: ${formatMoney(money)}`;
-          })
-        );
-        return message.reply(createFlatDisplay("Multiple Uꜱerꜱ Found", balances));
-      }
-
-      const targetID = matches[0].uid;
-      const name = await usersData.getName(targetID);
-      const money = await usersData.get(targetID, "money");
-      return message.reply(createFlatDisplay(`${name}'ꜱ Balance 😌`, [
-        `🎀 Balance: ${formatMoney(money)}`
-      ]));
-    }
-
-    const userMoney = await usersData.get(senderID, "money");
-    return message.reply(createFlatDisplay("→ Your Balance", [
-      `💵 ${formatMoney(userMoney)}`,
-    ]));
-  }
+		// If userData is undefined or money is not defined, handle it
+		const money = userData ? userData.money : 0;
+		const formattedMoney = this.formatMoney(money);
+		message.reply(getLang("money", formattedMoney));
+	}
 };
