@@ -24,7 +24,7 @@ const aspectRatioMap = {
 
 module.exports = {
   config: {
-    name: "nijix",
+    name: "nijixpro",
     version: "1.1",
     author: "Vincenzo",
     description: {
