@@ -1,6 +1,6 @@
 module.exports = {
     config: {
-        name: 'setemoji',
+        name: 'groupemoji',
         aliases: ['changeemoji', 'cngemoji'],
         version: '2.0',
         author: 'Rasin',
