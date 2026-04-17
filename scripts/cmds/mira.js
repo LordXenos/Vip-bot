@@ -11,7 +11,7 @@ const arshi = ["mira", "bby", "mikasa", "xuna", "janu", "xanu", "bot", 'বট',
 
 module.exports = {
   config: {
-    name: "mikasaa",
+    name: "mira",
     aliases: arshi,
     version: "3.1.0",
     author: "Tasbiul Islam Rasin",
