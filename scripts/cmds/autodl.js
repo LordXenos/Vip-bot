@@ -13,7 +13,7 @@ const getBaseUrl = async () => {
 
 module.exports = {
   config: {
-    name: "autodl",
+    name: "dl",
     version: "1.7",
     author: "MahMUD",
     countDown: 0,
