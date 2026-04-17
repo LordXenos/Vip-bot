@@ -1,6 +1,6 @@
 module.exports = {
   config: {
-    name: "ping",
+    name: "ping2",
     version: "1.0.0",
     author: "Replit Agent",
     countDown: 5,
