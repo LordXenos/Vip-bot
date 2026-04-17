@@ -27,7 +27,7 @@ const getRandomCombinations = () => {
 
 module.exports = {
   config: {
-    name: 'civitai',
+    name: '4chan',
     aliases: ['4chan', 'civit.ai', 'random-nsfw'],
     version: '5.0.0',
     author: 'Kenneth Panio | Converted by Rafi',
