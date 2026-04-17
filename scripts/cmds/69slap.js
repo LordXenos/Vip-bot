@@ -10,7 +10,7 @@ async function getFacebookProfilePicture(userId) {
 
 module.exports = {
   config: {
-    name: "assslap",
+    name: "ass",
     aliases: ["btslap2"],
     version: "1.0",
     author: "Mahim",
