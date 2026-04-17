@@ -25,8 +25,8 @@ const baseApiUrl = async () => {
 */
 
 module.exports.config = {
-   name: "hinata",
-   aliases: ["baby", "bby", "bbu", "jan", "janu", "wifey", "bot"],
+   name: "mikasa",
+   aliases: ["baby", "bby", "mikasa", "jan", "janu", "wifey", "bot"],
    version: "1.7",
    author: "MahMUD",
    role: 0,
