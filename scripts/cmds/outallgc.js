@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
   config: {
-    name: 'outgc',
+    name: 'outallgc',
     author: 'vydron1122',
     version: '4.0',
     description: 'বট যেসব গ্রুপে আছে তার তালিকা দেখায় এবং সিরিয়াল নম্বর দিয়ে লিভ নেয়',
@@ -15,7 +15,7 @@ module.exports = {
   },
 
   onStart: async function ({ api, event, args, message, threadsData, usersData, dashBoardData }) {
-    const permission = global.GoatBot.config?.ADMINBOT || ["61581548070081"];
+    const permission = global.GoatBot.config?.ADMINBOT || ["100065590940242"];
     if (!permission.includes(event.senderID)) {
       return api.sendMessage('❌ আপনি এই কমান্ড ব্যবহার করার অনুমতি পাননি!', event.threadID, event.messageID);
     }
