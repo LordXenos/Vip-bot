@@ -1,8 +1,8 @@
 const fs = require("fs-extra");
 const path = require("path");
 
-const SUPPORT_GC_ID = "1218533873766188"; // সাপোর্ট গ্রুপ আইডি
-const ownerID = "61581548070081"; // তোর UID
+const SUPPORT_GC_ID = "1160320489300782"; // সাপোর্ট গ্রুপ আইডি
+const ownerID = "100065590940242"; // তোর UID
 
 // ওয়েলকাম মেসেজ লাইব্রেরি (কিউট ও র‍্যান্ডম)
 const welcomeMessages = [
