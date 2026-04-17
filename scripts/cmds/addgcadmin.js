@@ -1,6 +1,6 @@
 module.exports = {
     config: {
-        name: 'addgroupadmin',
+        name: 'addgcadmin',
         aliases: ['adm', 'addgcadmin'],
         version: '2.0',
         author: 'Rasin',
