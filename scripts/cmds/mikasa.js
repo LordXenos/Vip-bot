@@ -7,7 +7,7 @@ if (!fs.existsSync(dataPath)) fs.writeFileSync(dataPath, JSON.stringify({}));
 
 module.exports = {
   config: {
-    name: "cai",
+    name: "mikasa",
     version: "2.0",
     author: "@RI F AT ",
     role: 0,
