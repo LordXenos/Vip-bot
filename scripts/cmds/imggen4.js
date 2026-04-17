@@ -6,7 +6,7 @@ const API_ENDPOINT = "https://neokex-img-api.vercel.app/generate";
 
 module.exports = {
   config: {
-    name: "imagen4",
+    name: "gen4",
     aliases: ["img4", "gen4"],
     version: "1.0", 
     author: "NeoKEX",
