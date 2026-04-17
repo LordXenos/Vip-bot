@@ -9,7 +9,7 @@ const baseApiUrl = async () => {
 
 module.exports = {
   config: {
-    name: "pair7",
+    name: "pair6",
     version: "1.0",
     author: "Vydron1122",
     countDown: 10,
