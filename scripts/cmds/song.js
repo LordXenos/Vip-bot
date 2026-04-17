@@ -4,7 +4,7 @@ const path = require("path");
 
 module.exports = {
   config: {
-    name: "sing2",
+    name: "song",
     aliases: ["song", "music"],
     version: "1.1",
     author: "Neoaz 🐊",
