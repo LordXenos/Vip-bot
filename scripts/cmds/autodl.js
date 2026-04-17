@@ -71,7 +71,7 @@ module.exports = {
       }
 
         api.setMessageReaction("✔️", event.messageID, () => {}, true);
-        const msgBody = `• 𝐏𝐥𝐚𝐭𝐟𝐨𝐫𝐦: ${platform}\n• 🎀 𝐌𝐞𝐝𝐢𝐚 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐞𝐝 🎀 <🌹`;
+        const msgBody = `• 𝐏𝐥𝐚𝐭𝐟𝐨𝐫𝐦: ${platform}\n• 🎀 𝐌𝐞𝐝𝐢𝐚 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐞𝐝 Baby< 🎀`;
         return api.sendMessage( { body: msgBody,
         attachment: fs.createReadStream(filePath) },
         event.threadID, () => { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); },  event.messageID );
