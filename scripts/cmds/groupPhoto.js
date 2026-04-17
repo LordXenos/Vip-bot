@@ -3,7 +3,7 @@ const axios = require('axios');
 
 module.exports = {
     config: {
-        name: 'changephoto',
+        name: 'gcphoto',
         aliases: ['gcphoto'],
         author: 'Rasin',
         version: '2.0',
