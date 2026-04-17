@@ -9,7 +9,7 @@ const mahmud = async () => {
 
 module.exports = {
         config: {
-                name: "unsplash",
+                name: "uph",
                 aliases: ["uph"],
                 version: "1.7",
                 author: "MahMUD",
