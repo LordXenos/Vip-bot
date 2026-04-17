@@ -42,7 +42,7 @@ module.exports = {
                 },
                 en: {
                         noTarget: "× Baby, mention, reply, or provide UID of the target! 💥",
-                        success: "Effect: buttslap successful 💥",
+                        success: "Effect:  betha paicho🥹? 🌚💥",
                         error: "× Failed to create effect: %1. Contact MahMUD for help."
                 },
                 vi: {
