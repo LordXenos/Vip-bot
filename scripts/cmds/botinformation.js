@@ -10,7 +10,7 @@ const blockFile = path.join(__dirname, "..", "..", "blocked.json");
 
 module.exports = {
   config: {
-    name: "status",
+    name: "botinformation",
     version: "2.0",
     author: "Vydron1122",
     countDown: 5,
@@ -109,7 +109,7 @@ module.exports = {
       msg += `⏰ ${now}\n`;
       msg += `━━━━━━━━━━━━━━━━\n`;
 
-      msg += `👥 𝐓𝐨𝐭𝐚𝐥 𝐆𝐫𝐨𝐮𝐩𝐬: ${totalGroups}\n`;
+      msg += `🌐 𝐓𝐨𝐭𝐚𝐥 𝐆𝐫𝐨𝐮𝐩𝐬: ${totalGroups}\n`;
       msg += `👤 𝐓𝐨𝐭𝐚𝐥 𝐔𝐬𝐞𝐫𝐬: ${totalUsers}\n`;
       msg += `━━━━━━━━━━━━━━━━\n`;
 
