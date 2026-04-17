@@ -14,7 +14,7 @@ const baseApiUrl = async () => {
 
 module.exports = {
   config: {
-    name: "karaba",
+    name: "sneak",
     version: "1.7",
     author: "MahMUD",
     role: 0,
@@ -39,7 +39,7 @@ module.exports = {
       fs.writeFileSync(file, img.data);
 
       api.sendMessage({
-        body: "Effect karaba successful 🔥",
+        body: "Effect sneak successful 🐸",
         attachment: fs.createReadStream(file)
       }, threadID, () => fs.unlinkSync(file), messageID);
 
