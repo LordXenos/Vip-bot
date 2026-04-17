@@ -184,7 +184,7 @@ module.exports = {
             event.threadID,
             () => {
               fs.unlinkSync(tempPath);
-              api.setMessageReaction("✅", event.messageID, () => {}, true);
+              api.setMessageReaction("🌸", event.messageID, () => {}, true);
             },
             event.messageID
           );
