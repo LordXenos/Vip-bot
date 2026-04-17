@@ -3,7 +3,7 @@ const fs = require("fs-extra");
 
 module.exports = {
   config: {
-    name: "geminigen",
+    name: "geminipro",
     version: "1.4",
     author: "@RI F AT (edited by Ew'r Saim) ", // Do not change author
     description: "Generate or edit image using prompt (reply to image to edit it)",
@@ -53,9 +53,9 @@ module.exports = {
       return api.sendMessage(
 `⚠️ Please provide a prompt.
 📝 Try:
-• ${prefix}geminigen alien face
-• ${prefix}geminigen cartoon me (reply to image)
-ℹ️ Type "${prefix}geminigen help" for all styles.`,
+• ${prefix}geminipro alien face
+• ${prefix}geminipro cartoon me (reply to image)
+ℹ️ Type "${prefix}geminipro help" for all styles.`,
         threadID, messageID
       );
     }
