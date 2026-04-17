@@ -4,7 +4,7 @@ const { bold } = require("fontstyles");
 
 module.exports = {
   config: {
-    name: 'rtm',
+    name: 'upt2',
     aliases: ['rtm'],
     version: '1.1.1',
     usePrefix: false,
