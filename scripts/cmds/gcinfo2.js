@@ -3,7 +3,7 @@ const axios = require("axios");
 
 module.exports = {
   config: {
-    name: "groupinfo",
+    name: "gcinfo2",
     aliases: ["boxinfo", "ginfo", "binfo"],
     version: "2.0",
     author: "Vydron1122",
