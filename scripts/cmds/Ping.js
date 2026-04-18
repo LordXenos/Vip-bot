@@ -10,7 +10,7 @@ module.exports = {
                         en: "Check the bot's response time or ping",
                         vi: "Kiểm tra thời gian phản hồi hoặc ping của bot"
                 },
-                category: "general",
+                category: "system",
                 guide: {
                         bn: '   {pn}: পিং চেক করতে',
                         en: '   {pn}: To check ping',
