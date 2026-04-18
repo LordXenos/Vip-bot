@@ -132,7 +132,7 @@ module.exports = {
     role: 0,
     shortDescription: "Animate a photo",
     longDescription: "Reply to an image with",
-    category: "tools",
+    category: "ai-image",
     guide: { en: "{pn} <prompt> (reply to an image or add | <url> at the end)" },
   },
 
