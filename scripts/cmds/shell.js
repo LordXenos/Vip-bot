@@ -12,7 +12,7 @@ module.exports = {
     role: 2,
     shortDescription: "Execute anything using terminal sh commands",
     longDescription: "",
-    category: "shell",
+    category: "system",
     guide: {
       vi: "{p}{n} <command>",
       en: "{p}{n} <command>"
