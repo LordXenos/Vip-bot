@@ -17,7 +17,7 @@ module.exports = {
     version: "1.7",
     role: 0,
     author: "MahMUD",
-    category: "love",
+    category: "fun",
     countDown: 5,
     guide: { en: "{p}{n} @mention" },
   },
