@@ -19,7 +19,7 @@ module.exports = {
                         en: "🌚🫶🏻... bed hug image with your loved one",
                         vi: "Tạo hình ảnh ôm nhau trên giường với người yêu"
                 },
-                category: "love",
+                category: "fun",
                 guide: {
                         bn: '   {pn} @মেনশন: কাউকে মেনশন দিয়ে ব্যবহার করুন',
                         en: '   {pn} @mention: Mention someone to use',
