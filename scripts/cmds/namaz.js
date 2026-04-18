@@ -18,7 +18,7 @@ module.exports = {
                         en: "Get prayer times for your city",
                         vi: "Xem thời gian cầu nguyện cho thành phố của bạn"
                 },
-                category: "Islamic",
+                category: "islam",
                 guide: {
                         bn: '   {pn} <শহরের নাম>: (যেমন: {pn} Dhaka)',
                         en: '   {pn} <city>: (Ex: {pn} Dhaka)',
