@@ -9,7 +9,7 @@ module.exports = {
         usages: '!gcadmin',
         countDown: 3,
         role: 0,
-        category: 'info'
+        category: 'box chat'
     },
 
 onStart: async function ({ message, event, api }) {
