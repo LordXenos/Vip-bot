@@ -17,7 +17,7 @@ module.exports = {
                         en: "Get VIP couple DPs by category",
                         vi: "Lấy ảnh đại diện đôi VIP theo danh mục"
                 },
-                category: "media",
+                category: "anime",
                 guide: {
                         bn: '   {pn} <ক্যাটাগরি>: ডিপি পান'
                                 + '\n   {pn} list: সব ক্যাটাগরি দেখুন',
