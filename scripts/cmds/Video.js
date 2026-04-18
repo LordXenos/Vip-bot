@@ -23,7 +23,7 @@ module.exports = {
     longDescription: {
       en: "Search for a lyrical video based on the provided query",
     },
-    category: "fun",
+    category: "media",
     guide: {
       en: "{p}{n} [query]",
     },
