@@ -7,7 +7,7 @@ module.exports = {
     role: 0,
     shortDescription: "Check user ping",
     longDescription: "A command to check the latency between the user's message and the bot's response.",
-    category: "Utility",
+    category: "system",
     guide: {
       en: "{p}ping2"
     }
