@@ -19,7 +19,7 @@ module.exports = {
                         bn: "যেকোনো গান সরাসরি ডাউনলোড করুন",
                         vi: "Tải bất kỳ bài hát nào trực tiếp"
                 },
-                category: "media",
+                category: "music",
                 guide: {
                         en: '   {pn} <song name>\n   Example: {pn} stay justin bieber',
                         bn: '   {pn} <গানের নাম>\n   উদাহরণ: {pn} tui chinli na amay',
