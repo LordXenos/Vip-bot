@@ -5,7 +5,7 @@
     version: "1.7",
     author: "MahMUD",
     role: 0,
-    category: "general",
+    category: "system",
     guide: {
       en: "Use {p}uptime to display bot's uptime and user stats."
     }
