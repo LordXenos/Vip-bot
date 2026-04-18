@@ -19,7 +19,7 @@ module.exports = {
                         en: "Download songs/audio from YouTube",
                         vi: "Tải nhạc từ YouTube"
                 },
-                category: "media",
+                category: "music",
                 guide: {
                         bn: '   {pn} [গানের নাম বা লিঙ্ক]\n   উদাহরণ: {pn} tui chinli na amay',
                         en: '   {pn} [song name or link]\n   Example: {pn} stay justin bieber',
