@@ -7,7 +7,7 @@ module.exports = {
     author: "Rasin",
     countDown: 5,
     role: 0,
-    category: "entertainment",
+    category: "anime",
     shortDescription: {
       en: "Search anime information from MyAnimeList",
     },
