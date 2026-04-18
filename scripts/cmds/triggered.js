@@ -9,7 +9,7 @@ const baseApiUrl = async () => {
 
 module.exports = {
         config: {
-                name: "trigger",
+                name: "trigger2",
                 aliases: ["triggered"],
                 version: "1.0",
                 author: "MahMUD",
