@@ -10,7 +10,7 @@ module.exports = {
     description: {
       en: "🕌 Shows Sehri, Iftar & 5 daily prayer times for Ramadan (Dhaka)"
     },
-    category: "islamic",
+    category: "islam",
     guide: {
       en: "{pn}"
     }
