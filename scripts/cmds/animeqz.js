@@ -18,7 +18,7 @@ module.exports = {
     author: "MahMUD",
     countDown: 10,
     role: 0,
-    category: "game",
+    category: "anime",
     guide: { en: "{pn} [en/bn]" }
   },
 
