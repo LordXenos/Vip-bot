@@ -20,7 +20,7 @@ module.exports = {
                         en: "Edit your image using AI prompt",
                         vi: "Chỉnh sửa hình ảnh của bạn bằng lời nhắc AI"
                 },
-                category: "image",
+                category: "ai-image",
                 guide: {
                         bn: '   {pn} <প্রম্পট>: ছবির রিপ্লাই দিয়ে এডিট প্রম্পট লিখুন'
                                 + '\n   উদাহরণ: {pn} change hair color to red',
