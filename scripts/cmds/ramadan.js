@@ -20,7 +20,7 @@ module.exports = {
                         en: "Ramadan Sehri & Iftar schedule with image card",
                         vi: "Lịch Sehri & Iftar tháng Ramadan với thẻ hình ảnh"
                 },
-                category: "Islamic",
+                category: "islam",
                 guide: {
                         bn: '   {pn} <শহর> <স্টাইল>: (যেমন: {pn} dhaka 2)',
                         en: '   {pn} <city> <style>: (Ex: {pn} dhaka 2)',
