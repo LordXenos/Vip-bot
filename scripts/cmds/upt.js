@@ -42,7 +42,7 @@ module.exports = {
     const response =
 ` 🧸🎀 ⋆˚✿°────୨ᰔ୧────°✿˚ ✨
 
-🥀  𝐁𝐨𝐭 𝐒𝐭𝐚𝐭𝐮𝐬  🤍✨
+🧸🥀  𝐁𝐨𝐭 𝐒𝐭𝐚𝐭𝐮𝐬  🤍✨
 
 ᥫ᭡ 𝐁𝐨𝐭 𝐔𝐩𝐭𝐢𝐦𝐞 : ${systemInfo.botUptime} ⏳
 ᥫ᭡ 𝐒𝐲𝐬𝐭𝐞𝐦 𝐔𝐩𝐭𝐢𝐦𝐞 : ${systemInfo.systemUptime} 🕰️
@@ -54,7 +54,7 @@ module.exports = {
 ᰔ 𝐓𝐨𝐭𝐚𝐥 𝐆𝐫𝐨𝐮𝐩𝐬 : ${groups.length} 🌸
 
 🎀˚✿ 𝐁𝐨𝐭 Owner :
-୨ᰔ୧ ❤️‍🩹SIYAM 🌸🦋 ୨ᰔ୧
+୨ᰔ୧───୨❤️‍🩹𝕊𝕚𝕪𝕒𝕞 🌸🦋───୨ᰔ୧
 
 🎀 ˚✿°───୨ᰔ୧───°✿˚ ✨`
 
