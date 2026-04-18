@@ -30,7 +30,7 @@ module.exports = {
     longDescription: {
       en: "search for anime edits video",
     },
-    category: "fun",
+    category: "anime",
     guide: {
       en: "{p}{n} [query]",
     },
