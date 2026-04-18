@@ -18,7 +18,7 @@ module.exports = {
                         en: "Get a random Bangla Hadis with its source",
                         vi: "Lấy một câu Hadis ngẫu nhiên bằng tiếng Bangla"
                 },
-                category: "Islamic",
+                category: "islam",
                 guide: {
                         bn: '   {pn}: একটি র‍্যান্ডম হাদিস পেতে ব্যবহার করুন',
                         en: '   {pn}: Use to get a random Hadis',
