@@ -9,7 +9,7 @@ module.exports = {
     description: "Generate or edit image using prompt (reply to image to edit it)",
     usage: "[prompt] or reply to image",
     cooldown: 5,
-    category: "image generation" 
+    category: "ai-image" 
   },
 
   onStart: async function ({ api, event, args, threadsData, usersData }) {
