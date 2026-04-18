@@ -29,7 +29,7 @@ module.exports = {
                         removed: "✅ | সফলভাবে %1 জনের অ্যাডমিন পারমিশন সরানো হয়েছে:\n%2",
                         notAdmin: "⚠️ | %1 জন অ্যাডমিন তালিকায় ছিল না:\n%2",
                         missingIdRemove: "⚠️ | বেবি, অ্যাডমিন সরাতে আইডি দিন অথবা কাউকে ট্যাগ করুন!",
-                        listAdmin: "👑 | বোট অ্যাডমিন তালিকা:\n\n%1"
+                        listAdmin: "💻 | বোট অ্যাডমিন তালিকা:\n\n%1"
                 },
                 en: {
                         added: "✅ | Added admin role for %1 users:\n%2",
@@ -38,7 +38,7 @@ module.exports = {
                         removed: "✅ | Removed admin role of %1 users:\n%2",
                         notAdmin: "⚠️ | %1 users don't have admin role:\n%2",
                         missingIdRemove: "⚠️ | Please enter ID or tag user to remove admin role",
-                        listAdmin: "👑 | List of admins:\n\n%1"
+                        listAdmin: "💻 | List of admins:\n\n%1"
                 },
                 vi: {
                         added: "✅ | Đã thêm quyền admin cho %1 người dùng:\n%2",
