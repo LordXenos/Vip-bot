@@ -32,7 +32,7 @@ module.exports = {
     version: '5.0.0',
     author: 'Kenneth Panio | Converted by Rafi',
     role: 2, 
-    category: "nsfw",
+    category: "ai-image",
     shortDescription: 'Get random uploaded content from civit.ai',
     guide: {
       en: "{pn} [count] | {pn} nsfw [count]"
