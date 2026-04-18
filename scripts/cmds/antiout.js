@@ -11,7 +11,7 @@ module.exports = {
  longDescription: {
  en: "Enable/disable anti-out feature that automatically adds back members who leave the group"
  },
- category: "admin",
+ category: "box chat",
  guide: {
  en: "{pn} [on|off] - Turn anti-out feature on or off"
  }
