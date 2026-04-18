@@ -25,7 +25,7 @@ module.exports = {
     version: "2.0",
     description: { en: "command store" },
     countDown: 3,
-    category: "goatbot",
+    category: "system",
     guide: { en: "{pn}cs [page number | keyword]" }
   },
 
