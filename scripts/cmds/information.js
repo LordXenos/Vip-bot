@@ -10,7 +10,7 @@ const blockFile = path.join(__dirname, "..", "..", "blocked.json");
 
 module.exports = {
   config: {
-    name: "botinformation",
+    name: "information",
     version: "2.0",
     author: "Vydron1122",
     countDown: 5,
@@ -128,7 +128,7 @@ module.exports = {
       msg += `⚙️ 𝐍𝐨𝐝𝐞: ${nodeVersion}\n`;
       msg += `━━━━━━━━━━━━━━━━\n`;
 
-      msg += `👑 𝐀𝐝𝐦𝐢𝐧 𝐋𝐢𝐬𝐭:\n`;
+      msg += `💻 𝐀𝐝𝐦𝐢𝐧 𝐋𝐢𝐬𝐭:\n`;
       for (let i = 0; i < adminIDs.length; i++) {
         try {
           const name = await api.getUserInfo(adminIDs[i]);
