@@ -21,7 +21,7 @@ module.exports = {
 
     longDescription: { en: "Search anime, get info and browse all episode links page by page." },
 
-    category: "entertainment",
+    category: "anime",
 
     guide: { en: "{pn} <anime name>" }
 
