@@ -9,7 +9,7 @@ module.exports = {
     countDown: 5,
     role: 0,
     description: "Trigger image",
-    category: "image",
+    category: "fun",
     guide: {
       vi: "{pn} [@tag | để trống]",
       en: "{pn} [@tag | empty]"
