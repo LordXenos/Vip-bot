@@ -9,7 +9,7 @@ module.exports = {
 		countDown: 5,
 		role: 0,
 		description: "View group activity leaderboard",
-		category: "group",
+		category: "box chat",
 		guide: {
 			en: "   {pn}: View group activity leaderboard"
 		}
