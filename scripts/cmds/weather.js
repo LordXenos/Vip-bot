@@ -2,12 +2,12 @@ const axios = require("axios");
 
 module.exports = {
   config: {
-    name: "weather2",
-    aliases: ["w2"],
+    name: "weather",
+    aliases: ["w"],
     author: "Rasin",
     countDown: 5,
     role: 0,
-    category: "Utility",
+    category: "Tools",
     shortDescription: {
       en: "Get weather information for any city",
     },
