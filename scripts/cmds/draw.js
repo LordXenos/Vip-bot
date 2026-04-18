@@ -14,7 +14,7 @@ module.exports = {
     author: "MahMUD",
     countDown: 5,
     role: 0,
-    category: "image",
+    category: "ai-image",
     guide: { en: "{p}draw [prompt]" }
   },
 
