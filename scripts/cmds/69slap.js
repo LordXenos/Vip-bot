@@ -18,7 +18,7 @@ module.exports = {
     role: 0,
     shortDescription: "buttslap someone",
     longDescription: "",
-    category: "Entertainment",
+    category: "18+",
     guide: "{pn}"
   },
 
