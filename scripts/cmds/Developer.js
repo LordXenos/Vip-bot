@@ -3,7 +3,7 @@ const { writeFileSync } = require("fs-extra");
 
 module.exports = {
         config: {
-                name: "developer",
+                name: "dev",
                 version: "1.0",
                 author: "MahMUD",
                 countDown: 5,
@@ -36,7 +36,7 @@ module.exports = {
                         missingAdd: "⚠️ | Please enter ID or tag user to add developer role",
                         removed: "✅ | Removed developer role of %1 users:\n%2",
                         notIn: "⚠️ | %1 users don't have developer role:\n%2",
-                        missingRemove: "⚠️ | Please enter ID or tag user to remove developer role",
+                        missingRemove: "🫩 | Please enter ID or tag user to remove developer role",
                         list: "💻 | List of developers:\n\n%1"
                 }
         },
