@@ -6,7 +6,7 @@ module.exports = {
         author: 'Rasin',
         description: 'Change the group emoji',
         usages: '!setemoji ☕',
-        category: 'box',
+        category: 'box chat',
         role: 0,
         countDown: 3,
     },
