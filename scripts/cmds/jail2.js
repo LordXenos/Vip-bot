@@ -12,7 +12,7 @@ module.exports = {
 		countDown: 5,
 		role: 0,
 		description: "Put someone in jail",
-		category: "image",
+		category: "fun",
 		guide: {
 			en: "{pn} @mention - Jail mentioned user"
 				+ "\n{pn} <name> - Search and jail user by name"
