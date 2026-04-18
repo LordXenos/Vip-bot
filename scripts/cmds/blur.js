@@ -17,7 +17,7 @@ module.exports = {
                         en: "Blur any image (Level 1-100)",
                         vi: "Làm mờ bất kỳ hình ảnh nào (Cấp độ 1-100)"
                 },
-                category: "image",
+                category: "fun",
                 guide: {
                         bn: '   {pn} <লেভেল>: ছবির রিপ্লাই দিয়ে ব্যবহার করুন\n   {pn} <url> <লেভেল>: ছবির লিঙ্ক দিয়ে ব্যবহার করুন',
                         en: '   {pn} <level>: Reply to an image\n   {pn} <url> <level>: Provide an image URL',
