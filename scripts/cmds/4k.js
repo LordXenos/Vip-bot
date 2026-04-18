@@ -29,7 +29,7 @@ module.exports = {
     countDown: 15,
     role: 0,
     longDescription: "Upscales an image to higher resolution (simulated 4K) using AI.",
-    category: "image",
+    category: "ai-image",
     guide: {
       en: 
         "{pn} <image_url> OR reply to an image.\n\n" +
