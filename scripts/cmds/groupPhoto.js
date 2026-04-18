@@ -11,7 +11,7 @@ module.exports = {
         role: 1,
         prefix: true,
         usages: '!changephoto',
-        category: 'box',
+        category: 'box chat',
         description: 'Change group image'
     },
 
