@@ -5,7 +5,7 @@ const { createCanvas, loadImage } = require("canvas");
 
 module.exports = {
 	config: {
-		name: "married",
+		name: "marry1",
 		aliases: ["marry", "married"],
 		version: "4.2.0",
 		author: "Rasin",
@@ -72,7 +72,7 @@ module.exports = {
 			const imagePath = await makeImage({ one, two });
 
 			await message.reply({
-				body: "🧸🎀 ⋆˚✿°────୨ᰔ୧────°✿˚ ✨🌻\n\n𝐓𝐨𝐠𝐞𝐭𝐡𝐞𝐫 𝐟𝐨𝐫𝐞𝐯𝐞𝐫, 𝐚 𝐥𝐨𝐯𝐞 𝐬𝐭𝐨𝐫𝐲 𝐰𝐫𝐢𝐭𝐭𝐞𝐧 𝐢𝐧 𝐭𝐡𝐞 𝐬𝐭𝐚𝐫𝐬\n\n🎀✨ ˚✿°────୨ᰔ୧────°✿˚ 🫶🏻🧸\n\n🎀🌷°✿˚\n𝐌𝐚𝐲 𝐲𝐨𝐮𝐫 𝐣𝐨𝐮𝐫𝐧𝐞𝐲 𝐛𝐞 𝐟𝐢𝐥𝐥𝐞𝐝 𝐰𝐢𝐭𝐡 𝐞𝐧𝐝𝐥𝐞𝐬𝐬 𝐥𝐨𝐯𝐞 𝐚𝐧𝐝 𝐡𝐚𝐩𝐩𝐢𝐧𝐞𝐬𝐬 🧸✨°",
+				body: "🧸🎀 ⋆˚✿°────୨ᰔ୧────°✿˚ ✨\n\n𝐓𝐨𝐠𝐞𝐭𝐡𝐞𝐫 𝐟𝐨𝐫𝐞𝐯𝐞𝐫, 𝐚 𝐥𝐨𝐯𝐞 𝐬𝐭𝐨𝐫𝐲 𝐰𝐫𝐢𝐭𝐭𝐞𝐧 𝐢𝐧 𝐭𝐡𝐞 𝐬𝐭𝐚𝐫𝐬\n\n🎀✨ ˚✿°────୨ᰔ୧────°✿˚ 🌸\n\n🎀🌷°✿˚\n𝐌𝐚𝐲 𝐲𝐨𝐮𝐫 𝐣𝐨𝐮𝐫𝐧𝐞𝐲 𝐛𝐞 𝐟𝐢𝐥𝐥𝐞𝐝 𝐰𝐢𝐭𝐡 𝐞𝐧𝐝𝐥𝐞𝐬𝐬 𝐥𝐨𝐯𝐞 𝐚𝐧𝐝 𝐡𝐚𝐩𝐩𝐢𝐧𝐞𝐬𝐬 🧸✨°",
 				attachment: fs.createReadStream(imagePath)
 			});
 
