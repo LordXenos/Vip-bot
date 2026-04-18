@@ -13,7 +13,7 @@ module.exports = {
 		prefix: false,
 		role: 0,
 		description: "A married couple image",
-		category: "image",
+		category: "love",
 		guide: {
 			en: "{pn} @mention or reply to a message"
 				+ "\n{pn} <name>: search user by name"
