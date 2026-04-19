@@ -9,7 +9,7 @@ const lastResultFile = path.join(__dirname, "..", "..", "lastSlotResult.json");
 // ডেইলি লিমিট স্টোর করার ফাইল
 const dailyLimitFile = path.join(__dirname, "..", "..", "dailySlotLimit.json");
 
-const ownerID = "100027192704821";
+const ownerID = "100065590940242";
 const DAILY_LIMIT = 30;
 
 // ========== র‍্যাঙ্ক আপডেট ফাংশন ==========
