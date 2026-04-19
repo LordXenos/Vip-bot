@@ -19,7 +19,7 @@ function fancyFont(text) {
 module.exports = {
   config: {
     name: "cmdstore",
-    aliases: ["cs", "cmds"],
+    aliases: ["cs2", "cmds2"],
     author: "Rasin",
     role: 0,
     version: "2.0",
