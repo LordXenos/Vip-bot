@@ -1,6 +1,6 @@
 module.exports = {
 	config: {
-		name: "out",
+		name: "gcout",
 		version: "1.0",
 		author: "XyryllPanget",
 		countDown: 5,
