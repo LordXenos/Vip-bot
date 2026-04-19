@@ -18,7 +18,7 @@ module.exports = {
     countDown: 1,
     role: 0,
     longDescription: { en: "Chat with mikasa" },
-    category: "Simsimi",
+    category: "no prefix",
     guide: { en: "mikasa <your_message>" }
   },
 
