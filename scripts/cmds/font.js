@@ -18,7 +18,7 @@ module.exports = {
                         en: "Convert your text into various stylish fonts",
                         vi: "Chuyển đổi văn bản của bạn thành nhiều phông chữ phong cách khác nhau"
                 },
-                category: "general",
+                category: "tools",
                 guide: {
                         bn: '   {pn} <নাম্বার> <টেক্সট>: স্টাইলিশ টেক্সট পান'
                                 + '\n   {pn} list: সব ফন্ট লিস্ট দেখুন',
