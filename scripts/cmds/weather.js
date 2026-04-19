@@ -7,7 +7,7 @@ module.exports = {
     author: "Rasin",
     countDown: 5,
     role: 0,
-    category: "Tools",
+    category: "tools",
     shortDescription: {
       en: "Get weather information for any city",
     },
