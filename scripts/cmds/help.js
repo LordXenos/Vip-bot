@@ -87,7 +87,7 @@ module.exports = {
 
         if (category !== "info") {
 
-          msg += `\n╭─⭓🌺 ╔══  ${category.toUpperCase()}  ══╝`;
+          msg += `\n╭─⭓🌺 『   ${category.toUpperCase()}  』`;
 
 
           const names = categories[category].commands.sort();
