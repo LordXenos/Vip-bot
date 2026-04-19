@@ -2,14 +2,14 @@ const axios = require('axios');
 
 module.exports = {
   config: {
-    name: 'info',
+    name: 'ffinfo',
     aliases: ['ffinfo', 'playerinfo'],
     prefix: false,
     author: 'Rasin',
     countDown: 2,
     role: 0,
     description: 'Free Fire player info',
-    category: 'Free Fire'
+    category: 'game'
   },
   
   onStart: async function ({ message, args }) {
