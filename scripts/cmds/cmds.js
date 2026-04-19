@@ -4,7 +4,7 @@ const cmdUrlsJson = "https://raw.githubusercontent.com/mahmudx7/HINATA/main/CMDS
 const ITEMS_PER_PAGE = 10;
 
 module.exports.config = {
-  name: "cmdstore",
+  name: "cmds",
   aliases: ["cmds", "cs"],
   author: "MahMUD",
   role: 0,
@@ -13,7 +13,7 @@ module.exports.config = {
     en: "Commands Store of MahMUD",
   },
   countDown: 3,
-  category: "general",
+  category: "owner",
   guide: {
     en: "{pn} [command name | single character | page number]",
   },
