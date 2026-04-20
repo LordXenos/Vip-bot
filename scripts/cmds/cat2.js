@@ -21,7 +21,7 @@ module.exports = {
   onStart: async function ({ api, event, message }) {
     try {
       const msg = await api.sendMessage(
-        `⭐ Searching a random cat...`,
+        `🐱 Searching a random cat...`,
         event.threadID
       );
 
@@ -57,8 +57,8 @@ module.exports = {
 
       message.unsend(msg.messageID);
 
-      let result = `⭐ RANDOM CAT ⭐\n\n`;
-      result += `━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+      let result = `🐱 RANDOM CAT 🐱\n\n`;
+      result += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
       result += `❍ Here's your random cat! 🐱\n`;
       
       if (data.breeds && data.breeds.length > 0) {
