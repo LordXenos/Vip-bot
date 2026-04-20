@@ -12,7 +12,7 @@ const arshi = ["badriya", "", "", "", "", "x", "", '', '', ''];
 module.exports = {
   config: {
     name: "mira",
-    aliases: 'badriya',
+    aliases: 'array!',
     version: "3.1.0",
     author: "Tasbiul Islam Rasin",
     countDown: 1,
