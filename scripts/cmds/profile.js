@@ -10,7 +10,7 @@ const baseApiUrl = async () => {
 module.exports = {
         config: {
                 name: "profile",
-                aliases: ["pp", "dp", "pfp", "প্রোফাইল"],
+                aliases: ["pp", "dp", "pfp1", "প্রোফাইল"],
                 version: "1.7",
                 author: "MahMUD",
                 countDown: 5,
