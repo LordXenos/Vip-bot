@@ -9,8 +9,8 @@ const mahmud = async () => {
 
 module.exports = {
         config: {
-                name: "edit5",
-                aliases: ["imgedit", "এডিট"],
+                name: "edit1",
+                aliases: ["editpro", "এডিট"],
                 version: "1.7",
                 author: "MahMUD",
                 countDown: 10,
