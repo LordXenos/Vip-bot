@@ -2,7 +2,7 @@ const moment = require('moment-timezone');
 
 module.exports = {
 	config: {
-		name: "autoReply",
+		name: "baby2",
 		version: "2.0.2",
 		author: "Rasin",
 		countDown: 0,
