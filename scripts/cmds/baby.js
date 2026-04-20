@@ -26,7 +26,7 @@ const baseApiUrl = async () => {
 
 module.exports.config = {
    name: "hinata",
-   aliases: ["baby", "bby", "mikasa", "jan", "janu", "wifey", "bot"],
+   aliases: ["baby", "bby", "mikasa", "jan", "makima", "wifey", "bot"],
    version: "1.7",
    author: "MahMUD",
    role: 0,
@@ -160,7 +160,7 @@ module.exports.onChat = async ({ api, event }) => {
           "babu khuda lagse🥺",
           "Hop beda😾,Boss বল boss😼",  
           "আমাকে ডাকলে ,আমি কিন্তূ কিস করে দেবো😘 ",  
-          "🐒🐒🐒",
+          "🐒🐒",
           "bye",
           "naw amr boss k message daw m.me/xSiyam69x",
           "mb ney bye",
