@@ -18,20 +18,20 @@ module.exports = {
 
         langs: {
                 bn: {
-                        added: "🌟 | সফলভাবে %1 জনকে VIP রোল দেওয়া হয়েছে:\n%2",
+                        added: "💻 | সফলভাবে %1 জনকে VIP রোল দেওয়া হয়েছে:\n%2",
                         already: "\n⚠️ | %1 জন আগে থেকেই VIP ছিল:\n%2",
                         missingAdd: "⚠️ | বেবি, VIP করতে আইডি দিন অথবা ট্যাগ করুন!",
                         removed: "🚫 | সফলভাবে %1 জনের VIP রোল সরানো হয়েছে:\n%2",
                         notIn: "⚠️ | %1 জন VIP তালিকায় ছিল না:\n%2",
-                        list: "🌟 | VIP ইউজার তালিকা:\n\n%1"
+                        list: "✨ | VIP ইউজার তালিকা:\n\n%1"
                 },
                 en: {
-                        added: "🌟 | Added VIP role for %1 users:\n%2",
+                        added: "💻 | Added VIP role for %1 users:\n%2",
                         already: "\n⚠️ | %1 users already have VIP role:\n%2",
                         missingAdd: "⚠️ | Provide ID or tag to add VIP!",
                         removed: "🚫 | Removed VIP role for %1 users:\n%2",
                         notIn: "⚠️ | %1 users were not in VIP list:\n%2",
-                        list: "🌟 | VIP Users List:\n\n%1"
+                        list: "🌸 | VIP Users List:\n\n%1"
                 }
         },
 
