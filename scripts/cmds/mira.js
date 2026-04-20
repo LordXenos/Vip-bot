@@ -7,12 +7,12 @@ const teacherx = `${apix}/teachers`;
 
 const rasinx = {};
 
-const arshi = ["badriya", "", "", "", "", "x", "", '', '', ''];
+const arshi = ["mira", "", "", "", "", "x", "", '', '', ''];
 
 module.exports = {
   config: {
-    name: "mira",
-    aliases: 'array!',
+    name: "mira1",
+    aliases: 'array',
     version: "3.1.0",
     author: "Tasbiul Islam Rasin",
     countDown: 1,
