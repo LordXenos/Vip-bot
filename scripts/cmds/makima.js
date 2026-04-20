@@ -12,7 +12,7 @@ const arshi = ["makima", "", "", "", "", "x", "", '', '', ''];
 module.exports = {
   config: {
     name: "makima",
-    aliases: arshi,
+    aliases: 
     version: "3.1.0",
     author: "Tasbiul Islam Rasin",
     countDown: 1,
