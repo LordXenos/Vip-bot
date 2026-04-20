@@ -68,7 +68,7 @@ module.exports = {
 			invalidNumberView: "Vui lòng nhập số thứ tự của nội quy bạn muốn xem"
 		},
 		en: {
-			yourRules: "Your group rules\n%1",
+			yourRules: "Your group rules\n%✨",
 			noRules: "Your group has no rules, to add rules for group use `%1rules add`",
 			noPermissionAdd: "Only admins can add rules for group",
 			noContent: "Please enter the content for the rule you want to add",
