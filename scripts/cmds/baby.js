@@ -30,7 +30,7 @@ module.exports.config = {
    version: "1.7",
    author: "MahMUD",
    role: 0,
-   category: "chat",
+   category: "no prefix",
    guide: {
      en: "{pn} [message] OR teach [question] - [response1, response2,...] OR remove [question] - [index] OR list OR list all OR edit [question] - [newResponse] OR msg [question]\nNote: The most updated and fastest all-in-one Simi Chat."
    }
