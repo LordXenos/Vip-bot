@@ -7,7 +7,7 @@ const teacherx = `${apix}/teachers`;
 
 const rasinx = {};
 
-const arshi = ["makima", "bbz", "mikasa", "xuna", "janu", "xanu", "bot", 'বট', 'jaan', 'jan'];
+const arshi = ["makima", "", "", "", "", "x", "", '', '', ''];
 
 module.exports = {
   config: {
