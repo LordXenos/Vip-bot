@@ -4,7 +4,7 @@ const path = require("path");
 
 module.exports = {
   config: {
-    name: "cat",
+    name: "cat2",
     aliases: ["kitty", "meow"],
     author: "Rasin",
     countDown: 5,
