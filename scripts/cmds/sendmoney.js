@@ -71,7 +71,7 @@ module.exports = {
     guide: {
       en: "{pn} [@mention/uid] [amount]\n{pn} [amount] (reply to user message)\nExamples:\n  {pn} @user 5000\n  {pn} @user 10k\n  {pn} @user 5.5m\n  {pn} @user 2.3b\n  {pn} @user 1.5qa\n  {pn} @user 7.8dc"
     },
-    aliases: ["balancetransfer", "balancetrans", "send", "pay"]
+    aliases: ["balancetransfer", "bal t", "send", "pay"]
   },
 
   onStart: async function ({ message, event, args, usersData, api }) {
