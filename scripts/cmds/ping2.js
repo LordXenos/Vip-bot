@@ -25,7 +25,7 @@ module.exports = {
     const sent = await message.reply("⏳ Checking user ping...");
 
     await api.editMessage(
-      `🟢 User Ping\n⚡ ${userPing}ms`,
+      `🟢 User Ping\n𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞 𝐓𝐢𝐦𝐞:⚡ ${userPing}ms`,
       sent.messageID
     );
   }
