@@ -96,7 +96,7 @@ module.exports = {
 
             const cmds = names.slice(i, i + 3).map((item) => `→ ${item}`);
 
-            msg += `\n✨ ${cmds.join(" ".repeat(Math.max(1, 10 - cmds.join("").length)))}`;
+            msg += `\n◉⁠‿⁠◉ ${cmds.join(" ".repeat(Math.max(1, 10 - cmds.join("").length)))}`;
 
           }
 
