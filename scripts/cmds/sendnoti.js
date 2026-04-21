@@ -2,7 +2,7 @@ const { getStreamsFromAttachment, getTime } = global.utils;
 
 module.exports = {
 	config: {
-		name: "sendnoti",
+		name: "sendnotify",
 		version: "1.5",
 		author: "NTKhang",
 		countDown: 5,
