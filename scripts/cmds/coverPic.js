@@ -6,7 +6,7 @@ const path = require("path")
 module.exports = {
   config: {
     name: "cover",
-    aliases: ["coverp", "coverpp"],
+    aliases: ["cp", "coverpp"],
     version: "5.0",
     author: "Rasin",
     countDown: 3,
