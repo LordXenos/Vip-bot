@@ -131,7 +131,7 @@ module.exports = {
           "• !sendmoney [amount] (reply to user message)\n" +
           "• !balance transfer @mention/uid [amount]\n" +
           "• !balance send @mention/uid [amount]\n\n" +
-          "📌 Amount formats: 5000, 10k, 5.5m, 2.3b, 1.5t, 7qa, 3.2qi, 8.1sx, 4.6dc\n" +
+          "💰 Amount formats: 5000, 10k, 5.5m, 2.3b, 1.5t, 7qa, 3.2qi, 8.1sx, 4.6dc\n" +
           "(k=thousand, m=million, b=billion, t=trillion, qa=quadrillion, qi=quintillion, sx=sextillion, dc=decillion)"
         );
       }
