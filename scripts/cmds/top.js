@@ -45,7 +45,7 @@ module.exports = {
         return `${index + 1}. ${user.name || "Unknown"}: $${formatShortNumber(user.money)}`;
       });
 
-      return message.reply(`👽👍🏻 Top 10 Richest Users:\n\n${topList.join("\n")}`);
+      return message.reply(`‎🏆 𝐓𝐎𝐏 𝟏𝟎 𝐑𝐈𝐂𝐇𝐄𝐒𝐓 𝐔𝐒𝐄𝐑𝐒💸 :\n\n${topList.join("\n")}`);
     } catch (e) {}
   }
 };
