@@ -44,7 +44,7 @@ module.exports = {
                         listErr: "× Failed to fetch effect list.",
                         noTarget: "× Baby, mention, reply, or provide UID of the target! 🎭",
                         success: "✅ Effect: %1 successful! 💥",
-                        error: "× API error: %1. Contact MahMUD for help."
+                        error: "× API error: %1. Contact Siyam for help."
                 },
                 vi: {
                         noType: "× Cưng ơi, hãy nhập loại hiệu ứng! Sử dụng '{pn} list' để xem tất cả.",
@@ -94,7 +94,7 @@ module.exports = {
                 try {
                         api.setMessageReaction("⏳", event.messageID, () => {}, true);
 
-                        const isTwoUser = ["kiss", "fuse", "buttslap", "slap", "spank", "bed"].includes(type);
+                        const isTwoUser = ["kiss", "", "buttslap", "slap", "spank", "bed"].includes(type);
                         let url = isTwoUser 
                                 ? `${baseUrl}/api/dig?type=${type}&user=${senderID}&user2=${targetID}`
                                 : `${baseUrl}/api/dig?type=${type}&user=${targetID}`;
