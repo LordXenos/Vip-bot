@@ -111,7 +111,7 @@ async function generateLocalPairImage(user1Id, user1Name, user2Id, user2Name, pe
 	// অ্যানিমে টেক্সট
 	ctx.font = "bold 20px Arial";
 	ctx.fillStyle = "#ffffff";
-	ctx.fillText("✨ Anime Love ✨", 300, 350);
+	ctx.fillText("✨𝐌𝐚𝐠𝐢𝐜𝐚𝐥 𝐀𝐧𝐢𝐦𝐞 𝐂𝐨𝐮𝐩𝐥𝐞✨", 300, 350);
 
 	return canvas.toBuffer();
 }
@@ -199,7 +199,7 @@ module.exports = {
 
 			fs.writeFileSync(outputPath, Buffer.from(imageBuffer));
 			
-			const msg = `💕 𝐀𝐧𝐢𝐦𝐞 𝐋𝐨𝐯𝐞 𝐌𝐚𝐭𝐜𝐡 💕\n━━━━━━━━━━━━━━━━\n👤 𝐘𝐨𝐮: ${name1}\n👤 𝐌𝐚𝐭𝐜𝐡: ${name2}\n💞 𝐋𝐨𝐯𝐞 𝐏𝐞𝐫𝐜𝐞𝐧𝐭𝐚𝐠𝐞: ${percentage}%\n━━━━━━━━━━━━━━━━\n✨ 𝐂𝐮𝐭𝐞 𝐀𝐧𝐢𝐦𝐞 𝐂𝐨𝐮𝐩𝐥𝐞 ✨`;
+			const msg = `💕Perfect 𝐋𝐨𝐯𝐞 𝐌𝐚𝐭𝐜𝐡 💕\n━━━━━━━━━━━━━━━━\n👤 𝐘𝐨𝐮: ${name1}\n👤 𝐌𝐚𝐭𝐜𝐡: ${name2}\n💞 𝐋𝐨𝐯𝐞 𝐏𝐞𝐫𝐜𝐞𝐧𝐭𝐚𝐠𝐞: ${percentage}%\n━━━━━━━━━━━━━━━━\n✨ 𝐂𝐮𝐭𝐞 𝐀𝐧𝐢𝐦𝐞 𝐂𝐨𝐮𝐩𝐥𝐞 ✨`;
 			
 			return message.reply({
 				body: msg,
