@@ -4,7 +4,7 @@ const fs = require("fs");
 
 module.exports = {
   config: {
-    name: "wholesome",
+    name: "Dear",
     aliases: ["ws"],
     version: "1.0",
     author: "AceGun",
@@ -33,7 +33,7 @@ module.exports = {
     try {
       const imagePath = await bal(one);
       await message.reply({
-        body: "「 is that true?🙂✨ 」",
+        body: "「 is that true?🫠✨ 」",
         attachment: fs.createReadStream(imagePath)
       });
     } catch (error) {
