@@ -28,7 +28,7 @@ module.exports = {
 		en: {
 			noGender: "❌ Baby, your gender is not defined in your profile",
 			noMatch: "😢 Sorry, no match found for you in this group",
-			success: "💕 𝐂𝐡𝐞𝐫𝐫𝐲 𝐁𝐥𝐨𝐬𝐬𝐨𝐦 𝐋𝐨𝐯𝐞 💕\n━━━━━━━━━━━━━━━━\n👤 𝐘𝐨𝐮: %1\n👤 𝐌𝐚𝐭𝐜𝐡: %2\n💞 𝐋𝐨𝐯𝐞 𝐏𝐞𝐫𝐜𝐞𝐧𝐭𝐚𝐠𝐞: %3%\n━━━━━━━━━━━━━━━━\n✨ 𝐒𝐚𝐤𝐮𝐫𝐚 𝐅𝐨𝐫𝐞𝐯𝐞𝐫 ✨",
+			success: "💕 𝐂𝐡𝐞𝐫𝐫𝐲 𝐁𝐥𝐨𝐬𝐬𝐨𝐦 𝐋𝐨𝐯𝐞 💕\n━━━━━━━━━━━━━━━━\n👤 𝐘𝐨𝐮: %1\n👤 𝐌𝐚𝐭𝐜𝐡: %2\n💞 𝐋𝐨𝐯𝐞 𝐏𝐞𝐫𝐜𝐞𝐧𝐭𝐚𝐠𝐞: %3%\n━━━━━━━━━━━━━━━━\n🌸A beautiful connection has been found🌸",
 			error: "❌ Error: %1"
 		}
 	},
