@@ -199,7 +199,7 @@ module.exports = {
 
 			fs.writeFileSync(outputPath, Buffer.from(imageBuffer));
 			
-			const msg = `💕Perfect 𝐋𝐨𝐯𝐞 𝐌𝐚𝐭𝐜𝐡 💕\n━━━━━━━━━━━━━━━━\n👤 𝐘𝐨𝐮: ${name1}\n👤 𝐌𝐚𝐭𝐜𝐡: ${name2}\n💞 𝐋𝐨𝐯𝐞 𝐏𝐞𝐫𝐜𝐞𝐧𝐭𝐚𝐠𝐞: ${percentage}%\n━━━━━━━━━━━━━━━━\n✨ 𝐂𝐮𝐭𝐞 𝐀𝐧𝐢𝐦𝐞 𝐂𝐨𝐮𝐩𝐥𝐞 ✨`;
+			const msg = `💕Anime 𝐋𝐨𝐯𝐞 𝐌𝐚𝐭𝐜𝐡 💕\n━━━━━━━━━━━━━━━━\n👤 𝐘𝐨𝐮: ${name1}\n👤 𝐌𝐚𝐭𝐜𝐡: ${name2}\n💞 𝐋𝐨𝐯𝐞 𝐏𝐞𝐫𝐜𝐞𝐧𝐭𝐚𝐠𝐞: ${percentage}%\n━━━━━━━━━━━━━━━━\n✨ 𝐂𝐮𝐭𝐞 𝐀𝐧𝐢𝐦𝐞 𝐂𝐨𝐮𝐩𝐥𝐞 ✨`;
 			
 			return message.reply({
 				body: msg,
