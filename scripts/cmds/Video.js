@@ -13,8 +13,8 @@ async function fetchTikTokVideos(query) {
 
 module.exports = {
   config: {
-    name: "video",
-    aliases: ["s"],
+    name: "vid",
+    aliases: ["Lyricvid"],
     author: "Vex_kshitiz",
     version: "1.0",
     shortDescription: {
