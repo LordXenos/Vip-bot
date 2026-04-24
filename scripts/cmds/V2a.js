@@ -8,7 +8,7 @@ module.exports = {
     aliases: ["video2audio", "extractaudio", "video2mp3"],
     version: "2.0",
     author: "arfan",
-    countDown: 30,
+    countDown: 20,
     role: 0,
     shortDescription: {
       en: "Convert video to audio"
