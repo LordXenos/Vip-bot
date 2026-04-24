@@ -17,7 +17,7 @@ module.exports = {
   },
 
   onStart: async function ({ api, event, args, message }) {
-    api.setMessageReaction("🕐", event.messageID, (err) => {}, true);
+    api.setMessageReaction("✨", event.messageID, (err) => {}, true);
     const categories = ["jjk", "naruto", "ds", "aot", "bleach", "onepiece"];
 
     if (args.length !== 1 || !categories.includes(args[0].toLowerCase())) {
