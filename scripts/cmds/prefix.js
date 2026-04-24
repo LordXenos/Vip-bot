@@ -90,7 +90,7 @@ module.exports = {
 
 			successThisThread: "Changed prefix in your box chat to: %1",
 
-			myPrefix: "✨⋆⁺₊⋆───────────────✨🌸𝐇𝐞𝐥𝐥𝐨 I'm ─꯭─⃝‌‌愛|Mɪᴋᴀsᴀ🎀 at your service 🦋 ───────🙂📌 𝐏𝐑𝐄𝐅𝐈𝐗 𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐓𝐈𝐎𝐍🕊️✨🌐 System prefix: %1\n💬 This Chat: prefix: %2 👑 𝐎𝐰𝐧𝐞𝐫 : —͞Sɪʏꫝᴍ"
+			myPrefix: "✨⋆⁺₊⋆───────────────✨🌸𝐇𝐞𝐥𝐥𝐨 I'm ─꯭─⃝‌‌愛|Mɪᴋᴀsᴀ🎀 at your service 🦋 ───────➤🙂📌 𝐏𝐑𝐄𝐅𝐈𝐗 𝐈𝐍𝐅𝐎𝐑𝐌𝐀𝐓𝐈𝐎𝐍🕊️✨🌐 System prefix: %1\n💬 This Chat: prefix: %2 👑 𝐎𝐰𝐧𝐞𝐫 : —͞Sɪʏꫝᴍ"
 
 		}
 
