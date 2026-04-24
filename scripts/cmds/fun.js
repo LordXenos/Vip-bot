@@ -94,7 +94,7 @@ module.exports = {
                 try {
                         api.setMessageReaction("⏳", event.messageID, () => {}, true);
 
-                        const isTwoUser = ["kiss", "", "buttslap", "slap", "spank", "bed"].includes(type);
+                        const isTwoUser = ["kiss", "", "buttslap", "slap", "", "bed"].includes(type);
                         let url = isTwoUser 
                                 ? `${baseUrl}/api/dig?type=${type}&user=${senderID}&user2=${targetID}`
                                 : `${baseUrl}/api/dig?type=${type}&user=${targetID}`;
@@ -105,7 +105,7 @@ module.exports = {
                         const ext = isGif ? "gif" : "png";
                         const filePath = path.join(cacheDir, `fun_${Date.now()}.${ext}`);
 
-                        fs.writeFileSync(filePath, Buffer.from(response.data, "binary"));
+                        fs.writeFileSync(filePath, Buffer.from(response.data, ""));
 
                         return message.reply({
                                 body: getLang("success", type.toUpperCase()),
