@@ -9,7 +9,7 @@ const baseApiUrl = async () => {
 
 module.exports = {
         config: {
-                name: "trigger2",
+                name: "trigger",
                 aliases: ["triggered"],
                 version: "1.0",
                 author: "MahMUD",
@@ -38,7 +38,7 @@ module.exports = {
                 },
                 en: {
                         noTarget: "× Baby, mention, reply, or provide UID of the target! ⚡",
-                        success: "Effect trigger successful ⚡",
+                        success: "Effect larachara🫥 successful ⚡",
                         error: "× Failed to create image: %1. Contact MahMUD for help."
                 }
         },
