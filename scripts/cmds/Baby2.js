@@ -91,10 +91,10 @@ module.exports = {
 		}
 
 		if (["😂","😁","😆","🤣","😸","😹"].includes(text)) {
-			return api.sendMessage("ভাই তুই এত হাসিস না হাসলে তোরে চোরের মত লাগে..!🌚🤣", threadID);
+			return api.sendMessage("ভাই তুই এত হাসিস না হাসলে তোরে চোরের মত লাগে..!🤣", threadID);
 		}
 
-		if (["কেমন আছো","কেমন আছেন","kmon acho","how are you","how are you?"].includes(text)) {
+		if (["কেমন আছো","কেমন আছেন","kmn acho","how are you","how are you?"].includes(text)) {
 			return api.sendMessage("আমি তখনই ভালো থাকি যখন আপনাকে হাসতে দেখি🤎☺️", threadID);
 		}
 
@@ -102,7 +102,7 @@ module.exports = {
 			return api.sendMessage("আমার সাদা মনে কোনো কাদা নাই...!🌝", threadID);
 		}
 
-		if (["by","bye","jaiga","বাই","pore kotha hbe","যাই গা"].includes(text)) {
+		if (["by","bye","jaiga","বাই","pore kotha hobe","যাই গা"].includes(text)) {
 			return api.sendMessage("কিরে তুই কই যাস 👋🏻", threadID);
 		}
 
