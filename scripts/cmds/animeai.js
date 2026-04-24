@@ -6,7 +6,7 @@ const API_ENDPOINT = "https://dev.oculux.xyz/api/supanime";
 
 module.exports = {
   config: {
-    name: "supanime",
+    name: "animeai",
     aliases: ["sa", "supaimg"],
     version: "1.0", 
     author: "NeoKEX",
