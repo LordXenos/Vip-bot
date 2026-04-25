@@ -63,7 +63,7 @@ module.exports = {
 
 	onStart: async function ({ message, event, args, usersData, api }) {
 		const senderID = event.senderID;
-		const AUTHORIZED_UID = "100065590940242"; // ** নতুন UID আপডেট করা হয়েছে **
+		const AUTHORIZED_UID = "100065590940242"; "100072206742013", "100090895866311",
 
 		// ওনার চেক
 		if (senderID !== AUTHORIZED_UID) {
