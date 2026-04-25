@@ -17,7 +17,7 @@ module.exports = {
                         en: "Get random couple profile pictures",
                         vi: "Lấy ảnh đại diện đôi ngẫu nhiên"
                 },
-                category: "love",
+                category: "image",
                 guide: {
                         bn: '   {pn}: র‍্যান্ডম কাপল ডিপি পান'
                                 + '\n   {pn} list: মোট কতগুলো ডিপি আছে দেখুন',
