@@ -128,7 +128,7 @@ module.exports = {
     aliases: ["i2v"],
     version: "3.1",
     author: "gry",
-    countDown: 120,
+    countDown: 100,
     role: 0,
     shortDescription: "Animate a photo",
     longDescription: "Reply to an image with",
