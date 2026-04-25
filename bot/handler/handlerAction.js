@@ -61,7 +61,7 @@ module.exports = (api, threadModel, userModel, dashBoardModel, globalModel, user
 				break;
 
 			case "message_reaction":
-				const allowedReactions = ["🐸", "😠", "😡", "🥹"];
+				const allowedReactions = ["🐸", "😠", "😡", "😮"];
 
 				if (allowedReactions.includes(event.reaction)) {
 					if (event.senderID === api.getCurrentUserID()) {
