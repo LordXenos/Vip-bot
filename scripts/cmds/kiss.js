@@ -10,7 +10,7 @@ const mahmud = async () => {
 module.exports = {
         config: {
                 name: "kiss",
-                aliases: ["চুমা", "কিস"],
+                aliases: ["ummah", "কিস"],
                 version: "1.7",
                 author: "MahMUD",
                 countDown: 5,
@@ -37,7 +37,7 @@ module.exports = {
                 },
                 en: {
                         noTarget: "× Baby, please mention someone to kiss! 💋",
-                        wait: "Generating your kiss image... Please wait a moment baby! <😘",
+                        wait: "Generating your kiss image. Please wait a moment baby! <😘",
                         success: "ummmmah✨! 🙈",
                         error: "× API error: %1. Contact .... for help."
                 },
