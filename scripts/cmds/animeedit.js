@@ -9,8 +9,8 @@ const baseApiUrl = async () => {
 
 module.exports = {
         config: {
-                name: "animeedit",
-                aliases: ["aedit"],
+                name: "anisearch",
+                aliases: ["aniedit"],
                 version: "1.7",
                 author: "MahMUD",
                 countDown: 10,
