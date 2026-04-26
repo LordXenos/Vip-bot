@@ -3,7 +3,7 @@ const axios = require("axios");
 module.exports = {
   config: {
     name: "myanimelist",
-    aliases: ["mal", "myanimelist"],
+    aliases: ["aniinfo", "myanimelist"],
     author: "Rasin",
     countDown: 5,
     role: 0,
