@@ -29,7 +29,7 @@ module.exports = {
     
     const { threadID, messageID } = event;
     const username = args[0];
-    if (!username) return api.sendMessage("Please Provide a Github Username.\n\nExample: {pn} Github Mahmudx7", threadID, messageID);
+    if (!username) return api.sendMessage("Please Provide a Github Username.\n\nExample: {pn} Github makima69", threadID, messageID);
 
     try {
       const apiUrl = await baseApiUrl();
