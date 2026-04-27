@@ -30,6 +30,9 @@
   "notesLanguage": "change to your language with ISO 639-1 code, available languages: vi (Vietnamese), en (English)",
   "nickNameBot": "─꯭─⃝‌‌愛|Mɪᴋᴀsᴀ🥹🎀",
   "prefix": "!",
+  "adminPrefix": "?",
+  "notes_adminPrefix": "A second prefix only usable by bot admins (role 2+). Leave empty string or null to disable.",
+  "noPrefix": false,
   "api": "https://rasin-apis.onrender.com",
   "approval": false,
   "reactBy": {
