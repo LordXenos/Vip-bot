@@ -55,10 +55,14 @@
     "100072206742013",
     "100090895866311",
     "100070825580127"
-    
+      ],
+    "premiumUsers": [
+    "100065590940242",
+    "100087331405932"
   ],
-  "mainAdmin": [
-    "100065590940242"
+  "notes_premiumUsers": "List of user IDs with premium access (role 3).",
+  "devUsers": [
+    "100065590940242",
   ],
   "adminGroup": "1160320489300782",
   "whiteListMode": {
